@@ -5,7 +5,7 @@
 ::                      ! Fix broken Flash cookie cleanup section
 ::                      ! Fix broken logging in some sections (was calling obsolete %LOGFILENAME% variable instead of %LOGFILE%)
 ::                      * Improve OS detection routine; OS version checks now more fine-grained
-::                      * Improve hotfix cleanup and server media file cleanup sections
+::                      * Improve hotfix cleanup and server media file cleanup
 ::                      * Split all jobs into Windows version-specific and version-agnostic jobs for better readability
 ::                3.3a  / Minor header cleanup; Variables section now about PREP AND CHECKS
 ::                3.3   / Renamed VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
