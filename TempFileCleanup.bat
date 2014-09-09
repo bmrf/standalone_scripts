@@ -3,7 +3,7 @@
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
 :: Version:       3.4.0 ! Fix failing FOR loops due to missing opening or closing quotes. Thanks to reddit.com/user/savagebunny
 ::                      ! Fix broken Flash cookie cleanup section
-::                      ! Fix broken logging in some sections (was calling obsolete variable %LOGFILENAME% instead of %LOGFILE%)
+::                      ! Fix broken logging in some sections (was calling obsolete %LOGFILENAME% variable instead of %LOGFILE%)
 ::                      * Improve OS detection routine; OS version checks now more fine-grained
 ::                      * Improve hotfix cleanup and server media file cleanup sections
 ::                      * Split all jobs into Windows version-specific and version-agnostic jobs for better readability
