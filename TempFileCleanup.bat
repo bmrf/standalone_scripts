@@ -231,8 +231,8 @@ if %ERRORLEVEL%==0 (
 	echo. >> %LOGPATH%\%LOGFILE% && echo  ! Windows Server operating system detected. Removing built-in media files ^(.wave, .midi, etc^)...>> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
 
 	:: 2. Take ownership of the files so we can actually delete them. By default even Administrators have Read-only rights. 
-	echo  ! Taking ownership of %WINDIR%\Media in order to delete files... && echo.
-	echo  ! Taking ownership of %WINDIR%\Media in order to delete files... >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
+	echo    Taking ownership of %WINDIR%\Media in order to delete files... && echo.
+	echo    Taking ownership of %WINDIR%\Media in order to delete files... >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
 	if exist %WINDIR%\Media takeown /f %WINDIR%\Media /r /d y >> %LOGPATH%\%LOGFILE% 2>NUL && echo. >> %LOGPATH%\%LOGFILE%
 	if exist %WINDIR%\Media icacls %WINDIR%\Media /grant administrators:F /t >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
 	
