@@ -61,7 +61,7 @@ set SCRIPT_UPDATED=2014-09-09
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
-title [TEMP FILE CLEANUP v%SCRIPT_VERSION%]
+title [TempFileCleanup v%SCRIPT_VERSION%]
 
 :::::::::::::::::::::::
 :: LOG FILE HANDLING ::
@@ -100,12 +100,11 @@ echo ---------------------------------------------------------------------------
 echo  %CUR_DATE% %TIME%  TempFileCleanup v%SCRIPT_VERSION%, executing as %USERDOMAIN%\%USERNAME%>> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 
-title [CLEANING TEMP FILES v%SCRIPT_VERSION%]
 echo.
 echo  Starting temp file cleanup
 echo  --------------------------
 echo.
-echo  Cleaning USER temp files...
+echo   Cleaning USER temp files...
 
 ::::::::::::::::::::::
 :: Version-agnostic :: (these jobs run regardless of OS version)
@@ -152,9 +151,8 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 )
 
 
-echo.
-echo  Done.
-echo. >> %LOGPATH%\%LOGFILE% && echo  ! Done. >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
+echo. && echo   Done. && echo.
+echo. >> %LOGPATH%\%LOGFILE% && echo   Done.>> %LOGPATH%\%LOGFILE% && echo. >>%LOGPATH%\%LOGFILE%
 
 
 
@@ -162,8 +160,8 @@ echo. >> %LOGPATH%\%LOGFILE% && echo  ! Done. >> %LOGPATH%\%LOGFILE% && echo. >>
 :: SYSTEM CLEANUP SECTION :: -- Most stuff here requires Admin rights
 ::::::::::::::::::::::::::::
 echo.
-echo  Cleaning SYSTEM temp files...
-echo  ! Cleaning SYSTEM temp files... >> %LOGPATH%\%LOGFILE% && echo.>> %LOGPATH%\%LOGFILE%
+echo   Cleaning SYSTEM temp files...
+echo   Cleaning SYSTEM temp files... >> %LOGPATH%\%LOGFILE% && echo.>> %LOGPATH%\%LOGFILE%
 
 
 ::::::::::::::::::::::
@@ -222,12 +220,6 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 	rmdir /S /Q %WINDIR%\Help\Tours >> %LOGPATH%\%LOGFILE% 2>NUL
 	)
 
-echo.
-echo  Done.
-echo. >> %LOGPATH%\%LOGFILE%
-echo  ! Done. >> %LOGPATH%\%LOGFILE%
-echo. >> %LOGPATH%\%LOGFILE%
-
 
 :: JOB: Windows Server: remove built-in media files (all Server versions)
 echo.%WIN_VER% | findstr /i /c:"server" >NUL
@@ -241,11 +233,16 @@ if %ERRORLEVEL%==0 (
 	:: 2. Take ownership of the files so we can actually delete them. By default even Administrators have Read-only rights. 
 	echo  ! Taking ownership of %WINDIR%\Media in order to delete files... && echo.
 	echo  ! Taking ownership of %WINDIR%\Media in order to delete files... >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
-	takeown /f %WINDIR%\Media /r /d y >> %LOGPATH%\%LOGFILE% 2>NUL && echo. >> %LOGPATH%\%LOGFILE%
-	icacls %WINDIR%\Media /grant administrators:F /t >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
+	if exist %WINDIR%\Media takeown /f %WINDIR%\Media /r /d y >> %LOGPATH%\%LOGFILE% 2>NUL && echo. >> %LOGPATH%\%LOGFILE%
+	if exist %WINDIR%\Media icacls %WINDIR%\Media /grant administrators:F /t >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
 	
 	:: 3. Do the cleanup
 	rmdir /S /Q %WINDIR%\Media>> %LOGPATH%\%LOGFILE% 2>NUL
+	
+	echo    Done.
+	echo.
+	echo    Done. >> %LOGPATH%\%LOGFILE%
+	echo. >> %LOGPATH%\%LOGFILE%
  )
 
 
@@ -262,7 +259,7 @@ if %ERRORLEVEL%==0 (
 	echo  ! Windows XP/2003 detected.
 	echo    Removing hotfix uninstallers...
 	echo.
-	echo. >> %LOGPATH%\%LOGFILE% && echo ! Windows XP/2003 detected. Removing hotfix uninstallers... >> %LOGPATH%\%LOGFILE%
+	echo. >> %LOGPATH%\%LOGFILE% && echo  ! Windows XP/2003 detected. Removing hotfix uninstallers...>> %LOGPATH%\%LOGFILE%
 
 	:: 2. Build the list of hotfix folders. They always have "$" signs around their name, e.g. "$NtUninstall092330$" or "$hf_mg$"
 	pushd %WINDIR%
@@ -276,11 +273,15 @@ if %ERRORLEVEL%==0 (
 		)
 
 	:: 4. Log that we are done with hotfix cleanup and leave the Windows directory
-	echo. >> %LOGPATH%\%LOGFILE% && echo ! Windows XP/2003 hotfix uninstaller cleanup complete. >> %LOGPATH%\%LOGFILE% && echo.>> %LOGPATH%\%LOGFILE%
-	del %TEMP%\hotfix_nuke_list.txt >> %LOGPATH%\%LOGFILE%
+	echo    Done. >> %LOGPATH%\%LOGFILE% && echo.>> %LOGPATH%\%LOGFILE%
+	echo    Done. 
+	del %TEMP%\hotfix_nuke_list.txt>> %LOGPATH%\%LOGFILE%
+	echo.
 	popd
 )
 
+echo   Done. && echo.
+echo   Done.>> %LOGPATH%\%LOGFILE% && echo. >>%LOGPATH%\%LOGFILE%
 
 ::::::::::::::::::::::::::
 :: Cleanup and complete ::
