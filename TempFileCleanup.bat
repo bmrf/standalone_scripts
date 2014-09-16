@@ -59,8 +59,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.4.2
-set SCRIPT_UPDATED=2014-09-15
+set SCRIPT_VERSION=3.4.3
+set SCRIPT_UPDATED=2014-09-16
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
