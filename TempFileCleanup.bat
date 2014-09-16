@@ -1,7 +1,9 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.4.2 + Add cleaning of Chrome cache. Thanks to reddit.com/user/savagebunny
+:: Version:       3.4.3 + Add cleaning of Windows CBS logs. Thanks to reddit.com/user/savagebunny
+::                      + Add cleaning of additional Chrome location
+::                3.4.2 + Add cleaning of Chrome cache. Thanks to reddit.com/user/savagebunny
 ::                3.4.1 + Add Windows Vista and up patch download folder. -- CURRENTLY COMMENTED OUT -- Thanks to reddit.com/user/savagebunny
 ::                3.4.0 ! Fix failing FOR loops due to missing opening or closing quotes. Thanks to reddit.com/user/savagebunny
 ::                      ! Fix broken Flash cookie cleanup section
@@ -129,7 +131,7 @@ if "%WIN_VER%"=="Microsoft Windows XP" (
         del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
     )
 )
 
@@ -142,6 +144,7 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
         del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		)
 ) else (
     for /D %%x in ("%SystemDrive%\Users\*") do ( 
@@ -151,6 +154,7 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
         del /F /Q "%%x\AppData\Local\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		:: Windows Update Download Folder
 		::net stop wuaserv
 		::rmdir /S /Q %WINDIR%\SoftwareDistribution\Download >> %LOGPATH%\%LOGFILE% 2>NUL
@@ -211,8 +215,6 @@ rmdir /S /Q %WINDIR%\Web\Wallpaper\Dell >> %LOGPATH%\%LOGFILE% 2>NUL
 rmdir /S /Q "%APPDATA%\Macromedia\Flash Player\#SharedObjects" >> %LOGPATH%\%LOGFILE% 2>NUL
 rmdir /S /Q "%APPDATA%\Macromedia\Flash Player\macromedia.com\support\flashplayer\sys" >> %LOGPATH%\%LOGFILE% 2>NUL
 
-
-
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
@@ -251,8 +253,12 @@ if %ERRORLEVEL%==0 (
 	echo.
 	echo    Done. >> %LOGPATH%\%LOGFILE%
 	echo. >> %LOGPATH%\%LOGFILE%
- )
+	)
 
+:: JOB: Windows CBS logs
+::      these only exist on Vista and up, so we look for "Microsoft", and assuming we don't find it, clear out the folder
+echo.%WIN_VER% | findstr /i /c:"server" >NUL
+if not %ERRORLEVEL%==0 del /F /Q %WINDIR%\Logs\CBS\* >> %LOGPATH%\%LOGFILE% 2>NUL
 
 :: JOB: Windows XP/2003: Cleanup hotfix uninstallers. They use a lot of space so removing them is beneficial.
 :: Really we should use a tool that deletes their corresponding registry entries, but oh well.
