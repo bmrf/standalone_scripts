@@ -1,10 +1,11 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.4.3 + Add cleaning of Windows CBS logs. Thanks to reddit.com/user/savagebunny
+:: Version:       3.4.4 ! Fix minor bug where a comment inside a FOR loop was throwing unecessary error messages
+::                      ! Fix minor directory inconsistencies across Windows Server 2003 and 2008
+::                3.4.3 + Add cleaning of Windows CBS logs. Thanks to reddit.com/user/savagebunny
 ::                      + Add cleaning of additional Chrome location
 ::                3.4.2 + Add cleaning of Chrome cache. Thanks to reddit.com/user/savagebunny
-::                3.4.1 + Add Windows Vista and up patch download folder. -- CURRENTLY COMMENTED OUT -- Thanks to reddit.com/user/savagebunny
 ::                3.4.0 ! Fix failing FOR loops due to missing opening or closing quotes. Thanks to reddit.com/user/savagebunny
 ::                      ! Fix broken Flash cookie cleanup section
 ::                      ! Fix broken logging in some sections (was calling obsolete %LOGFILENAME% variable instead of %LOGFILE%)
@@ -59,8 +60,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.4.3
-set SCRIPT_UPDATED=2014-09-16
+set SCRIPT_VERSION=3.4.4
+set SCRIPT_UPDATED=2014-09-17
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -132,6 +133,7 @@ if "%WIN_VER%"=="Microsoft Windows XP" (
         del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
     )
 )
 
@@ -143,22 +145,17 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
         del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		)
 ) else (
     for /D %%x in ("%SystemDrive%\Users\*") do ( 
         del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
         del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*">> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\AppData\Local\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		:: Windows Update Download Folder
-		::net stop wuaserv
-		::rmdir /S /Q %WINDIR%\SoftwareDistribution\Download >> %LOGPATH%\%LOGFILE% 2>NUL
-		::net start wuaserv
     )
 )
 
@@ -235,10 +232,10 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 echo.%WIN_VER% | findstr /i /c:"server" >NUL
 if %ERRORLEVEL%==0 (
 	echo.
-	echo  ! Windows Server operating system detected.
+	echo  ! Server operating system detected.
 	echo    Removing built-in media files ^(.wav, .midi, etc^)...
 	echo.
-	echo. >> %LOGPATH%\%LOGFILE% && echo  ! Windows Server operating system detected. Removing built-in media files ^(.wave, .midi, etc^)...>> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
+	echo. >> %LOGPATH%\%LOGFILE% && echo  ! Server operating system detected. Removing built-in media files ^(.wave, .midi, etc^)...>> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
 
 	:: 2. Take ownership of the files so we can actually delete them. By default even Administrators have Read-only rights. 
 	echo    Taking ownership of %WINDIR%\Media in order to delete files... && echo.
