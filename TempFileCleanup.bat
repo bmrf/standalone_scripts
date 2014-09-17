@@ -127,11 +127,11 @@ del /F /S /Q "%TEMP%" >> %LOGPATH%\%LOGFILE% 2>NUL
 :: JOB: Windows XP 
 if "%WIN_VER%"=="Microsoft Windows XP" (
     for /D %%x in ("%SystemDrive%\Documents and Settings\*") do ( 
-        del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
     )
@@ -140,19 +140,19 @@ if "%WIN_VER%"=="Microsoft Windows XP" (
 :: JOB: Windows Server 2003: and if not, run code applicable to Windows Vista and later
 if "%WIN_VER%"=="Microsoft Windows Server 2003" (
     for /D %%x in ("%SystemDrive%\Documents and Settings\*") do ( 
-        del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		)
 ) else (
     for /D %%x in ("%SystemDrive%\Users\*") do ( 
-        del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-        del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*">> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*">> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
