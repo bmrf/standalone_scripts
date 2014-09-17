@@ -1,7 +1,7 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.4.4 ! Fix minor bug where a comment inside a FOR loop was breaking the loop and throwing unnecessary error messages
+:: Version:       3.4.4 ! Fix minor bug where a comment inside a FOR loop was breaking the loop and throwing unnecessary error messages. Thanks to reddit.com/user/saeraphas
 ::                      ! Fix minor directory inconsistencies across Windows Server 2003 and 2008
 ::                3.4.3 + Add cleaning of Windows CBS logs. Thanks to reddit.com/user/savagebunny
 ::                      + Add cleaning of additional Chrome location
