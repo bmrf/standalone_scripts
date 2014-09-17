@@ -45,7 +45,6 @@
 ::                        - HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 ::                      + PREP:         Added Chrome to the list of browsers to kill before starting
 ::                      + PREP:         Added /T flag (terminate child processes) to all browser and Java kill lines
-::                      * LOGGING:      Minor improvements
 ::                1.1   + Overhaul of functionality and logging
 ::                1.0     Initial write
 SETLOCAL
