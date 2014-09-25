@@ -11,41 +11,40 @@
 ::                 - reddit.com/user/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
 :: History:       1.6.6 ! MISC:         Convert references to tskill.exe and taskkill.exe to full paths instead of relying on System Path to be correct (thanks to reddit.com/user/placebonocebo)
+::                      * IMPROVEMENT:  Add line to remove Java Update Service via WMI
 ::                1.6.5 / MISC:         Minor header change; Variables section now before Prep and Checks
 ::                1.6.4 * IMPROVEMENT:  Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format
 ::                1.6.3 * BUG FIX:      Updated some outdated references to JRE v3-7 (updated to reflect addition of JRE8)
-::                1.6.2 * IMPROVEMENT:  Added /salvagerepository and /resyncperf flags to WMIC winmgmt.exe repair section
-::                1.6.1 * IMPROVEMENT:  Added deletion of Java Update directory in C:\Program Files\Common Files\Java\Java Update\
-::                1.6.0 + FEATURE:      Added code blocks to catch and remove JRE 8 x86 and x64
-::                      * IMPROVEMENT:  Added Opera browser to list of running exe's to look for prior to performing any action
-::                      * IMPROVEMENT:  Added 2>NUL flags to suppress error output when running the usually-unnecessary official Oracle uninstallers
+::                1.6.2 * IMPROVEMENT:  Add /salvagerepository and /resyncperf flags to WMIC winmgmt.exe repair section
+::                1.6.1 * IMPROVEMENT:  Add deletion of Java Update directory in C:\Program Files\Common Files\Java\Java Update\
+::                1.6.0 + FEATURE:      Add code blocks to catch and remove JRE 8 x86 and x64
+::                      * IMPROVEMENT:  Add Opera browser to list of running exe's to look for prior to performing any action
+::                      * IMPROVEMENT:  Add 2>NUL flags to suppress error output when running the usually-unnecessary official Oracle uninstallers
 ::                      / MISC:         Changed example JRE reinstaller variable flags to match up with JRE8-series flags
-::                1.5.1 * IMPROVEMENT:  Reworked CUR_DATE variable to handle more than one Date/Time format
-::                                      Can now handle ISO standard dates (yyyy-mm-dd) and Windows default dates (e.g. "Fri 01/24/2014")
-::                1.5.0 + FEATURE:      Added ability to choose whether or not to kill running Java processes before executing,
+::                1.5.0 + FEATURE:      Add ability to choose whether or not to kill running Java processes before executing,
 ::                                      along with a variable to specify an exit code to use                   (sdjason)
-::                      + FEATURE:      Added ability to selectively reinstall x64 and x86 versions of the JRE (sdjason)
-::                      * IMPROVEMENT:  Converted JRE 3 uninstaller section to a FOR loop
-::                      * IMPROVEMENT:  Converted many commands into FOR loops with test cases to check if they should run or not (sdjason)
+::                      + FEATURE:      Add ability to selectively reinstall x64 and x86 versions of the JRE (sdjason)
+::                      * IMPROVEMENT:  Convert JRE 3 uninstaller section to a FOR loop
+::                      * IMPROVEMENT:  Convert many commands into FOR loops with test cases to check if they should run or not (sdjason)
 ::                      * IMPROVEMENT:  File deletion commands now aren't run if their target doesn't exist.
 ::                                      This should reduce unecessary errors in the console and log.     (sdjason)
 ::                      ! FIX:			Fixed incorrect search string in XP version of Java installer cache purge
 ::                1.4.1 ! FIX:          Re-enabled "echo off" statement at beginning of script
 ::                      ! FIX:          Fixed empty OS_VERSION variable on Vista/7/2008/8/2012           (MrYiff)
-::                1.4   + FEATURE:      Added check to see if we're on Windows XP, to run different code for certain sections
-::                      + FEATURE:      Added comprehensive WMI repair if it's broken
-::                      + FEATURE:      Added XP versions of a lot of the code
-::                1.3   + FEATURE:      Added variables to reinstall Java after cleanup (off by default) (sdjason)
-::                      + FILE CLEANUP: Added C:\Users*\AppData\LocalLow\Sun\Java\jre*                   (cannibalkitteh)
-::                      + FILE CLEANUP: Added C:\Users*\AppData\LocalLow\Sun\Java\AU                     (cannibalkitteh)
+::                1.4   + FEATURE:      Add check to see if we're on Windows XP, to run different code for certain sections
+::                      + FEATURE:      Add comprehensive WMI repair if it's broken
+::                      + FEATURE:      Add XP versions of a lot of the code
+::                1.3   + FEATURE:      Add variables to reinstall Java after cleanup (off by default) (sdjason)
+::                      + FILE CLEANUP: Add C:\Users*\AppData\LocalLow\Sun\Java\jre*                   (cannibalkitteh)
+::                      + FILE CLEANUP: Add C:\Users*\AppData\LocalLow\Sun\Java\AU                     (cannibalkitteh)
 ::                1.2   + COMMENTS:     Improved a lot of commenting
-::                      + UNINSTALLER:  Added WMIC wildcard-matching to catch all JRE GUIDs, including future revisions
+::                      + UNINSTALLER:  Add WMIC wildcard-matching to catch all JRE GUIDs, including future revisions
 ::                      + FILE CLEANUP: Major overhaul to section                                        (mattm)
-::                      + REGISTRY:     Added additional locations:                                      (cannibalkitteh)
+::                      + REGISTRY:     Add additional locations:                                      (cannibalkitteh)
 ::                        - HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
 ::                        - HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
-::                      + PREP:         Added Chrome to the list of browsers to kill before starting
-::                      + PREP:         Added /T flag (terminate child processes) to all browser and Java kill lines
+::                      + PREP:         Add Chrome to the list of browsers to kill before starting
+::                      + PREP:         Add /T flag (terminate child processes) to all browser and Java kill lines
 ::                      * LOGGING:      Minor improvements
 ::                1.1   + Overhaul of functionality and logging
 ::                1.0     Initial write
@@ -264,9 +263,14 @@ FOR %%i IN (01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23
 	%SystemRoot%\IsUninst.exe -f"%ProgramFiles%\JavaSoft\JRE\1.3.1_%%i\Uninst.isu" -a 2>NUL
 	%SystemRoot%\IsUninst.exe -f"%ProgramFiles(x86)%\JavaSoft\JRE\1.3.1_%%i\Uninst.isu" -a 2>NUL
 )
-:: This one wouldn't fit in the loop above
+:: This wouldn't fit in the loop above
 %SystemRoot%\IsUninst.exe -f"%ProgramFiles%\JavaSoft\JRE\1.3\Uninst.isu" -a 2>NUL
 %SystemRoot%\IsUninst.exe -f"%ProgramFiles(x86)%\JavaSoft\JRE\1.3\Uninst.isu" -a 2>NUL
+
+:: Java Update Service
+echo %CUR_DATE% %TIME%   Java Update Service...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Java Update Service...
+wmic product where "name like 'Java Auto Updater'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: Wildcard uninstallers
 echo %CUR_DATE% %TIME%   Specific targeting done. Now running WMIC wildcard catchall uninstallation...>> "%LOGPATH%\%LOGFILE%"
