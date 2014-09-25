@@ -10,7 +10,8 @@
 ::                 - reddit.com/user/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - reddit.com/user/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.6.5 / MISC:         Minor header change; Variables section now before Prep and Checks
+:: History:       1.6.6 ! MISC:         Convert references to tskill.exe and taskkill.exe to full paths instead of relying on System Path to be correct (thanks to reddit.com/user/placebonocebo)
+::                1.6.5 / MISC:         Minor header change; Variables section now before Prep and Checks
 ::                1.6.4 * IMPROVEMENT:  Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format
 ::                1.6.3 * BUG FIX:      Updated some outdated references to JRE v3-7 (updated to reflect addition of JRE8)
 ::                1.6.2 * IMPROVEMENT:  Added /salvagerepository and /resyncperf flags to WMIC winmgmt.exe repair section
@@ -28,9 +29,9 @@
 ::                      * IMPROVEMENT:  Converted many commands into FOR loops with test cases to check if they should run or not (sdjason)
 ::                      * IMPROVEMENT:  File deletion commands now aren't run if their target doesn't exist.
 ::                                      This should reduce unecessary errors in the console and log.     (sdjason)
-::                      / FIX:			Fixed incorrect search string in XP version of Java installer cache purge
-::                1.4.1 / FIX:          Re-enabled "echo off" statement at beginning of script
-::                      / FIX:          Fixed empty OS_VERSION variable on Vista/7/2008/8/2012           (MrYiff)
+::                      ! FIX:			Fixed incorrect search string in XP version of Java installer cache purge
+::                1.4.1 ! FIX:          Re-enabled "echo off" statement at beginning of script
+::                      ! FIX:          Fixed empty OS_VERSION variable on Vista/7/2008/8/2012           (MrYiff)
 ::                1.4   + FEATURE:      Added check to see if we're on Windows XP, to run different code for certain sections
 ::                      + FEATURE:      Added comprehensive WMI repair if it's broken
 ::                      + FEATURE:      Added XP versions of a lot of the code
@@ -45,6 +46,7 @@
 ::                        - HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 ::                      + PREP:         Added Chrome to the list of browsers to kill before starting
 ::                      + PREP:         Added /T flag (terminate child processes) to all browser and Java kill lines
+::                      * LOGGING:      Minor improvements
 ::                1.1   + Overhaul of functionality and logging
 ::                1.0     Initial write
 SETLOCAL
@@ -100,8 +102,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.6.5
-set SCRIPT_UPDATED=2014-09-08
+set SCRIPT_VERSION=1.6.6
+set SCRIPT_UPDATED=2014-09-25
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -172,7 +174,7 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 		echo.
 		FOR %%i IN (java,javaw,javaws,jqs,jusched,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
 			echo Searching for %%i.exe...
-			tskill /a /v %%i >> "%LOGPATH%\%LOGFILE%" 2>NUL
+			%WinDir%\system32\tskill.exe /a /v %%i >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
 		echo.
 	) else (
@@ -181,7 +183,7 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 		echo.
 		FOR %%i IN (java,javaw,javaws,jqs,jusched,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
 			echo Searching for %%i.exe...
-			taskkill /f /im %%i.exe /T >> "%LOGPATH%\%LOGFILE%" 2>NUL
+			%WinDir%\system32\taskkill.exe /f /im %%i.exe /T >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
 		echo.
 	)
@@ -447,19 +449,21 @@ echo %CUR_DATE% %TIME%   Purging Java installer cache...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Purging Java installer cache...
 :: XP VERSION
 if %OS_VERSION%==XP (
-    :: Get list of users, put it in a file, then use it to iterate through each users profile, deleting the AU folder
+    :: Dump list of users to a file, then iterate through the list of profiles deleting the respective AU folder
     dir "%SystemDrive%\Documents and Settings\" /B > %TEMP%\userlist.txt
     for /f "tokens=* delims= " %%a in (%TEMP%\userlist.txt) do (
 		if exist "%SystemDrive%\Documents and Settings\%%a\AppData\LocalLow\Sun\Java\AU" rmdir /S /Q "%SystemDrive%\Documents and Settings\%%a\AppData\LocalLow\Sun\Java\AU" 2>NUL
 	)
-    for /D /R "%SystemDrive%\Documents and Settings\" %%x in (jre*) do if exist "%%x" rmdir /S /Q "%%x" 2>NUL
+    for /D /R "%SystemDrive%\Documents and Settings\" %%b in (jre*) do if exist "%%x" rmdir /S /Q "%%b" 2>NUL
 ) else (
 	:: ALL OTHER VERSIONS OF WINDOWS
-    :: Get list of users, put it in a file, then use it to iterate through each users profile, deleting the AU folder
+    :: Dump list of users to a file, then iterate through the list of profiles deleting the respective AU folder
     dir %SystemDrive%\Users /B > %TEMP%\userlist.txt
-    for /f "tokens=* delims= " %%a in (%TEMP%\userlist.txt) do rmdir /S /Q "%SystemDrive%\Users\%%a\AppData\LocalLow\Sun\Java\AU" 2>NUL
+    for /f "tokens=* delims= " %%a in (%TEMP%\userlist.txt) do (
+		if exist "%SystemDrive%\Users\%%a\AppData\LocalLow\Sun\Java\AU" rmdir /S /Q "%SystemDrive%\Users\%%a\AppData\LocalLow\Sun\Java\AU" 2>NUL
+		)
     :: Get the other JRE directories
-    for /D /R "%SystemDrive%\Users" %%x in (jre*) do rmdir /S /Q "%%x" 2>NUL
+    for /D /R "%SystemDrive%\Users" %%b in (jre*) do rmdir /S /Q "%%b" 2>NUL
     )
 
 :: Miscellaneous stuff, sometimes left over by the installers
