@@ -10,7 +10,8 @@
 ::                 - reddit.com/user/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - reddit.com/user/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.6.6 ! MISC:         Convert references to tskill.exe and taskkill.exe to full paths instead of relying on System Path to be correct (thanks to reddit.com/user/placebonocebo)
+:: History:       1.6.7 * IMPROVEMENT:  Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to reddit.com/user/placebonocebo
+::                1.6.6 ! MISC:         Convert references to tskill.exe and taskkill.exe to full paths instead of relying on System Path to be correct. Thanks to reddit.com/user/placebonocebo
 ::                      * IMPROVEMENT:  Add line to remove Java Update Service via WMI
 ::                1.6.5 / MISC:         Minor header change; Variables section now before Prep and Checks
 ::                1.6.4 * IMPROVEMENT:  Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format
@@ -101,8 +102,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.6.6
-set SCRIPT_UPDATED=2014-09-25
+set SCRIPT_VERSION=1.6.7
+set SCRIPT_UPDATED=2014-10-01
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -475,6 +476,7 @@ echo %CUR_DATE% %TIME%   Searching for and purging other Java Runtime-related di
 echo %CUR_DATE% %TIME%   Searching for and purging other Java Runtime-related directories...
 del /F /Q %SystemDrive%\1033.mst >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /S /Q "%SystemDrive%\J2SE Runtime Environment*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\" rmdir /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\"
 echo.
 
 echo %CUR_DATE% %TIME%   File and directory cleanup done.>> "%LOGPATH%\%LOGFILE%"
