@@ -4,7 +4,7 @@
 ::                4. Puts the lotion on its skin.
 :: Requirements:  local administrative rights
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-::                Latest version is always here: http://www.reddit.com/r/usefulscripts/comments/1i6kyy/batch_java_runtime_nuker_purge_all_versions_of/
+::                Latest version is always here: http://www.reddit.com/r/usefulscripts/comments/2hzt5c/batch_java_runtime_nuker_purge_all_versions_of/
 ::                additional thanks to: 
 ::                 - reddit.com/user/sdjason         : JRE reinstall functionality; selective process killing; et al
 ::                 - reddit.com/user/MrYiff          : bug fix related to OS_VERSION variable
