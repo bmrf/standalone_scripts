@@ -10,7 +10,8 @@
 ::                 - reddit.com/user/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - reddit.com/user/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.6.7 * IMPROVEMENT:  Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to reddit.com/user/placebonocebo
+:: History:       1.6.8 ! BUG FIX:      Expanded WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
+::                1.6.7 * IMPROVEMENT:  Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to reddit.com/user/placebonocebo
 ::                1.6.6 ! MISC:         Convert references to tskill.exe and taskkill.exe to full paths instead of relying on System Path to be correct. Thanks to reddit.com/user/placebonocebo
 ::                      * IMPROVEMENT:  Add line to remove Java Update Service via WMI
 ::                1.6.5 / MISC:         Minor header change; Variables section now before Prep and Checks
@@ -102,8 +103,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.6.7
-set SCRIPT_UPDATED=2014-10-01
+set SCRIPT_VERSION=1.6.8
+set SCRIPT_UPDATED=2014-10-02
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -224,8 +225,8 @@ echo %CUR_DATE% %TIME%   This might take a few minutes. Don't close this window.
 
 :: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
 :: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
-:: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture 
-:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
+:: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit "Update XX" revision number, we also check architecture 
+:: type, which always equals '32' or '64'. So first wildcard is architecture and second is revision/update number.
 
 :: JRE 8
 echo %CUR_DATE% %TIME%   JRE 8...>> "%LOGPATH%\%LOGFILE%"
@@ -235,7 +236,7 @@ echo %CUR_DATE% %TIME%   JRE 8...
 :: JRE 7
 echo %CUR_DATE% %TIME%   JRE 7...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   JRE 7...
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 6
 echo %CUR_DATE% %TIME%   JRE 6...>> "%LOGPATH%\%LOGFILE%"
