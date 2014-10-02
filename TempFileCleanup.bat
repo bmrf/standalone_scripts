@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.4.4 ! Fix minor bug where a comment inside a FOR loop was breaking the loop and throwing unnecessary error messages. Thanks to reddit.com/user/saeraphas
+:: Version:       3.4.5 * Add cleaning of Internet Explorer using Windows built-in method. Thanks to reddit.com/user/cuddlychops06
+::                3.4.4 ! Fix minor bug where a comment inside a FOR loop was breaking the loop and throwing unnecessary error messages. Thanks to reddit.com/user/saeraphas
 ::                      ! Fix minor directory inconsistencies across Windows Server 2003 and 2008
 ::                3.4.3 + Add cleaning of Windows CBS logs. Thanks to reddit.com/user/savagebunny
 ::                      + Add cleaning of additional Chrome location
@@ -60,9 +61,9 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.4.4
-set SCRIPT_UPDATED=2014-09-17
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
+set SCRIPT_VERSION=3.4.5
+set SCRIPT_UPDATED=2014-10-02
+:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
@@ -120,6 +121,8 @@ echo. >> %LOGPATH%\%LOGFILE% %% echo  ! Cleaning USER temp files...>> %LOGPATH%\
 :: User temp files, history, and random My Documents stuff
 del /F /S /Q "%TEMP%" >> %LOGPATH%\%LOGFILE% 2>NUL
 
+:: Internet Explorer cleanup
+rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
