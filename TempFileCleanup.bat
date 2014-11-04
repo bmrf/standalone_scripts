@@ -103,12 +103,6 @@ del /F /S /Q "%TEMP%" >> %LOGPATH%\%LOGFILE% 2>NUL
 :: Internet Explorer cleanup
 rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 
-:: Windows.old cleanup (Windows.old is left behind after an upgrade installation). Thanks to /u/bodkov
-if exist %SystemDrive%\Windows.old\ (
-	takeown /F %SystemDrive%\Windows.old\* /R /A
-	echo y| cacls %SystemDrive%\Windows.old\*.* /C /T /grant administrators:F
-	rmdir /S /Q %SystemDrive%\Windows.old\
-	)
 
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
@@ -170,6 +164,13 @@ echo   Cleaning SYSTEM temp files... >> %LOGPATH%\%LOGFILE% && echo.>> %LOGPATH%
 ::::::::::::::::::::::
 :: JOB: System temp files
 del /F /S /Q "%WINDIR%\TEMP\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+
+:: Windows.old cleanup (Windows.old is left behind after an upgrade installation). Thanks to /u/bodkov
+if exist %SystemDrive%\Windows.old\ (
+	takeown /F %SystemDrive%\Windows.old\* /R /A
+	echo y| cacls %SystemDrive%\Windows.old\*.* /C /T /grant administrators:F
+	rmdir /S /Q %SystemDrive%\Windows.old\
+	)
 
 :: JOB: Root drive garbage (usually C drive)
 rmdir /S /Q %SystemDrive%\Temp >> %LOGPATH%\%LOGFILE% 2>NUL
