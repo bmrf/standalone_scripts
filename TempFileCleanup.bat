@@ -1,19 +1,14 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.5.0 + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
+:: Version:       3.5.1 ! Fix stall error on C:\Windows.old cleanup; was missing /D Y flag to answer "yes" to prompts. Thanks to /u/Roquemore92
+::                3.5.0 + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
 ::                3.4.5 * Add cleaning of Internet Explorer using Windows built-in method. Thanks to /u/cuddlychops06
 ::                3.4.4 ! Fix minor bug where a comment inside a FOR loop was breaking the loop and throwing unnecessary error messages. Thanks to /u/saeraphas
 ::                      ! Fix minor directory inconsistencies across Windows Server 2003 and 2008
 ::                3.4.3 + Add cleaning of Windows CBS logs. Thanks to /u/savagebunny
 ::                      + Add cleaning of additional Chrome location
 ::                3.4.2 + Add cleaning of Chrome cache. Thanks to /u/savagebunny
-::                3.4.0 ! Fix failing FOR loops due to missing opening or closing quotes. Thanks to /u/savagebunny
-::                      ! Fix broken Flash cookie cleanup section
-::                      ! Fix broken logging in some sections (was calling obsolete %LOGFILENAME% variable instead of %LOGFILE%)
-::                      * Improve OS detection routine; OS version checks now more fine-grained
-::                      * Improve hotfix cleanup and server media file cleanup
-::                      * Split all jobs into Windows version-specific and version-agnostic jobs for better readability
 ::                <-- outdated changelog comments removed -->
 ::                1.0     Initial write
 SETLOCAL
@@ -41,8 +36,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.0
-set SCRIPT_UPDATED=2014-11-03
+set SCRIPT_VERSION=3.5.1
+set SCRIPT_UPDATED=2014-11-06
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -103,6 +98,12 @@ del /F /S /Q "%TEMP%" >> %LOGPATH%\%LOGFILE% 2>NUL
 :: Internet Explorer cleanup
 rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 
+:: Windows.old cleanup (Windows.old is left behind after an upgrade installation). Thanks to /u/bodkov
+if exist %SystemDrive%\Windows.old\ (
+	takeown /F %SystemDrive%\Windows.old\* /R /A /D Y
+	echo y| cacls %SystemDrive%\Windows.old\*.* /C /T /grant administrators:F
+	rmdir /S /Q %SystemDrive%\Windows.old\
+	)
 
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
@@ -164,13 +165,6 @@ echo   Cleaning SYSTEM temp files... >> %LOGPATH%\%LOGFILE% && echo.>> %LOGPATH%
 ::::::::::::::::::::::
 :: JOB: System temp files
 del /F /S /Q "%WINDIR%\TEMP\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-
-:: Windows.old cleanup (Windows.old is left behind after an upgrade installation). Thanks to /u/bodkov
-if exist %SystemDrive%\Windows.old\ (
-	takeown /F %SystemDrive%\Windows.old\* /R /A
-	echo y| cacls %SystemDrive%\Windows.old\*.* /C /T /grant administrators:F
-	rmdir /S /Q %SystemDrive%\Windows.old\
-	)
 
 :: JOB: Root drive garbage (usually C drive)
 rmdir /S /Q %SystemDrive%\Temp >> %LOGPATH%\%LOGFILE% 2>NUL
