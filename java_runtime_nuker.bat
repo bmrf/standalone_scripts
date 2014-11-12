@@ -10,7 +10,7 @@
 ::                 - reddit.com/user/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - reddit.com/user/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.6.9 * IMPROVEMENT:  Add process "jp2launcher" to target for killing (or checking) before running. THanks to reddit.com/user/citricacidx
+:: History:       1.6.9 * IMPROVEMENT:  Add process "jp2launcher" to target for killing (or checking) before running. Thanks to reddit.com/user/citricacidx
 ::                1.6.8 ! BUG FIX:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
 ::                1.6.7 * IMPROVEMENT:  Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to reddit.com/user/placebonocebo
 ::                1.6.6 ! MISC:         Convert references to tskill.exe and taskkill.exe to full paths instead of relying on System Path to be correct. Thanks to reddit.com/user/placebonocebo
