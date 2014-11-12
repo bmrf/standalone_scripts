@@ -10,7 +10,8 @@
 ::                 - reddit.com/user/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - reddit.com/user/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.6.8 ! BUG FIX:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
+:: History:       1.6.9 * IMPROVEMENT:  Add process "jp2launcher" to target for killing (or checking) before running. THanks to reddit.com/user/citricacidx
+::                1.6.8 ! BUG FIX:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
 ::                1.6.7 * IMPROVEMENT:  Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to reddit.com/user/placebonocebo
 ::                1.6.6 ! MISC:         Convert references to tskill.exe and taskkill.exe to full paths instead of relying on System Path to be correct. Thanks to reddit.com/user/placebonocebo
 ::                      * IMPROVEMENT:  Add line to remove Java Update Service via WMI
@@ -103,8 +104,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.6.8
-set SCRIPT_UPDATED=2014-10-02
+set SCRIPT_VERSION=1.6.9
+set SCRIPT_UPDATED=2014-11-12
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -173,7 +174,7 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 		:: XP version of the task killer
 		:: this loop contains the processes we should kill
 		echo.
-		FOR %%i IN (java,javaw,javaws,jqs,jusched,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
+		FOR %%i IN (java,javaw,javaws,jqs,jusched,jp2launcher,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
 			echo Searching for %%i.exe...
 			%WinDir%\system32\tskill.exe /a /v %%i >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
@@ -182,7 +183,7 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 		:: 7/8/2008/2008R2/2012/etc version of the task killer
 		:: this loop contains the processes we should kill
 		echo.
-		FOR %%i IN (java,javaw,javaws,jqs,jusched,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
+		FOR %%i IN (java,javaw,javaws,jqs,jusched,jp2launcher,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
 			echo Searching for %%i.exe...
 			%WinDir%\system32\taskkill.exe /f /im %%i.exe /T >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
@@ -200,7 +201,7 @@ if %FORCE_CLOSE_PROCESSES%==no (
 	:: Then we check that variable, and if it's not null (e.g. FIND.exe found something) we abort the script, returning the exit code
 	:: specified at the beginning of the script. Normally you'd use ERRORLEVEL for this, but because it is very flaky (it doesn't 
 	:: always get set, even when it should) we instead resort to using this method of dumping the results in a variable and checking it.
-	FOR %%i IN (java,javaw,javaws,jqs,jusched,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
+	FOR %%i IN (java,javaw,javaws,jqs,jusched,jp2launcher,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
 		echo %CUR_DATE% %TIME%   Searching for %%i.exe...
 		for /f "delims=" %%a in ('tasklist ^| find /i "%%i"') do (
 			if not [%%a]==[] (
