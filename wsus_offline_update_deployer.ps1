@@ -20,7 +20,7 @@
                1.0     Initial write
 
  Usage:        Step 0: Run WSUS Offline at least once, choose your options, and generate the update script
-               Step 1: Configure the variables below to reflect your set up (log location, repo location, etc)
+               Step 1: Configure the variables below to reflect your environment (log location, repo location, etc)
                Step 2: Run this script
                Step 3: Re-import the XML job file in PDQ
 #>
