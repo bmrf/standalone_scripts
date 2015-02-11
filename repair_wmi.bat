@@ -1,23 +1,9 @@
 :: Purpose:       Rebuilds and repairs WMI on a system
 :: Requirements:  A broken WMI configuration
 :: Author:        akp982 at http://community.spiceworks.com/scripts/show/113-rebuild-wmi
-::                .bat-wrapped by vocatus on reddit.com/r/sysadmin
-:: Version:       1.1.0 * Reworked CUR_DATE variable to handle more than one Date/Time format
-::                        Can now handle all Windows date formats 
-::                1.0.0   Initial write
+::                .bat-wrapped by vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
+:: Version:       1.0.0   Initial write
 
-
-
-::::::::::
-:: Prep :: -- Don't change anything in this section
-::::::::::
-@echo off
-SETLOCAL
-set SCRIPT_VERSION=1.1.0
-set SCRIPT_UPDATED=2014-01-27
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
-FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
-set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :::::::::::::::
 :: VARIABLES :: -- Set these to your desired values
@@ -26,6 +12,17 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=%COMPUTERNAME%_WMI_repair.log
 
+
+::::::::::
+:: Prep :: -- Don't change anything in this section
+::::::::::
+@echo off
+SETLOCAL
+set SCRIPT_VERSION=1.0.0
+set SCRIPT_UPDATED=2015-02-11
+:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
+FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 
 :::::::::::::
