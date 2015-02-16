@@ -3,54 +3,19 @@
 ::                3. Reinstalls the latest JRE (if you want it to)
 ::                4. Puts the lotion on its skin.
 :: Requirements:  local administrative rights
-:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
+:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
 ::                Latest version is always here: http://www.reddit.com/r/usefulscripts/comments/2hzt5c/batch_java_runtime_nuker_purge_all_versions_of/
 ::                additional thanks to: 
-::                 - reddit.com/user/sdjason         : JRE reinstall functionality; selective process killing; et al
-::                 - reddit.com/user/MrYiff          : bug fix related to OS_VERSION variable
-::                 - reddit.com/user/cannibalkitteh  : additional registry & file cleaning locations
+::                 - /u/sdjason         : JRE reinstall functionality; selective process killing; et al
+::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
+::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.6.9 * IMPROVEMENT:  Add process "jp2launcher" to target for killing (or checking) before running. Thanks to reddit.com/user/citricacidx
-::                1.6.8 ! BUG FIX:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
-::                1.6.7 * IMPROVEMENT:  Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to reddit.com/user/placebonocebo
-::                1.6.6 ! MISC:         Convert references to tskill.exe and taskkill.exe to full paths instead of relying on System Path to be correct. Thanks to reddit.com/user/placebonocebo
-::                      * IMPROVEMENT:  Add line to remove Java Update Service via WMI
-::                1.6.5 / MISC:         Minor header change; Variables section now before Prep and Checks
-::                1.6.4 * IMPROVEMENT:  Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format
-::                1.6.3 * BUG FIX:      Updated some outdated references to JRE v3-7 (updated to reflect addition of JRE8)
-::                1.6.2 * IMPROVEMENT:  Add /salvagerepository and /resyncperf flags to WMIC winmgmt.exe repair section
-::                1.6.1 * IMPROVEMENT:  Add deletion of Java Update directory in C:\Program Files\Common Files\Java\Java Update\
-::                1.6.0 + FEATURE:      Add code blocks to catch and remove JRE 8 x86 and x64
-::                      * IMPROVEMENT:  Add Opera browser to list of running exe's to look for prior to performing any action
-::                      * IMPROVEMENT:  Add 2>NUL flags to suppress error output when running the usually-unnecessary official Oracle uninstallers
-::                      / MISC:         Changed example JRE reinstaller variable flags to match up with JRE8-series flags
-::                1.5.0 + FEATURE:      Add ability to choose whether or not to kill running Java processes before executing,
-::                                      along with a variable to specify an exit code to use                   (sdjason)
-::                      + FEATURE:      Add ability to selectively reinstall x64 and x86 versions of the JRE (sdjason)
-::                      * IMPROVEMENT:  Convert JRE 3 uninstaller section to a FOR loop
-::                      * IMPROVEMENT:  Convert many commands into FOR loops with test cases to check if they should run or not (sdjason)
-::                      * IMPROVEMENT:  File deletion commands now aren't run if their target doesn't exist.
-::                                      This should reduce unecessary errors in the console and log.     (sdjason)
-::                      ! FIX:			Fixed incorrect search string in XP version of Java installer cache purge
-::                1.4.1 ! FIX:          Re-enabled "echo off" statement at beginning of script
-::                      ! FIX:          Fixed empty OS_VERSION variable on Vista/7/2008/8/2012           (MrYiff)
-::                1.4   + FEATURE:      Add check to see if we're on Windows XP, to run different code for certain sections
-::                      + FEATURE:      Add comprehensive WMI repair if it's broken
-::                      + FEATURE:      Add XP versions of a lot of the code
-::                1.3   + FEATURE:      Add variables to reinstall Java after cleanup (off by default) (sdjason)
-::                      + FILE CLEANUP: Add C:\Users*\AppData\LocalLow\Sun\Java\jre*                   (cannibalkitteh)
-::                      + FILE CLEANUP: Add C:\Users*\AppData\LocalLow\Sun\Java\AU                     (cannibalkitteh)
-::                1.2   + COMMENTS:     Improved a lot of commenting
-::                      + UNINSTALLER:  Add WMIC wildcard-matching to catch all JRE GUIDs, including future revisions
-::                      + FILE CLEANUP: Major overhaul to section                                        (mattm)
-::                      + REGISTRY:     Add additional locations:                                      (cannibalkitteh)
-::                        - HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
-::                        - HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
-::                      + PREP:         Add Chrome to the list of browsers to kill before starting
-::                      + PREP:         Add /T flag (terminate child processes) to all browser and Java kill lines
-::                      * LOGGING:      Minor improvements
-::                1.1   + Overhaul of functionality and logging
-::                1.0     Initial write
+:: History:       1.7.0 * IMPROVEMENT:  Target additional JRE8 GUID {26A24AE4-039D-4CA4-87B4-2F8__180__F0}. Thanks to /u/Caboose816
+::                1.6.9 * IMPROVEMENT:  Add process "jp2launcher" to target for killing (or checking) before running. Thanks to /u/citricacidx
+::                1.6.8 ! BUG FIX:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to /u/placebonocebo
+::                1.6.7 * IMPROVEMENT:  Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to /u/placebonocebo
+::                <outdated changelog comments removed>
+::                1.0.0   Initial write
 SETLOCAL
 
 
@@ -84,12 +49,12 @@ set REINSTALL_JAVA_x86=no
 :: The JRE installer must be in a place the script can find it (e.g. network path, same directory, etc)
 :: JRE 64-bit reinstaller
 set JAVA_LOCATION_x64=%~dp0
-set JAVA_BINARY_x64=jre-8u20-windows-x64.exe
+set JAVA_BINARY_x64=jre-8u31-windows-x64.exe
 set JAVA_ARGUMENTS_x64=/s
 
 :: JRE 32-bit reinstaller
 set JAVA_LOCATION_x86=%~dp0
-set JAVA_BINARY_x86=jre-8u20-windows-x86.exe
+set JAVA_BINARY_x86=jre-8u31-windows-x86.exe
 set JAVA_ARGUMENTS_x86=/s
 
 
@@ -104,8 +69,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.6.9
-set SCRIPT_UPDATED=2014-11-12
+set SCRIPT_VERSION=1.7.0
+set SCRIPT_UPDATED=2015-02-16
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -233,6 +198,7 @@ echo %CUR_DATE% %TIME%   This might take a few minutes. Don't close this window.
 echo %CUR_DATE% %TIME%   JRE 8...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   JRE 8...
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 7
 echo %CUR_DATE% %TIME%   JRE 7...>> "%LOGPATH%\%LOGFILE%"
@@ -360,8 +326,8 @@ echo.
 for /f "tokens=* delims= " %%a in (%TEMP%\java_purge_registry_keys.txt) do reg delete %%a /va /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: These lines delete some specific Java locations
-:: These keys AREN'T backed up because these are specific, known Java keys, whereas above we were nuking
-:: keys based on wildcards, so those need backups in case we nuke something we didn't want to.
+:: These keys AREN'T backed up because these are specific, known Java keys, whereas above we nuke
+:: keys based on wildcards, so those need backups in case we get something we didn't want to
 
 :: Delete keys for 32-bit Java installations on a 64-bit copy of Windows
 reg delete "HKLM\SOFTWARE\Wow6432Node\JavaSoft\Auto Update" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
