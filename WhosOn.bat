@@ -1,22 +1,22 @@
-:: Purpose:         Checks who's logged-on to a remote computer
-::                  Pings first to create an ARP entry, seems to lessen the chance of a timeout error.
-:: Requirements:    Run this script with a network admin account
-:: Author:          vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: History:         1.7.1 / Minor header cleanup; Variables section now above prep and checks
-::                  1.7   * Overhauled Date/Time conversion so we can handle ALL versions of Windows using ANY local date-time format
-::                  1.6   + Added "SCRIPT_UPDATED" variable to note when the script was last updated
-::                        / Structure cleanup
-::                  1.5   / Comment cleanup
-::                        / Structure cleanup
-::                  1.4   + Added missing quotes around %TARGET% variable
-::                  1.3   + Added /FAILFAST:on to WMIC method to allow faster time-outs if the machine isn't responding
-::                  1.2   + Added "WMIC /NODE:%TARGET% csproduct get vendor,name,identifyingnumber" to WMIC section
-::                  1.1   + Added two additional methods for checking which can be activated by uncommenting
-::                        + Added METHOD variable to reflect which method we're trying
-::                        / Capped variables properly
-::                  1.0   Initial write
+:: Purpose:       Checks who's logged-on to a remote computer
+::                Pings first to create an ARP entry, seems to lessen the chance of a timeout error.
+:: Requirements:  Run this script with a network admin account
+:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
+:: History:       1.7.1 / Minor header cleanup; Variables section now above prep and checks
+::                1.7.0 * Overhauled Date/Time conversion so we can handle ALL versions of Windows using ANY local date-time format
+::                1.6.0 + Added "SCRIPT_UPDATED" variable to note when the script was last updated
+::                      / Structure cleanup
+::                1.5.0 / Comment cleanup
+::                      / Structure cleanup
+::                1.4.0 + Added missing quotes around %TARGET% variable
+::                1.3.0 + Added /FAILFAST:on to WMIC method to allow faster time-outs if the machine isn't responding
+::                1.2.0 + Added "WMIC /NODE:%TARGET% csproduct get vendor,name,identifyingnumber" to WMIC section
+::                1.1.0 + Added two additional methods for checking which can be activated by uncommenting
+::                      + Added METHOD variable to reflect which method we're trying
+::                      / Capped variables properly
+::                1.0.0   Initial write
 SETLOCAL
-
+@echo off
 
 :::::::::::::::
 :: VARIABLES :: -------------- These are the defaults. Change them if you so desire. --------- ::
