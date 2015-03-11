@@ -2,33 +2,13 @@
 :: Requirements:  1. Domain administrator credentials & "Logon as a batch job" rights
 ::                2. Proper firewall configuration to allow connection
 ::                3. Proper permissions on the DHCP backup directory
-:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.3a * Minor header update; Variables now above prep and checks
-::                1.3  * Overhauled Date/Time conversion so we can handle ALL versions of Windows using ANY local date-time format
-::                1.2c * Reworked CUR_DATE variable to handle more than one Date/Time format
-::                1.2b + Added comment block explaining syntax rules for variables
-::                1.2  + Added functionality to recover the DHCP database BACK to the primary server after a failure. Now when the backup server detects that
-::                       the primary server has come back online after an outage, it will export its current copy of the DHCP database, upload it back to the 
-::                       primary server, import it, and spin it back up using the most recent copy. This addresses the issue of new leases being passed out during
-::                       an outage of the primary server and it not being aware of those leases when it comes back online.
-::                     + Added "REMOTE_OPERATIING_PATH" variable that lets us specify where the remote server keeps its DHCP working files during operation
-::                     + Added "UPDATED" variable to note when the script was last updated
-::                1.1c + Added quotes around all variables that could contain paths
-::                     + Added full path to SC.exe to prevent failure in the event %PATH% gets corrupted or mangled (this happened in testing)
-::                     * Fixed a glitch that could occur when pinging an assumed-down primary server that would incorrectly think it was back up
-::                     - Removed almost every entry of "2>&1" since it's really not needed
-::                1.1b - Changed DATE to CUR_DATE format to be consistent with all other scripts
-::                1.1  - Comments improvement
-::                     / Tuned some parameters (ping count on checking)
-::                     / Some logging tweaks
-::                     / Renamed FAILOVER_DELAY to FAILOVER_RECHECK_DELAY for clarity
-::                1.0d * Some logging tweaks
-::                1.0c * Some logging tweaks
-::                1.0 Initial write
+:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
+:: Version:       1.3.1 * Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED, respectively
+::                1.0.0   Initial write
 :: Notes:         I wrote this script after failing to find a satisfactory method of performing
 ::                watchdog/failover between two Windows Server 2008 R2 DHCP servers.
 ::
-:: Use:           This script has two modes: "Watchdog" and "Failover." 
+::                This script has two modes: "Watchdog" and "Failover." 
 ::                - Watchdog checks the status of the remote DHCP service, logs it, and then grabs the remote DHCP db backup file and imports it.
 ::                - Failover mode is activated when the script cannot determine the status of the remote DHCP server. The script then activates 
 ::                  the local DHCP server with the latest backup copy it successfully retrieved from the primary server.
@@ -55,7 +35,7 @@ SETLOCAL
 ::  * Network paths are okay           (okay:  \\server\share name      )
 ::                                     (       \\172.16.1.5\share name  )
 :: Remote server is the PRIMARY DHCP server we're watching. Use a hostname or IP address.
-set REMOTE_SERVER=SERVER-NAME
+set REMOTE_SERVER=YOUR-DHCP-SERVER
 
 :: Location of the automatic DHCP backup file on the primary server. Windows generates this automatically.
 :: Best practice is to leave this alone, unless you have a custom backup location.
@@ -97,12 +77,12 @@ set LOG_MAX_SIZE=10485760
 :::::::::::::::::::::
 @echo off
 cls
-set VERSION=1.3a
-set UPDATED=2014-09-08
+set SCRIPT_VERSION=1.3.1
+set SCRIPT_UPDATED=2014-09-11
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
-title [DHCP Server Watchdog v%VERSION%]
+title [DHCP Server Watchdog v%SCRIPT_VERSION%]
 
 
 :::::::::::::::::::::::
@@ -134,7 +114,7 @@ echo.>> %LOGPATH%\%LOGFILE%.log
 :: New run section - if we just launched the script, write a header for this run
 :newrun
 echo ------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%.log
-echo  DHCP Server Watchdog v%VERSION%, %CUR_DATE%>> %LOGPATH%\%LOGFILE%.log
+echo  DHCP Server Watchdog v%SCRIPT_VERSION%, %CUR_DATE%>> %LOGPATH%\%LOGFILE%.log
 echo   Running as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%.log
 echo.>> %LOGPATH%\%LOGFILE%.log
 echo  Job Options>> %LOGPATH%\%LOGFILE%.log
@@ -146,7 +126,7 @@ echo   Local backup location:   %LOCAL_BACKUP_PATH%>> %LOGPATH%\%LOGFILE%.log
 echo ------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%.log
 echo %CUR_DATE% %TIME%         Starting Watchdog mode.>> %LOGPATH%\%LOGFILE%.log
 echo.
-echo  DHCP Server Watchdog v%VERSION%
+echo  DHCP Server Watchdog v%SCRIPT_VERSION%
 echo   Running as: %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 echo   Log:        %LOGPATH%\%LOGFILE%.log
 
