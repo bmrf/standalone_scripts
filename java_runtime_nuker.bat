@@ -3,17 +3,19 @@
 ::                3. Reinstalls the latest JRE (if you want it to)
 ::                4. Puts the lotion on its skin.
 :: Requirements:  local administrative rights
-:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
+:: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 ::                Latest version is always here: http://www.reddit.com/r/usefulscripts/comments/2hzt5c/batch_java_runtime_nuker_purge_all_versions_of/
 ::                additional thanks to: 
 ::                 - /u/sdjason         : JRE reinstall functionality; selective process killing; et al
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.7.0 * IMPROVEMENT:  Target additional JRE8 GUID {26A24AE4-039D-4CA4-87B4-2F8__180__F0}. Thanks to /u/Caboose816
-::                1.6.9 * IMPROVEMENT:  Add process "jp2launcher" to target for killing (or checking) before running. Thanks to /u/citricacidx
-::                1.6.8 ! BUG FIX:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to /u/placebonocebo
-::                1.6.7 * IMPROVEMENT:  Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to /u/placebonocebo
+:: History:       1.7.1 * IMPROVEMENT: Remove all /va flags. This had the effect of deleting key values but leaving keys intact, which could break re-installations that thought Java was still installed when in fact it was not. Big thanks to /u/RazorZero
+::                1.7.1 * IMPROVEMENT: Reduce 10 JavaSoft registry key deletion commands to 2 by deleting entire JavaSoft key instead of individual subkeys. Thanks to /u/RazorZero
+::                1.7.0 * IMPROVEMENT: Target additional JRE8 GUID {26A24AE4-039D-4CA4-87B4-2F8__180__F0}. Thanks to /u/Caboose816
+::                1.6.9 * IMPROVEMENT: Add process "jp2launcher" to target for killing (or checking) before running. Thanks to /u/citricacidx
+::                1.6.8 ! BUG FIX:     Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to /u/placebonocebo
+::                1.6.7 * IMPROVEMENT: Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to /u/placebonocebo
 ::                <outdated changelog comments removed>
 ::                1.0.0   Initial write
 SETLOCAL
@@ -69,8 +71,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.7.0
-set SCRIPT_UPDATED=2015-02-16
+set SCRIPT_VERSION=1.7.1
+set SCRIPT_UPDATED=2015-03-16
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -323,27 +325,19 @@ echo %CUR_DATE% %TIME%   Purging keys...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Purging keys...
 echo.
 :: This line walks through the file we generated and deletes each key listed
-for /f "tokens=* delims= " %%a in (%TEMP%\java_purge_registry_keys.txt) do reg delete %%a /va /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
+for /f "tokens=* delims= " %%a in (%TEMP%\java_purge_registry_keys.txt) do reg delete %%a /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: These lines delete some specific Java locations
 :: These keys AREN'T backed up because these are specific, known Java keys, whereas above we nuke
 :: keys based on wildcards, so those need backups in case we get something we didn't want to
 
 :: Delete keys for 32-bit Java installations on a 64-bit copy of Windows
-reg delete "HKLM\SOFTWARE\Wow6432Node\JavaSoft\Auto Update" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\Wow6432Node\JavaSoft\Java Plug-in" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\Wow6432Node\JavaSoft\Java Update" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\Wow6432Node\JavaSoft\Java Web Start" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\Wow6432Node\JreMetrics" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
+reg delete "HKLM\SOFTWARE\Wow6432Node\JavaSoft" /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
+reg delete "HKLM\SOFTWARE\Wow6432Node\JreMetrics" /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: Delete keys for for 32-bit and 64-bit Java installations on matching Windows architecture
-reg delete "HKLM\SOFTWARE\JavaSoft\Auto Update" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\JavaSoft\Java Plug-in" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\JavaSoft\Java Runtime Environment" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\JavaSoft\Java Update" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\JavaSoft\Java Web Start" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
-reg delete "HKLM\SOFTWARE\JreMetrics" /va /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
+reg delete "HKLM\SOFTWARE\JavaSoft" /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
+reg delete "HKLM\SOFTWARE\JreMetrics" /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 echo.
 echo %CUR_DATE% %TIME%   Keys purged.>> "%LOGPATH%\%LOGFILE%"
