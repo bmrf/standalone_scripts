@@ -11,7 +11,7 @@
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
 :: History:       1.7.1 * IMPROVEMENT: Remove all /va flags. This had the effect of deleting key values but leaving keys intact, which could break re-installations that thought Java was still installed when in fact it was not. Big thanks to /u/RazorZero
-::                1.7.1 * IMPROVEMENT: Reduce 10 JavaSoft registry key deletion commands to 2 by deleting entire JavaSoft key instead of individual subkeys. Thanks to /u/RazorZero
+::                      * IMPROVEMENT: Reduce 10 JavaSoft registry key deletion commands to 2 by deleting entire JavaSoft key instead of individual subkeys. Thanks to /u/RazorZero
 ::                1.7.0 * IMPROVEMENT: Target additional JRE8 GUID {26A24AE4-039D-4CA4-87B4-2F8__180__F0}. Thanks to /u/Caboose816
 ::                1.6.9 * IMPROVEMENT: Add process "jp2launcher" to target for killing (or checking) before running. Thanks to /u/citricacidx
 ::                1.6.8 ! BUG FIX:     Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to /u/placebonocebo
