@@ -122,6 +122,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
 		::del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+	)
 ) else (
 	for /D %%x in ("%SystemDrive%\Users\*") do ( 
 		del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
@@ -199,7 +200,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 
 
 :: JOB: Windows Server: remove built-in media files (all Server versions)
-echo.%WIN_VER% | findstr /i /c:"server" >NUL
+echo %WIN_VER%  | findstr /i /c:"server" >NUL
 if %ERRORLEVEL%==0 (
 	echo.
 	echo  ! Server operating system detected.
@@ -224,7 +225,7 @@ if %ERRORLEVEL%==0 (
 
 :: JOB: Windows CBS logs
 ::      these only exist on Vista and up, so we look for "Microsoft", and assuming we don't find it, clear out the folder
-echo.%WIN_VER% | findstr /i /c:"server" >NUL
+echo %WIN_VER%  | findstr /i /c:"server" >NUL
 if not %ERRORLEVEL%==0 del /F /Q %WINDIR%\Logs\CBS\* >> %LOGPATH%\%LOGFILE% 2>NUL
 
 :: JOB: Windows XP/2003: Cleanup hotfix uninstallers. They use a lot of space so removing them is beneficial.
@@ -233,7 +234,7 @@ if not %ERRORLEVEL%==0 del /F /Q %WINDIR%\Logs\CBS\* >> %LOGPATH%\%LOGFILE% 2>NU
 ::  0. Check Windows version.
 ::    We simply look for "Microsoft" in the version name, because only versions prior to Vista had the word "Microsoft" as part of their version name
 ::    Everything after XP/2k3 drops the "Microsoft" prefix
-echo.%WIN_VER% | findstr /i /c:"Microsoft" >NUL
+echo %WIN_VER%  | findstr /i /c:"Microsoft" >NUL
 if %ERRORLEVEL%==0 (
 	:: 1. If we made it here we're doing the cleanup. Notify user and log it.
 	echo.
