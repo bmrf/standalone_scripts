@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
-:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.5.1 ! Fix stall error on C:\Windows.old cleanup; was missing /D Y flag to answer "yes" to prompts. Thanks to /u/Roquemore92
+:: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
+:: Version:       3.5.2 * Improve XP/2k3 detection by removing redundant code
+::                3.5.1 ! Fix stall error on C:\Windows.old cleanup; was missing /D Y flag to answer "yes" to prompts. Thanks to /u/Roquemore92
 ::                3.5.0 + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
 ::                3.4.5 * Add cleaning of Internet Explorer using Windows built-in method. Thanks to /u/cuddlychops06
 ::                3.4.4 ! Fix minor bug where a comment inside a FOR loop was breaking the loop and throwing unnecessary error messages. Thanks to /u/saeraphas
@@ -10,7 +11,7 @@
 ::                      + Add cleaning of additional Chrome location
 ::                3.4.2 + Add cleaning of Chrome cache. Thanks to /u/savagebunny
 ::                <-- outdated changelog comments removed -->
-::                1.0     Initial write
+::                1.0.0   Initial write
 SETLOCAL
 
 
@@ -36,8 +37,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.1
-set SCRIPT_UPDATED=2014-11-06
+set SCRIPT_VERSION=3.5.2
+set SCRIPT_UPDATED=2015-03-25
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -108,34 +109,11 @@ if exist %SystemDrive%\Windows.old\ (
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
-:: JOB: Windows XP 
-if "%WIN_VER%"=="Microsoft Windows XP" (
-    for /D %%x in ("%SystemDrive%\Documents and Settings\*") do ( 
-		del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
-		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
-		::del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-    )
-)
-
-:: JOB: Windows Server 2003: and if not, run code applicable to Windows Vista and later
-if "%WIN_VER%"=="Microsoft Windows Server 2003" (
-    for /D %%x in ("%SystemDrive%\Documents and Settings\*") do ( 
-		del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
-		:: same as above cache clear
-		::del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		)
-) else (
-    for /D %%x in ("%SystemDrive%\Users\*") do ( 
+:: First block handles Vista and up, second block handles XP/2k3
+:: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
+:: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3.
+if /i not "%WIN_VER:~0,9%"=="Microsoft" (
+	for /D %%x in ("%SystemDrive%\Users\*") do ( 
 		del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*">> %LOGPATH%\%LOGFILE% 2>NUL
@@ -143,7 +121,16 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
 		::del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-    )
+) else (
+	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do ( 
+		del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
+		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
+		::del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 )
 
 
