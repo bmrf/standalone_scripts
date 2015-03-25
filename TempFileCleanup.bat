@@ -109,20 +109,11 @@ if exist %SystemDrive%\Windows.old\ (
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
-:: First block handles Vista and up, second block handles XP/2k3
+:: First block handles XP/2k3, second block handles Vista and up
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3.
-if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-	for /D %%x in ("%SystemDrive%\Users\*") do ( 
-		del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*">> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
-		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
-		::del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-) else (
-	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do ( 
+if /i "%WIN_VER:~0,9%"=="Microsoft" (
+	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do (
 		del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
@@ -131,6 +122,16 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
 		::del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+) else (
+	for /D %%x in ("%SystemDrive%\Users\*") do ( 
+		del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*">> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
+		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
+		::del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+	)
 )
 
 
@@ -189,16 +190,11 @@ rmdir /S /Q "%APPDATA%\Macromedia\Flash Player\macromedia.com\support\flashplaye
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
-:: JOB: Windows XP: "guided tour" annoyance
-if "%WIN_VER%"=="Microsoft Windows XP" (
-	del %WINDIR%\system32\dllcache\tourstrt.exe >> %LOGPATH%\%LOGFILE% 2>NUL
-	del %WINDIR%\system32\dllcache\tourW.exe >> %LOGPATH%\%LOGFILE% 2>NUL
-	rmdir /S /Q %WINDIR%\Help\Tours >> %LOGPATH%\%LOGFILE% 2>NUL
-	)
-if "%WIN_VER%"=="Microsoft Windows Server 2003" (
-	del %WINDIR%\system32\dllcache\tourstrt.exe >> %LOGPATH%\%LOGFILE% 2>NUL
-	del %WINDIR%\system32\dllcache\tourW.exe >> %LOGPATH%\%LOGFILE% 2>NUL
-	rmdir /S /Q %WINDIR%\Help\Tours >> %LOGPATH%\%LOGFILE% 2>NUL
+:: JOB: Windows XP/2k3: "guided tour" annoyance
+if /i "%WIN_VER:~0,9%"=="Microsoft" (
+	del %WINDIR%\system32\dllcache\tourstrt.exe 2>NUL
+	del %WINDIR%\system32\dllcache\tourW.exe 2>NUL
+	rmdir /S /Q %WINDIR%\Help\Tours 2>NUL
 	)
 
 
