@@ -20,8 +20,10 @@ Requirements:  1. Expects Master Copy directory to contain the following files:
                        - checksums.txt.sig
                        - vocatus-public-key.asc
 
-Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-Version:       1.2.1 / Update to account for changed Tron sub-folder and new integrity_verification directory
+Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
+Version:       1.2.3 / Suppress 7-Zip output (redirect to log file)
+               1.2.2 + Add automatic launching of PortablePGP.exe to signing portion, along with associated $PortablePGP variable
+               1.2.1 / Update to account for changed Tron sub-folder and new integrity_verification directory
                      + Add $OldVersion variable and associated code to display the version we replaced
                1.2.0 + Replace built-in Windows FTP client with WinSCP and add associated $WinSCP variable and checks
                1.1.0 * Add calculation of SHA256 sum of the binary pack and upload of respective sha256sums.txt to prepare for moving the Tron update checker away from using MD5 sums
@@ -56,6 +58,9 @@ $logfile = "tron_deployment_script.log"
 # Path to 7z.exe
 $SevenZip = "C:\Program Files\7-Zip\7z.exe"
 
+# Path to PortablePGP.exe
+$PortablePGP = "R:\applications\PortablePGP\PortablePGP.exe"
+
 # Path to WinSCP.com
 $WinSCP = "R:\applications\WinSCP\WinSCP.com"
 
@@ -67,7 +72,7 @@ $md5sum = "$env:SystemRoot\syswow64\md5sum.exe"                     # e.g. "$env
 $MasterCopy = "r:\utilities\security\cleanup-repair\tron"           # e.g. "r:\utilities\security\cleanup-repair\tron"
 
 # Server holding the Tron seed folder
-$SeedServer = "\\thebrain"                                          # e.g. "\\thebrain"
+$SeedServer = "\\reposerver"                                        # e.g. "\\reposerver"
 
 # Subfolder containing Tron meta files (changelog, checksums.txt, etc)
 # No leading or trailing slashes
@@ -84,10 +89,10 @@ $Repo_URL = "http://bmrf.org/repos/tron"                            # e.g. "http
 
 
 # FTP information for where we'll upload the final md5sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-$RepoFTP_Host = "FTP HOST HERE"
-$RepoFTP_Username = "USERNAME HERE"
-$RepoFTP_Password = "PASSWORD HERE"
-$RepoFTP_DepositPath = "/public_html/repos/tron/"                   # e.g. "/public_html/repos/tron/"
+$RepoFTP_Host = "ftp-host-here"                                     # e.g. "bmrf.org"
+$RepoFTP_Username = "user name"
+$RepoFTP_Password = "password-here"
+$RepoFTP_DepositPath = "/repos/tron/"                               # e.g. "/public_html/repos/tron/"
 
 
 
@@ -102,7 +107,7 @@ $RepoFTP_DepositPath = "/public_html/repos/tron/"                   # e.g. "/pub
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION="1.2.1"
+$SCRIPT_VERSION="1.2.3"
 $SCRIPT_UPDATED="2015-02-08"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
@@ -240,6 +245,9 @@ if (!(test-path $SeedServer\$SeedFolder\integrity_verification\vocatus-public-ke
 # EXECUTE #
 ###########
 
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Launching Tron deployment script v$SCRIPT_VERSION" >> $LOGPATH\$LOGFILE
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Launching Tron deployment script v$SCRIPT_VERSION" -f green
+
 # JOB: Clear target area
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Clearing target area on seed server..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Clearing target area on seed server..." -f green
@@ -261,8 +269,10 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -
 
 
 # JOB: Wait for PGP signature on checksums.txt. Once seen, then proceed to upload entire master directory to seed server
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Waiting for PGP signature of checksums.txt to appear..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Waiting for PGP signature of checksums.txt..." -f green
 remove-item $MasterCopy\integrity_verification\checksums.txt.sig -force -recurse | out-null
+# Launch PortablePGP 
+& $PortablePGP
 while (1 -eq 1) {
 	if (test-path $MasterCopy\integrity_verification\checksums.txt.sig) {
 	write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
@@ -276,8 +286,8 @@ while (1 -eq 1) {
 
 
 # JOB: Upload from Master Copy to Seed server
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Master Copy is gold. Now copying from Master to seed server..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Master Copy is gold. Now copying from Master to seed server..." -f green
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Master Copy is gold. Copying from Master to seed server..." >> $LOGPATH\$LOGFILE
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Master Copy is gold. Copying from Master to seed server..." -f green
 	cp $MasterCopy\* $SeedServer\$SeedFolder\ -recurse -force
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
@@ -294,7 +304,7 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Seed se
 # TODO: Delete existing files first
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Building binary pack, please wait..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Building binary pack, please wait..." -f green
-	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*Sync* -x!*ini*
+	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*Sync* -x!*ini* >> $LOGPATH\$LOGFILE
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
@@ -388,7 +398,7 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -
 # Finished #
 ############
 # Logfile
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done Make sure to re-enable BT Sync and post release to Reddit." >> $LOGPATH\$LOGFILE
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done. Make sure to re-enable BT Sync and post release to Reddit." >> $LOGPATH\$LOGFILE
 echo "                    Version deployed:          v$NewVersion ($CUR_DATE)" >> $LOGPATH\$LOGFILE
 echo "                    Version replaced:          v$OldVersion" >> $LOGPATH\$LOGFILE
 echo "                    Local deployment server:   $SeedServer" >> $LOGPATH\$LOGFILE
