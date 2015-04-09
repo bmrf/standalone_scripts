@@ -21,7 +21,8 @@ Requirements:  1. Expects Master Copy directory to contain the following files:
                        - vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.3 / Suppress 7-Zip output (redirect to log file)
+Version:       1.2.4 ! Fix binary pack hash calculation by removing ".\" prefix on new binary path, which was breaking the update checker in Tron.bat
+               1.2.3 / Suppress 7-Zip output (redirect to log file)
                1.2.2 + Add automatic launching of PortablePGP.exe to signing portion, along with associated $PortablePGP variable
                1.2.1 / Update to account for changed Tron sub-folder and new integrity_verification directory
                      + Add $OldVersion variable and associated code to display the version we replaced
@@ -107,8 +108,8 @@ $RepoFTP_DepositPath = "/repos/tron/"                               # e.g. "/pub
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION="1.2.3"
-$SCRIPT_UPDATED="2015-02-08"
+$SCRIPT_VERSION="1.2.4"
+$SCRIPT_UPDATED="2015-04-09"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -245,7 +246,7 @@ if (!(test-path $SeedServer\$SeedFolder\integrity_verification\vocatus-public-ke
 # EXECUTE #
 ###########
 
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Launching Tron deployment script v$SCRIPT_VERSION" >> $LOGPATH\$LOGFILE
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Tron deployment script v$SCRIPT_VERSION" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Launching Tron deployment script v$SCRIPT_VERSION" -f green
 
 # JOB: Clear target area
@@ -333,7 +334,7 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." -f green
 	pushd $env:temp
 	# First hash the file
-	& $HashDeep64 -s -e -l -c sha256 ".\Tron v$NewVersion ($CUR_DATE).exe" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
+	& $HashDeep64 -s -e -l -c sha256 "Tron v$NewVersion ($CUR_DATE).exe" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
 	# Strip out the annoying hashdeep header
 	gc .\sha256sums_TEMP.txt | Where-Object {$_ -notmatch '#'} | where-object {$_ -notmatch '%'} | sc .\sha256sums_TEMP2.txt
 	# Strip out blank lines and trailing spaces (not needed?) testing removal
