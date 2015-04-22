@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
-:: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.2 * Improve XP/2k3 detection by removing redundant code
+:: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+:: Version:       3.5.3 * Add removal of C:\HP folder
+::                3.5.2 * Improve XP/2k3 detection by removing redundant code
 ::                3.5.1 ! Fix stall error on C:\Windows.old cleanup; was missing /D Y flag to answer "yes" to prompts. Thanks to /u/Roquemore92
 ::                3.5.0 + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
 ::                3.4.5 * Add cleaning of Internet Explorer using Windows built-in method. Thanks to /u/cuddlychops06
@@ -37,8 +38,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.2
-set SCRIPT_UPDATED=2015-03-25
+set SCRIPT_VERSION=3.5.3
+set SCRIPT_UPDATED=2015-04-22
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -161,9 +162,9 @@ for %%i in (bat,txt,log,jpg,jpeg,tmp,bak,backup,exe) do (
 			del /F /Q "%SystemDrive%\*.%%i">> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
 
-:: JOB: Remove files left over from installing Nvidia/ATI/AMD/Dell/Intel drivers
-for %%i in (NVIDIA,ATI,AMD,Dell,Intel) do (
-			rmdir /S /Q "%SystemDrive%\%%i">> "%LOGPATH%\%LOGFILE%" 2>NUL
+:: JOB: Remove files left over from installing Nvidia/ATI/AMD/Dell/Intel/HP drivers
+for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
+			rmdir /S /Q "%SystemDrive%\%%i" 2>NUL
 		)
 
 :: JOB: Remove the Microsoft Office installation cache. Usually around ~1.5 GB
