@@ -1,6 +1,6 @@
 :: One liner commands for windows – cheat sheet
 :: http://travisaltman.com/one-liner-commands-for-windows-cheat-sheet/comment-page-1/
-
+:: v1.0.0
 
 :: BATCH: Get the date into ISO 8601 standard date format (yyyy-mm-dd) and store it in the "CUR_DATE" variable
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
