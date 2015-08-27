@@ -2,7 +2,8 @@
 :: Requirements:  - forfiles.exe from Microsoft
 ::                - 7-Zip
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.5.0 * Overhauled Date/Time conversion so we can handle ALL versions of Windows using ANY local date-time format
+:: Version:       1.5.1 * Add standard boilerplate comments
+::                1.5.0 * Overhauled Date/Time conversion so we can handle ALL versions of Windows using ANY local date-time format
 ::                1.4.9 * Reworked CUR_DATE variable to handle more than one Date/Time format
 ::                        Can now handle all Windows date formats
 ::                1.4.8 + Added SCRIPT_UPDATED variable to timestamp last update of the script
@@ -53,13 +54,13 @@
 :: TODO:          1. Add md5sum checksum file in the backup directory (md5sum each full and diff and store in a file)
 
 
-::::::::::
-:: Prep :: -- Don't change anything in this section
-::::::::::
+:::::::::::::::::::::
+:: PREP AND CHECKS ::
+:::::::::::::::::::::
 SETLOCAL
 @echo off && cls
-set SCRIPT_VERSION=1.5.0
-set SCRIPT_UPDATED=2014-07-23
+set SCRIPT_VERSION=1.5.1
+set SCRIPT_UPDATED=2015-08-27
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -70,7 +71,7 @@ set RESTORE_TYPE=NUL
 set SCRIPT_NAME=%0%
 
 :::::::::::::::
-:: VARIABLES :: -- Set these to your desired values
+:: VARIABLES :: -------------- These are the defaults. Change them if you so desire. --------- ::
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                       (bad:  "c:\directory\path"       )
@@ -107,6 +108,9 @@ set LOG_MAX_SIZE=104857600
 :: Location of 7-Zip and forfiles.exe
 set SEVENZIP="C:\Program Files\7-Zip\7z.exe"
 set FORFILES=%WINDIR%\system32\forfiles.exe
+
+
+:: --------------------------- Don't edit anything below this line --------------------------- ::
 
 
 ::::::::::::::::::::::::::::
