@@ -1,7 +1,7 @@
 :: Purpose:       Rebuilds and repairs WMI on a system
 :: Requirements:  A broken WMI configuration
 :: Author:        akp982 at http://community.spiceworks.com/scripts/show/113-rebuild-wmi
-::                .bat-wrapped by vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
+::                .bat-wrapped by reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.0   Initial write
 
 
@@ -29,7 +29,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :: EXECUTE ::
 :::::::::::::
 echo.
-echo Rebuilding WMI.....Please wait. > "%LOGPATH%\%LOGFILE%"
+echo Rebuilding WMI.....Please wait.> "%LOGPATH%\%LOGFILE%"
 echo Rebuilding WMI.....Please wait.
 echo.
 
