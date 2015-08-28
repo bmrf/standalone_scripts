@@ -109,7 +109,7 @@ if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 cls
 set SCRIPT_VERSION=2.2.2
 set SCRIPT_DATE=2015-08-28
-set WINDOZE=--
+set WIN_VER=--
 set namePROFILE=--
 set WHEN_TO_APPLY=--
 
@@ -159,7 +159,7 @@ cls
 echo.
 echo                      WINDOWS SERVICES LOCKDOWN - STEP 1/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
@@ -195,13 +195,13 @@ goto os_menuChoice
 
 :XP_32_menu_profile
 :: This is where the user selects the lockdown profile to use. Pretty self-explanatory.
-set WINDOZE=Windows XP 32-bit
-title Services Lockdown - %WINDOZE%
+set WIN_VER=Windows XP 32-bit
+title Services Lockdown - %WIN_VER%
 cls
 echo.
 echo                       WINDOWS SERVICES LOCKDOWN - STEP 2/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
@@ -225,7 +225,7 @@ if not '%choice%'=='' set choice=%Choice:~0,1%
     if '%choice%'=='2' set PROFILE=XP_32_minor && set basePROFILE=XP_32_default && set namePROFILE=Minor&& goto XP_32_menu_confirm
     if '%choice%'=='3' set PROFILE=XP_32_moderate && set basePROFILE=XP_32_moderate && set namePROFILE=Moderate&& goto XP_32_menu_confirm
     if '%choice%'=='4' set PROFILE=XP_32_aggressive && set basePROFILE=XP_32_moderate && set namePROFILE=Aggressive&& goto XP_32_menu_confirm
-    if '%choice%'=='5' set WINDOZE=-- && echo. && cls && goto os_menu
+    if '%choice%'=='5' set WIN_VER=-- && echo. && cls && goto os_menu
 :: Else, go back and re-draw the menu
 echo.
 echo  "%choice%" is not valid, please try again
@@ -235,18 +235,18 @@ goto XP_32_menu_profileChoice
 
 :XP_32_menu_confirm
 :: Confirm the profile and execute
-set WINDOZE=Windows XP 32-bit
-title Services Lockdown - %WINDOZE%
+set WIN_VER=Windows XP 32-bit
+title Services Lockdown - %WIN_VER%
 cls
 echo.
 echo                      WINDOWS SERVICES LOCKDOWN - STEP 3/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
 echo.
-echo    ABOUT TO APPLY THE %WINDOZE% "%namePROFILE%" CONFIGURATION!
+echo    ABOUT TO APPLY THE %WIN_VER% "%namePROFILE%" CONFIGURATION!
 echo.
 echo.
 echo                                CONFIRM?
@@ -274,7 +274,7 @@ goto XP_32_menu_confirmChoice
 cls
 title Resetting to defaults...
 echo.
-echo Now resetting all services to the %WINDOZE% defaults, please wait...
+echo Now resetting all services to the %WIN_VER% defaults, please wait...
 echo.
 echo Setting the following services to "Automatically start":
 for %%i in (AudioSrv,Browser,CryptSvc,DcomLaunch,Dhcp,dmserver,Dnscache,ERSvc,Eventlog,helpsvc,lanmanserver,lanmanworks,ation,LmHosts,PlugPlay,PolicyAgent,ProtectedStorage,RemoteRegistry,RpcSs,SamSs,Schedule,seclogon,SENS,Share,Access,ShellHWDetection,Spooler,srservice,Themes,TrkWks,W32Time,WebClient,winmgmt,wscsvc,wuauserv,WZCSVC) do (
@@ -455,13 +455,13 @@ goto end
 
 :Vista_32_menu_profile
 :: This is where the user selects the lockdown profile to use. Pretty self-explanatory.
-set WINDOZE=Windows Vista 32/64-bit
-title Services Lockdown - %WINDOZE%
+set WIN_VER=Windows Vista 32/64-bit
+title Services Lockdown - %WIN_VER%
 cls
 echo.
 echo                       WINDOWS SERVICES LOCKDOWN - STEP 2/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
@@ -485,7 +485,7 @@ if not '%choice%'=='' set choice=%Choice:~0,1%
     if '%choice%'=='2' set PROFILE=Vista_32_minor && set basePROFILE=Vista_32_default && set namePROFILE=Minor && goto Vista_32_menu_confirm
     if '%choice%'=='3' set PROFILE=Vista_32_moderate && set basePROFILE=Vista_32_moderate && set namePROFILE=Moderate && goto Vista_32_menu_confirm
     if '%choice%'=='4' set PROFILE=Vista_32_aggressive && set basePROFILE=Vista_32_moderate && set namePROFILE=Aggressive && goto Vista_32_menu_confirm
-    if '%choice%'=='5' set WINDOZE=-- && echo. && cls && goto os_menu
+    if '%choice%'=='5' set WIN_VER=-- && echo. && cls && goto os_menu
 :: Else, go back and re-draw the menu
 echo.
 echo  "%choice%" is not valid, please try again
@@ -495,18 +495,18 @@ goto Vista_32_menu_profileChoice
 
 :Vista_32_menu_confirm
 :: Confirm the profile and execute
-set WINDOZE=Windows Vista 32/64-bit
-title Services Lockdown - %WINDOZE%
+set WIN_VER=Windows Vista 32/64-bit
+title Services Lockdown - %WIN_VER%
 cls
 echo.
 echo                      WINDOWS SERVICES LOCKDOWN - STEP 3/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
 echo.
-echo    ABOUT TO APPLY THE %WINDOZE% "%namePROFILE%" CONFIGURATION!
+echo    ABOUT TO APPLY THE %WIN_VER% "%namePROFILE%" CONFIGURATION!
 echo.
 echo.
 echo                                CONFIRM?
@@ -534,7 +534,7 @@ goto Vista_32_menu_confirmChoice
 cls
 title Resetting to defaults...
 echo.
-echo Now resetting all services to the %WINDOZE% defaults, please wait...
+echo Now resetting all services to the %WIN_VER% defaults, please wait...
 echo.
 echo Setting the following services to "Automatically start":
 for %%i in (AeLookupSvc,AudioEndpointBuilder,AudioSrv,BFE,BITS,Browser,CryptSvc,CscService,Dhcp,Dnscache,ehstart,EMDMgmt,Eventlog,EventSystem,FDResPub,IKEEXT,iphlpsvc,KtmRm,LanmanServer,LanmanWorkstation,lmhosts,MMCSS,MpsSvc,netprofm,NlaSvc,nsi,PcaSvc,PlugPlay,PolicyAgent,ProfSvc,Schedule,seclogon,SENS,ShellHWDetection,slsvc,Spooler,SysMain,TabletInputService,TBS,TermService,Themes,upnphost,UxSms,W32Time,WebClient,WerSvc,WinDefend,Winmgmt,Wlansvc,WPDBusEnum,wscsvc,WSearch,wuauserv) do (
@@ -726,13 +726,13 @@ goto end
 
 :7_32_menu_profile
 :: This is where the user selects the lockdown profile to use. Pretty self-explanatory.
-set WINDOZE=Windows 7 32/64-bit
-title Services Lockdown - %WINDOZE%
+set WIN_VER=Windows 7 32/64-bit
+title Services Lockdown - %WIN_VER%
 cls
 echo.
 echo                       WINDOWS SERVICES LOCKDOWN - STEP 2/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
@@ -756,7 +756,7 @@ if not '%choice%'=='' set choice=%Choice:~0,1%
     if '%choice%'=='2' set PROFILE=7_32_minor && set basePROFILE=7_32_default && set namePROFILE=Minor&& goto 7_32_menu_confirm
     if '%choice%'=='3' set PROFILE=7_32_moderate && set basePROFILE=7_32_moderate && set namePROFILE=Moderate&& goto 7_32_menu_confirm
     if '%choice%'=='4' set PROFILE=7_32_aggressive && set basePROFILE=7_32_moderate && set namePROFILE=Aggressive&& goto 7_32_menu_confirm
-    if '%choice%'=='5' set WINDOZE=-- && echo. && cls && goto os_menu
+    if '%choice%'=='5' set WIN_VER=-- && echo. && cls && goto os_menu
 :: Else, go back and re-draw the menu
 echo.
 echo  "%choice%" is not valid, please try again
@@ -766,18 +766,18 @@ goto 7_32_menu_choice
 
 :7_32_menu_confirm
 :: Confirm the profile and execute
-set WINDOZE=Windows 7 32/64-bit
-title Services Lockdown - %WINDOZE%
+set WIN_VER=Windows 7 32/64-bit
+title Services Lockdown - %WIN_VER%
 cls
 echo.
 echo                      WINDOWS SERVICES LOCKDOWN - STEP 3/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
 echo.
-echo    ABOUT TO APPLY THE %WINDOZE% "%namePROFILE%" CONFIGURATION!
+echo    ABOUT TO APPLY THE %WIN_VER% "%namePROFILE%" CONFIGURATION!
 echo.
 echo.
 echo                                CONFIRM?
@@ -805,7 +805,7 @@ goto 7_32_menu_confirmChoice
 cls
 title Resetting to defaults...
 echo.
-echo Now resetting all services to the %WINDOZE% defaults, please wait...
+echo Now resetting all services to the %WIN_VER% defaults, please wait...
 echo.
 echo Setting the following services to "Automatically start":
 for %%i in (AudioEndpointBuilder,AudioSrv,BDESVC,BFE,CryptSvc,CscService,Dhcp,Dnscache,Eventlog,EventSystem,FDResPub,iphlpsvc,LanmanServer,LanmanWorkstation,lmhosts,MMCSS,MpsSvc,NlaSvc,nsi,PlugPlay,Power,ProfSvc,RpcEptMapper,Schedule,SENS,ShellHWDetection,Spooler,sppsvc,SysMain,Themes,UxSms,WinDefend,Winmgmt,Wlansvc,wscsvc,wuauserv) do (
@@ -1001,13 +1001,13 @@ goto end
 
 :XP_64_menu_profile
 :: This is where the user selects the lockdown profile to use. Pretty self-explanatory.
-set WINDOZE=Windows XP 64-bit
-title Services Lockdown - %WINDOZE%
+set WIN_VER=Windows XP 64-bit
+title Services Lockdown - %WIN_VER%
 cls
 echo.
 echo                       WINDOWS SERVICES LOCKDOWN - STEP 2/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
@@ -1031,7 +1031,7 @@ if not '%choice%'=='' set choice=%Choice:~0,1%
     if '%choice%'=='2' set PROFILE=XP_64_minor && set basePROFILE=XP_64_default && set namePROFILE=Minor&& goto XP_64_menu_confirm
     if '%choice%'=='3' set PROFILE=XP_64_moderate && set basePROFILE=XP_64_moderate && set namePROFILE=Moderate&& goto XP_64_menu_confirm
     if '%choice%'=='4' set PROFILE=XP_64_aggressive && set basePROFILE=XP_64_moderate && set namePROFILE=Aggressive&& goto XP_64_menu_confirm
-    if '%choice%'=='5' set WINDOZE=-- && echo. && cls && goto os_menu
+    if '%choice%'=='5' set WIN_VER=-- && echo. && cls && goto os_menu
 :: Else, go back and re-draw the menu
 echo.
 echo  "%choice%" is not valid, please try again
@@ -1041,18 +1041,18 @@ goto XP_64_menu_profileChoice
 
 :XP_64_menu_confirm
 :: Confirm the profile and execute
-set WINDOZE=Windows XP 64-bit
-title Services Lockdown - %WINDOZE%
+set WIN_VER=Windows XP 64-bit
+title Services Lockdown - %WIN_VER%
 cls
 echo.
 echo                      WINDOWS SERVICES LOCKDOWN - STEP 3/3
 echo.
-echo    Step 1: Choose OS:            %WINDOZE%
+echo    Step 1: Choose OS:            %WIN_VER%
 echo    Step 2: Choose Profile:       %namePROFILE%
 echo    Step 3: Confirm
 echo.
 echo.
-echo    ABOUT TO APPLY THE %WINDOZE% "%namePROFILE%" CONFIGURATION!
+echo    ABOUT TO APPLY THE %WIN_VER% "%namePROFILE%" CONFIGURATION!
 echo.
 echo.
 echo                                CONFIRM?
@@ -1080,7 +1080,7 @@ goto XP_64_menu_confirmChoice
 cls
 title Resetting to defaults...
 echo.
-echo Now resetting all services to the %WINDOZE% defaults, please wait...
+echo Now resetting all services to the %WIN_VER% defaults, please wait...
 echo.
 echo Setting the following services to "Automatically start":
 for %%i in (AeLookupSvc,AudioSrv,Browser,CryptSvc,DcomLaunch,Dhcp,dmserver,Dnscache,ERSvc,Eventlog,EventSystem,helpsvc,lanmanserver,lanmanworkstation,LmHosts,PlugPlay,PolicyAgent,ProtectedStorage,RemoteRegistry,RpcSs,SamSs,Schedule,seclogon,SENS,SharedAccess,ShellHWDetection,Spooler,srservice,stisvc,SysmonLog,Themes,TrkWks,upnphost,W32Time,WebClient,winmgmt,wscsvc,wuauserv,WZCSVC) do (
@@ -1268,7 +1268,7 @@ echo.
 echo    The following configuration was applied:
 echo.
 echo.
-echo    Operating System:  %WINDOZE%
+echo    Operating System:  %WIN_VER%
 echo    Profile:           %PROFILE%
 echo    Changes Effective: %WHEN_TO_APPLY%
 echo.
