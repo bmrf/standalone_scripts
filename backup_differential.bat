@@ -52,26 +52,11 @@
 ::                UNC paths instead (\\server\backup_folder etc) for your source, destination, and staging areas.
 
 :: TODO:          1. Add md5sum checksum file in the backup directory (md5sum each full and diff and store in a file)
-
-
-:::::::::::::::::::::
-:: PREP AND CHECKS ::
-:::::::::::::::::::::
 SETLOCAL
-@echo off && cls
-set SCRIPT_VERSION=1.5.1
-set SCRIPT_UPDATED=2015-08-27
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
-FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
-set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
-set JOB_TYPE=%1
-set JOB_ERROR=0
-set DAYS=%2
-set RESTORE_TYPE=NUL
-set SCRIPT_NAME=%0%
+
 
 :::::::::::::::
-:: VARIABLES :: -------------- These are the defaults. Change them if you so desire. --------- ::
+:: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                       (bad:  "c:\directory\path"       )
@@ -87,7 +72,7 @@ set SOURCE=R:\
 set STAGING=P:\backup_staging
 
 :: This is the final, long-term destination for your backup after it is compressed.
-set DESTINATION=\\SERVERNAME\backup\path
+set DESTINATION=\\server\personal
 
 :: If you want to customize the prefix of the backup files, do so here. Don't use any special characters (like underscores)
 :: The script automatically suffixes an underscore to this name. Recommend not changing this unless you really need to.
@@ -98,7 +83,7 @@ set BACKUP_PREFIX=backup
 :: files or folders (wildcards in the form of * are allowed and recommended) to exclude.
 :: If you specify a file here and the script can't find it, it will abort.
 :: If you leave this blank, the script won't ignore any files.
-set EXCLUSIONS_FILE=c:\scripts\backup_differential_excludes.txt
+set EXCLUSIONS_FILE=R:\Scripts\sysadmin\backup_differential_excludes.txt
 
 :: Log settings. Max size is how big (in bytes) the log can be before it is archived. 1048576 bytes is one megabyte
 set LOGPATH=%SystemDrive%\Logs
@@ -111,6 +96,25 @@ set FORFILES=%WINDIR%\system32\forfiles.exe
 
 
 :: --------------------------- Don't edit anything below this line --------------------------- ::
+
+
+:::::::::::::::::::::
+:: PREP AND CHECKS ::
+:::::::::::::::::::::
+@echo off && cls
+set SCRIPT_VERSION=1.5.1
+set SCRIPT_UPDATED=2015-08-27
+:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
+FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+
+:: Preload variables for use later
+set JOB_TYPE=%1
+set JOB_ERROR=0
+set DAYS=%2
+set RESTORE_TYPE=NUL
+set SCRIPT_NAME=%0%
+
 
 
 ::::::::::::::::::::::::::::
@@ -463,7 +467,7 @@ set /p CHOICE=Is this correct [y]?:
 echo.
 echo  Great. Press any key to get started.
 pause >NUL
-echo  ! Starting restoration at%TIME% on %CUR_DATE%
+echo  ! Starting restoration at %TIME% on %CUR_DATE%
 echo    This might take a while, be patient...
 
 :: Test if we're doing a full or differential restore.
