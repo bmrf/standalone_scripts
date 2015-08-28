@@ -68,17 +68,17 @@ winmgmt.exe /resetrepository
 
 :: Get 64-bit stuff
 if exist %SystemRoot%\SysWOW64\wbem ( 
-		pushd %SystemRoot%\SysWOW64\wbem
-		for %%j in (*.dll) do RegSvr32 -s %%j
-		:: Most aggressive option
-		winmgmt.exe /resetrepository
-		:: Less aggressive option
-		:: winmgmt.exe /salvagerepository /resyncperf
-		wmiadap.exe /RegServer
-		wmiprvse.exe /RegServer
-		popd
-		)
+	pushd %SystemRoot%\SysWOW64\wbem
+	for %%j in (*.dll) do RegSvr32 -s %%j
+	:: Most aggressive option
+	winmgmt.exe /resetrepository
+	:: Less aggressive option
+	:: winmgmt.exe /salvagerepository /resyncperf
+	wmiadap.exe /RegServer
+	wmiprvse.exe /RegServer
 	popd
+)
+popd
 
 
 :: finished
