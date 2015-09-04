@@ -1,5 +1,7 @@
-:: One liner commands for windows – cheat sheet
-:: v1.0.0
+:: Handy one-liner commands for Windows – PowerShell and Batch
+:: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+:: Originally taken from http://travisaltman.com/one-liner-commands-for-windows-cheat-sheet/comment-page-1/
+:: Version:       1.0.1 * Change "ls -ad" to just "ls" in:  # POWERSHELL: dir /b equivalent command
 
 :: BATCH: Get the date into ISO 8601 standard date format (yyyy-mm-dd) and store it in the "CUR_DATE" variable
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -23,7 +25,7 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
  Windows Server 2012 R2 Standard: Windows Server 2012 R2 Standard
 
 
- 
+
 :: BATCH: Check SMART status of all disks
 wmic diskdrive get status
 
@@ -40,7 +42,7 @@ route add 192.168.1.83 mask 255.255.255.255 172.16.1.1 metric 31 if 11 -p
 route add 192.168.1.0 mask 255.255.255.0 172.16.1.1 metric 31 if 11 -p
 
 # POWERSHELL: dir /b equivalent
-ls -ad | ForEach-Object{$_.Name}
+ls | ForEach-Object{$_.Name}
 
 # POWERSHELL: Rename Active Directory computer
 Rename-computer –computername "computer" –newname "newcomputername" –domaincredential domain\AdminUsername –force –restart
