@@ -1,16 +1,12 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.3 * Add removal of C:\HP folder
+:: Version:       3.5.4 + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
+::                3.5.3 * Add removal of C:\HP folder
 ::                3.5.2 * Improve XP/2k3 detection by removing redundant code
 ::                3.5.1 ! Fix stall error on C:\Windows.old cleanup; was missing /D Y flag to answer "yes" to prompts. Thanks to /u/Roquemore92
 ::                3.5.0 + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
 ::                3.4.5 * Add cleaning of Internet Explorer using Windows built-in method. Thanks to /u/cuddlychops06
-::                3.4.4 ! Fix minor bug where a comment inside a FOR loop was breaking the loop and throwing unnecessary error messages. Thanks to /u/saeraphas
-::                      ! Fix minor directory inconsistencies across Windows Server 2003 and 2008
-::                3.4.3 + Add cleaning of Windows CBS logs. Thanks to /u/savagebunny
-::                      + Add cleaning of additional Chrome location
-::                3.4.2 + Add cleaning of Chrome cache. Thanks to /u/savagebunny
 ::                <-- outdated changelog comments removed -->
 ::                1.0.0   Initial write
 SETLOCAL
@@ -38,8 +34,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.3
-set SCRIPT_UPDATED=2015-04-22
+set SCRIPT_VERSION=3.5.4
+set SCRIPT_UPDATED=2015-09-07
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -176,6 +172,13 @@ if exist %SystemDrive%\i386 rmdir /S /Q %SystemDrive%\i386 >> %LOGPATH%\%LOGFILE
 :: JOB: Empty all recycle bins on Windows 5.1 (XP/2k3) and 6.x (Vista and up) systems
 if exist %SystemDrive%\RECYCLER rmdir /s /q %SystemDrive%\RECYCLER
 if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
+
+:: JOB: Clear queued and archived Windows Error Reporting (WER) reports
+echo. >> %LOGPATH%\%LOGFILE%
+if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive"
+if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportQueue"
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive"
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue"
 
 :: JOB: Windows update logs & built-in backgrounds (space waste)
 del /F /Q %WINDIR%\*.log >> %LOGPATH%\%LOGFILE% 2>NUL
