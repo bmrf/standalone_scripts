@@ -1,5 +1,5 @@
 :: One liner commands for windows – cheat sheet
-:: v1.0.1
+:: v1.0.2
 
 :: BATCH: Get the date into ISO 8601 standard date format (yyyy-mm-dd) and store it in the "CUR_DATE" variable
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -162,7 +162,7 @@ wmic useraccount list brief
 wmic /node:"machinename 4" path Win32_TerminalServiceSetting where AllowTSConnections=“0" call SetAllowTSConnections “1"
 
 :: BATCH: List number of times a user logged on
-wmic netlogin where (name like "%adm%") get numberoflogons
+wmic netlogin where (name like "%%Admin%%") get numberoflogons
 
 :: BATCH: Query active RDP sessions
 qwinsta /server:192.168.1.1
