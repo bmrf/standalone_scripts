@@ -1,5 +1,5 @@
 :: One liner commands for windows – cheat sheet
-:: v1.0.2
+:: v1.0.3
 
 :: BATCH: Get the date into ISO 8601 standard date format (yyyy-mm-dd) and store it in the "CUR_DATE" variable
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -23,7 +23,6 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
  Windows Server 2012 R2 Standard: Windows Server 2012 R2 Standard
  Windows 10 Professional:         Windows 10 Pro
 
-
  
 :: BATCH: Check SMART status of all disks
 wmic diskdrive get status
@@ -39,6 +38,12 @@ route add 192.168.1.83 mask 255.255.255.255 172.16.1.1 metric 31 if 11 -p
 
 :: BATCH: Add static route to the 192.168.1.0/24 subnet via the gateway of 172.16.1.1, on interface #11, and persist across reboots (-p)
 route add 192.168.1.0 mask 255.255.255.0 172.16.1.1 metric 31 if 11 -p
+
+:: BATCH: Flush all static routes
+:: Flush all routes, active, takes effect immediately:
+route -f
+:: Clear persistent routes only, takes effect at reboot:
+reg delete HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\PersistentRoutes /va /f
 
 # POWERSHELL: dir /b equivalent
 ls -ad | ForEach-Object{$_.Name}
