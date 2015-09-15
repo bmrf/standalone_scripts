@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.4 + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
+:: Version:       3.5.5 + Add purging of additional old Windows version locations (left in place from Upgrade installations)
+::                3.5.4 + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                3.5.3 * Add removal of C:\HP folder
 ::                3.5.2 * Improve XP/2k3 detection by removing redundant code
 ::                3.5.1 ! Fix stall error on C:\Windows.old cleanup; was missing /D Y flag to answer "yes" to prompts. Thanks to /u/Roquemore92
@@ -34,8 +35,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.4
-set SCRIPT_UPDATED=2015-09-07
+set SCRIPT_VERSION=3.5.5
+set SCRIPT_UPDATED=2015-09-14
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -96,11 +97,21 @@ del /F /S /Q "%TEMP%" >> %LOGPATH%\%LOGFILE% 2>NUL
 :: Internet Explorer cleanup
 rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 
-:: Windows.old cleanup (Windows.old is left behind after an upgrade installation). Thanks to /u/bodkov
+:: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version. Thanks to /u/bodkov and others
 if exist %SystemDrive%\Windows.old\ (
 	takeown /F %SystemDrive%\Windows.old\* /R /A /D Y
 	echo y| cacls %SystemDrive%\Windows.old\*.* /C /T /grant administrators:F
 	rmdir /S /Q %SystemDrive%\Windows.old\
+	)
+if exist %SystemDrive%\$Windows.~BT\ (
+	takeown /F %SystemDrive%\$Windows.~BT\* /R /A
+	icacls %SystemDrive%\$Windows.~BT\*.* /T /grant administrators:F
+	rmdir /S /Q %SystemDrive%\$Windows.~BT\
+	)
+if exist %SystemDrive%\$Windows.~WS (
+	takeown /F %SystemDrive%\$Windows.~WS\* /R /A
+	icacls %SystemDrive%\$Windows.~WS\*.* /T /grant administrators:F
+	rmdir /S /Q %SystemDrive%\$Windows.~WS\
 	)
 
 ::::::::::::::::::::::
@@ -121,7 +132,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 	)
 ) else (
-	for /D %%x in ("%SystemDrive%\Users\*") do ( 
+	for /D %%x in ("%SystemDrive%\Users\*") do (
 		del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*">> %LOGPATH%\%LOGFILE% 2>NUL
@@ -168,7 +179,7 @@ if exist %SystemDrive%\MSOCache rmdir /S /Q %SystemDrive%\MSOCache >> %LOGPATH%\
 
 :: JOB: Remove the Microsoft Windows installation cache. Can be up to 1.0 GB
 if exist %SystemDrive%\i386 rmdir /S /Q %SystemDrive%\i386 >> %LOGPATH%\%LOGFILE%
-		
+
 :: JOB: Empty all recycle bins on Windows 5.1 (XP/2k3) and 6.x (Vista and up) systems
 if exist %SystemDrive%\RECYCLER rmdir /s /q %SystemDrive%\RECYCLER
 if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
@@ -204,7 +215,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 
 
 :: JOB: Windows Server: remove built-in media files (all Server versions)
-echo %WIN_VER%  | findstr /i /c:"server" >NUL
+echo %WIN_VER%  | findstr /i /%SystemDrive%"server" >NUL
 if %ERRORLEVEL%==0 (
 	echo.
 	echo  ! Server operating system detected.
@@ -212,15 +223,15 @@ if %ERRORLEVEL%==0 (
 	echo.
 	echo. >> %LOGPATH%\%LOGFILE% && echo  ! Server operating system detected. Removing built-in media files ^(.wave, .midi, etc^)...>> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
 
-	:: 2. Take ownership of the files so we can actually delete them. By default even Administrators have Read-only rights. 
+	:: 2. Take ownership of the files so we can actually delete them. By default even Administrators have Read-only rights.
 	echo    Taking ownership of %WINDIR%\Media in order to delete files... && echo.
 	echo    Taking ownership of %WINDIR%\Media in order to delete files... >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
 	if exist %WINDIR%\Media takeown /f %WINDIR%\Media /r /d y >> %LOGPATH%\%LOGFILE% 2>NUL && echo. >> %LOGPATH%\%LOGFILE%
 	if exist %WINDIR%\Media icacls %WINDIR%\Media /grant administrators:F /t >> %LOGPATH%\%LOGFILE% && echo. >> %LOGPATH%\%LOGFILE%
-	
+
 	:: 3. Do the cleanup
 	rmdir /S /Q %WINDIR%\Media>> %LOGPATH%\%LOGFILE% 2>NUL
-	
+
 	echo    Done.
 	echo.
 	echo    Done. >> %LOGPATH%\%LOGFILE%
@@ -229,7 +240,7 @@ if %ERRORLEVEL%==0 (
 
 :: JOB: Windows CBS logs
 ::      these only exist on Vista and up, so we look for "Microsoft", and assuming we don't find it, clear out the folder
-echo %WIN_VER%  | findstr /i /c:"server" >NUL
+echo %WIN_VER%  | findstr /i /%SystemDrive%"server" >NUL
 if not %ERRORLEVEL%==0 del /F /Q %WINDIR%\Logs\CBS\* >> %LOGPATH%\%LOGFILE% 2>NUL
 
 :: JOB: Windows XP/2003: Cleanup hotfix uninstallers. They use a lot of space so removing them is beneficial.
@@ -238,7 +249,7 @@ if not %ERRORLEVEL%==0 del /F /Q %WINDIR%\Logs\CBS\* >> %LOGPATH%\%LOGFILE% 2>NU
 ::  0. Check Windows version.
 ::    We simply look for "Microsoft" in the version name, because only versions prior to Vista had the word "Microsoft" as part of their version name
 ::    Everything after XP/2k3 drops the "Microsoft" prefix
-echo %WIN_VER%  | findstr /i /c:"Microsoft" >NUL
+echo %WIN_VER%  | findstr /i /%SystemDrive%"Microsoft" >NUL
 if %ERRORLEVEL%==0 (
 	:: 1. If we made it here we're doing the cleanup. Notify user and log it.
 	echo.
@@ -260,7 +271,7 @@ if %ERRORLEVEL%==0 (
 
 	:: 4. Log that we are done with hotfix cleanup and leave the Windows directory
 	echo    Done. >> %LOGPATH%\%LOGFILE% && echo.>> %LOGPATH%\%LOGFILE%
-	echo    Done. 
+	echo    Done.
 	del %TEMP%\hotfix_nuke_list.txt>> %LOGPATH%\%LOGFILE%
 	echo.
 	popd
