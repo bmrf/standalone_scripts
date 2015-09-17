@@ -1,5 +1,5 @@
 :: One liner commands for windows – cheat sheet
-:: v1.0.3
+:: v1.0.4
 
 :: BATCH: Get the date into ISO 8601 standard date format (yyyy-mm-dd) and store it in the "CUR_DATE" variable
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -47,6 +47,9 @@ reg delete HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\PersistentRou
 
 # POWERSHELL: dir /b equivalent
 ls -ad | ForEach-Object{$_.Name}
+
+# Batch: globally enable Powershell scripts
+powershell "Set-ExecutionPolicy Unrestricted -force"
 
 # POWERSHELL: Rename Active Directory computer
 Rename-computer –computername "computer" –newname "newcomputername" –domaincredential domain\AdminUsername –force –restart
