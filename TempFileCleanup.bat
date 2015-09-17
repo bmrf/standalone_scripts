@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.5 + Add purging of additional old Windows version locations (left in place from Upgrade installations)
+:: Version:       3.5.6 * Merge nemchik's pull request to delete .blf and.regtrans-ms files (ported from TRON project)
+::                3.5.5 + Add purging of additional old Windows version locations (left in place from Upgrade installations)
 ::                3.5.4 + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                3.5.3 * Add removal of C:\HP folder
 ::                3.5.2 * Improve XP/2k3 detection by removing redundant code
@@ -35,8 +36,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.5
-set SCRIPT_UPDATED=2015-09-14
+set SCRIPT_VERSION=3.5.6
+set SCRIPT_UPDATED=2015-09-17
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -140,6 +141,10 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
 		::del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.blf" 2>NUL
+		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.regtrans-ms" 2>NUL
+		del /F /Q "%%x\*.blf" 2>NUL
+		del /F /Q "%%x\*.regtrans-ms" 2>NUL
 	)
 )
 
