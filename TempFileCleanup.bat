@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.6 * Merge nemchik's pull request to delete .blf and.regtrans-ms files (ported from TRON project)
+:: Version:       3.5.6 * Merge nemchik's pull request to delete .blf and.regtrans-ms files (ported from Tron project)
+::                      * Merge nemchik's pull request to purge Flash and Java temp locations (ported from Tron project)
 ::                3.5.5 + Add purging of additional old Windows version locations (left in place from Upgrade installations)
 ::                3.5.4 + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                3.5.3 * Add removal of C:\HP folder
@@ -37,7 +38,7 @@ set LOG_MAX_SIZE=104857600
 @echo off
 %SystemDrive% && cls
 set SCRIPT_VERSION=3.5.6
-set SCRIPT_UPDATED=2015-09-17
+set SCRIPT_UPDATED=2015-09-18
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -123,24 +124,24 @@ if exist %SystemDrive%\$Windows.~WS (
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3.
 if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do (
-		del /F /Q "%%x\Local Settings\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*">> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
-		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
-		::del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+		del /F /Q "%%x\Local Settings\Temp\*" 2>NUL
+		del /F /Q "%%x\Recent\*" 2>NUL
+		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
+		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" 2>NUL
+		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /Q "%%x\Application Data\Sun\Java\*" 2>NUL
+		del /F /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
+		del /F /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
 	)
 ) else (
-	for /D %%x in ("%SystemDrive%\Users\*") do (
-		del /F /Q "%%x\AppData\Local\Temp\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*">> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" >> %LOGPATH%\%LOGFILE% 2>NUL
-		:: some reports of this messing up Chrome by forcing a hard reset of its cache. It apparently still tries to read from cache when it's been manually cleared.
-		::del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> %LOGPATH%\%LOGFILE% 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" >> %LOGPATH%\%LOGFILE% 2>NUL
+	for /D %%x in ("%SystemDrive%\Users\*") do ( 
+		del /F /Q "%%x\AppData\Local\Temp\*" 2>NUL
+		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
+		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
+		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
+		del /F /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
+		del /F /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.blf" 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.regtrans-ms" 2>NUL
 		del /F /Q "%%x\*.blf" 2>NUL
