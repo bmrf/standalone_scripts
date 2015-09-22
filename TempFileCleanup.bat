@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.6 * Merge nemchik's pull request to delete .blf and.regtrans-ms files (ported from Tron project)
+:: Version:       3.5.7 * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
+::                3.5.6 * Merge nemchik's pull request to delete .blf and.regtrans-ms files (ported from Tron project)
 ::                      * Merge nemchik's pull request to purge Flash and Java temp locations (ported from Tron project)
 ::                3.5.5 + Add purging of additional old Windows version locations (left in place from Upgrade installations)
 ::                3.5.4 + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
@@ -37,8 +38,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.6
-set SCRIPT_UPDATED=2015-09-18
+set SCRIPT_VERSION=3.5.7
+set SCRIPT_UPDATED=2015-09-21
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -134,7 +135,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
 	)
 ) else (
-	for /D %%x in ("%SystemDrive%\Users\*") do ( 
+	for /D %%x in ("%SystemDrive%\Users\*") do (
 		del /F /Q "%%x\AppData\Local\Temp\*" 2>NUL
 		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
@@ -179,6 +180,10 @@ for %%i in (bat,txt,log,jpg,jpeg,tmp,bak,backup,exe) do (
 for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
 			rmdir /S /Q "%SystemDrive%\%%i" 2>NUL
 		)
+
+:: JOB: Clear additional unneeded files from NVIDIA driver installs
+if exist "%ProgramFiles%\Nvidia Corporation\Installer2" del /Q "%ProgramFiles%\Nvidia Corporation\Installer2"
+if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService" del /Q "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService\*.exe"
 
 :: JOB: Remove the Microsoft Office installation cache. Usually around ~1.5 GB
 if exist %SystemDrive%\MSOCache rmdir /S /Q %SystemDrive%\MSOCache >> %LOGPATH%\%LOGFILE%
