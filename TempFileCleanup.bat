@@ -39,7 +39,7 @@ set LOG_MAX_SIZE=104857600
 @echo off
 %SystemDrive% && cls
 set SCRIPT_VERSION=3.5.7
-set SCRIPT_UPDATED=2015-09-21
+set SCRIPT_UPDATED=2015-09-22
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -182,8 +182,8 @@ for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
 		)
 
 :: JOB: Clear additional unneeded files from NVIDIA driver installs
-if exist "%ProgramFiles%\Nvidia Corporation\Installer2" del /Q "%ProgramFiles%\Nvidia Corporation\Installer2"
-if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService" del /Q "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService\*.exe"
+if exist "%ProgramFiles%\Nvidia Corporation\Installer2" rmdir /s /q "%ProgramFiles%\Nvidia Corporation\Installer2"
+if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService" del /f /q "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService\*.exe"
 
 :: JOB: Remove the Microsoft Office installation cache. Usually around ~1.5 GB
 if exist %SystemDrive%\MSOCache rmdir /S /Q %SystemDrive%\MSOCache >> %LOGPATH%\%LOGFILE%
