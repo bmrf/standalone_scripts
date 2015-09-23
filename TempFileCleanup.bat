@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.7 * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
+:: Version:       3.5.8 ! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
+::                3.5.7 * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
 ::                3.5.6 * Merge nemchik's pull request to delete .blf and.regtrans-ms files (ported from Tron project)
 ::                      * Merge nemchik's pull request to purge Flash and Java temp locations (ported from Tron project)
 ::                3.5.5 + Add purging of additional old Windows version locations (left in place from Upgrade installations)
@@ -38,7 +39,7 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.7
+set SCRIPT_VERSION=3.5.8
 set SCRIPT_UPDATED=2015-09-22
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -97,9 +98,6 @@ echo. >> %LOGPATH%\%LOGFILE% %% echo  ! Cleaning USER temp files...>> %LOGPATH%\
 :: User temp files, history, and random My Documents stuff
 del /F /S /Q "%TEMP%" >> %LOGPATH%\%LOGFILE% 2>NUL
 
-:: Internet Explorer cleanup
-rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
-
 :: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version. Thanks to /u/bodkov and others
 if exist %SystemDrive%\Windows.old\ (
 	takeown /F %SystemDrive%\Windows.old\* /R /A /D Y
@@ -147,6 +145,8 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.regtrans-ms" 2>NUL
 		del /F /Q "%%x\*.blf" 2>NUL
 		del /F /Q "%%x\*.regtrans-ms" 2>NUL
+		:: Internet Explorer cleanup
+		rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 	)
 )
 
