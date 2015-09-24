@@ -1,5 +1,5 @@
 :: One liner commands for windows – cheat sheet
-:: v1.0.5
+:: v1.0.6
 
 :: BATCH: Get the date into ISO 8601 standard date format (yyyy-mm-dd) and store it in the "CUR_DATE" variable
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -90,6 +90,8 @@ wmic process where name="firefox.exe" call terminate
 wmic product get identifyingnumber,name,version /all
 wmic product get name, vendor, version /all
 
+:: BATCH: Find out if .NET 3.5 is installed
+reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5"| findstr Install
 
 :: BATCH: Remotely get installed version of Firefox on all domain computers
 psexec \\* cmd /c (cd "C:\Program Files (x86)\Mozilla Firefox\" ^& firefox -v ^| more)
