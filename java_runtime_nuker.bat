@@ -3,14 +3,15 @@
 ::                3. Reinstalls the latest JRE (if you want it to)
 ::                4. Puts the lotion on its skin.
 :: Requirements:  local administrative rights
-:: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
+:: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 ::                Latest version is always here: http://www.reddit.com/r/usefulscripts/comments/2hzt5c/batch_java_runtime_nuker_purge_all_versions_of/
 ::                additional thanks to: 
 ::                 - /u/sdjason         : JRE reinstall functionality; selective process killing; et al
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.7.2 * IMPROVEMENT: Add section to remove leftover symlinks in PATH folder to JRE exes. Thanks to /u/turnerf
+:: History:       1.7.3 + IMPROVEMENT: Add MicrosoftEdge to list of running browsers to check for before executing
+::                1.7.2 * IMPROVEMENT: Add section to remove leftover symlinks in PATH folder to JRE exes. Thanks to /u/turnerf
 ::                1.7.1 * IMPROVEMENT: Remove all /va flags. This had the effect of deleting key values but leaving keys intact, which could break re-installations that thought Java was still installed when in fact it was not. Big thanks to /u/RazorZero
 ::                      * IMPROVEMENT: Reduce 10 JavaSoft registry key deletion commands to 2 by deleting entire JavaSoft key instead of individual subkeys. Thanks to /u/RazorZero
 ::                1.7.0 * IMPROVEMENT: Target additional JRE8 GUID {26A24AE4-039D-4CA4-87B4-2F8__180__F0}. Thanks to /u/Caboose816
@@ -72,8 +73,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.7.2
-set SCRIPT_UPDATED=2015-03-16
+set SCRIPT_VERSION=1.7.3
+set SCRIPT_UPDATED=2015-09-28
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -101,7 +102,7 @@ if exist "%LOGPATH%\%LOGFILE%" del "%LOGPATH%\%LOGFILE%"
 echo.
 echo  JAVA RUNTIME NUKER
 echo  v%SCRIPT_VERSION%, updated %SCRIPT_UPDATED%
-if %OS_VERSION%==XP echo. && echo  ! Windows XP detected, using alternate command set to compensate.
+if %OS_VERSION%==XP echo. && echo  ! Windows XP detected, using alternate commands to compensate.
 echo.
 echo %CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX...
@@ -148,10 +149,10 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 		)
 		echo.
 	) else (
-		:: 7/8/2008/2008R2/2012/etc version of the task killer
+		:: 7/8/10/2008/2008R2/2012/etc version of the task killer
 		:: this loop contains the processes we should kill
 		echo.
-		FOR %%i IN (java,javaw,javaws,jqs,jusched,jp2launcher,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
+		FOR %%i IN (java,javaw,javaws,jqs,jusched,jp2launcher,iexplore,iexplorer,firefox,chrome,palemoon,opera,MicrosoftEdge) DO (
 			echo Searching for %%i.exe...
 			%WinDir%\system32\taskkill.exe /f /im %%i.exe /T >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
@@ -161,8 +162,8 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 
 :: If we DON'T want to force-close Java, then check for possible running Java processes and abort the script if we find any
 if %FORCE_CLOSE_PROCESSES%==no (
-	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES is set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES is set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.
+	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.
 
 	:: Don't ask...
 	:: Okay so basically we loop through this list of processes, and for each one we dump the result of the search in the '%%a' variable. 
