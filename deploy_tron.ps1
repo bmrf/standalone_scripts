@@ -17,11 +17,13 @@ Requirements:  1. Expects Master Copy directory to contain the following files:
                        - Tron.bat
                      \integrity_verification
                        - checksums.txt
-                       - checksums.txt.sig
+                       - checksums.txt.asc
                        - vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.4 ! Fix binary pack hash calculation by removing ".\" prefix on new binary path, which was breaking the update checker in Tron.bat
+Version:       1.2.6 / Disable all use of PortablePGP since we're reverting to using gpg4win
+               1.2.5 + Add auto-killing of PortablePGP window after checksums.txt signature file appears
+               1.2.4 ! Fix binary pack hash calculation by removing ".\" prefix on new binary path, which was breaking the update checker in Tron.bat
                1.2.3 / Suppress 7-Zip output (redirect to log file)
                1.2.2 + Add automatic launching of PortablePGP.exe to signing portion, along with associated $PortablePGP variable
                1.2.1 / Update to account for changed Tron sub-folder and new integrity_verification directory
@@ -60,7 +62,7 @@ $logfile = "tron_deployment_script.log"
 $SevenZip = "C:\Program Files\7-Zip\7z.exe"
 
 # Path to PortablePGP.exe
-$PortablePGP = "R:\applications\PortablePGP\PortablePGP.exe"
+$PortablePGP = "R:\applications\PortablePGP\PortablePGP.exe"		# currently unused by script (2015-10-21)
 
 # Path to WinSCP.com
 $WinSCP = "R:\applications\WinSCP\WinSCP.com"
@@ -73,7 +75,7 @@ $md5sum = "$env:SystemRoot\syswow64\md5sum.exe"                     # e.g. "$env
 $MasterCopy = "r:\utilities\security\cleanup-repair\tron"           # e.g. "r:\utilities\security\cleanup-repair\tron"
 
 # Server holding the Tron seed folder
-$SeedServer = "\\reposerver"                                        # e.g. "\\reposerver"
+$SeedServer = "\\thebrain"                                          # e.g. "\\thebrain"
 
 # Subfolder containing Tron meta files (changelog, checksums.txt, etc)
 # No leading or trailing slashes
@@ -90,10 +92,10 @@ $Repo_URL = "http://bmrf.org/repos/tron"                            # e.g. "http
 
 
 # FTP information for where we'll upload the final md5sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-$RepoFTP_Host = "ftp-host-here"                                     # e.g. "bmrf.org"
-$RepoFTP_Username = "user name"
+$RepoFTP_Host = "webserver-address-here"                            # e.g. "bmrf.org"
+$RepoFTP_Username = "username-here"
 $RepoFTP_Password = "password-here"
-$RepoFTP_DepositPath = "/repos/tron/"                               # e.g. "/public_html/repos/tron/"
+$RepoFTP_DepositPath = "/path/to/public_html/"                      # e.g. "/public_html/repos/tron/"
 
 
 
@@ -108,8 +110,8 @@ $RepoFTP_DepositPath = "/repos/tron/"                               # e.g. "/pub
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION="1.2.4"
-$SCRIPT_UPDATED="2015-04-09"
+$SCRIPT_VERSION="1.2.6"
+$SCRIPT_UPDATED="2015-10-21"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -247,7 +249,7 @@ if (!(test-path $SeedServer\$SeedFolder\integrity_verification\vocatus-public-ke
 ###########
 
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Tron deployment script v$SCRIPT_VERSION" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Launching Tron deployment script v$SCRIPT_VERSION" -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Tron deployment script v$SCRIPT_VERSION" -f green
 
 # JOB: Clear target area
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Clearing target area on seed server..." >> $LOGPATH\$LOGFILE
@@ -269,17 +271,18 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calcula
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# JOB: Wait for PGP signature on checksums.txt. Once seen, then proceed to upload entire master directory to seed server
+# JOB: Wait for PGP signature on checksums.txt. Once seen, upload entire master directory to seed server
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Waiting for PGP signature of checksums.txt..." -f green
-remove-item $MasterCopy\integrity_verification\checksums.txt.sig -force -recurse | out-null
+remove-item $MasterCopy\integrity_verification\checksums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 # Launch PortablePGP 
-& $PortablePGP
+#& $PortablePGP		# Disabled due to use of pgp4win
 while (1 -eq 1) {
-	if (test-path $MasterCopy\integrity_verification\checksums.txt.sig) {
-	write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
-	"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-	# file exists so we break out of the loop
-	break
+	if (test-path $MasterCopy\integrity_verification\checksums.txt.asc) {
+		write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+		"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
+		# file exists so we kill PortablePGP and break out of the loop
+		#Stop-Process -name javaw
+		break
 	}
 	# otherwise sleep for 5 seconds before looking again
 	start-sleep -s 3
@@ -310,23 +313,23 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Buildin
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# JOB: Fetch sha256sums.txt and md5sums.txt from the repo for updating
+# JOB: Fetch sha256sums.txt from the repo for updating
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Fetching repo copy of sha256sums.txt to update..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Fetching repo copy of sha256sums.txt to update..." -f green
-	Invoke-WebRequest $Repo_URL/md5sums.txt -outfile $env:temp\md5sums.txt
+#	Invoke-WebRequest $Repo_URL/md5sums.txt -outfile $env:temp\md5sums.txt
 	Invoke-WebRequest $Repo_URL/sha256sums.txt -outfile $env:temp\sha256sums.txt
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# JOB: Calculate MD5 hash of Tron .exe and append it to md5sums file // LEGACY, this will be removed after a few versions due to the switch to SHA256 for checksumming
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Calculating MD5 hash for binary pack and appending it to md5sums.txt..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calculating MD5 hash for binary pack and appending it to md5sums.txt..." -f green
-	pushd $env:temp
-	& $md5sum ".\Tron v$NewVersion ($CUR_DATE).exe" | out-file .\md5sums.txt -Encoding utf8 -append
-	popd
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+# # JOB: Calculate MD5 hash of Tron .exe and append it to md5sums file // LEGACY, this will be removed after a few versions due to the switch to SHA256 for checksumming
+# "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Calculating MD5 hash for binary pack and appending it to md5sums.txt..." >> $LOGPATH\$LOGFILE
+# write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calculating MD5 hash for binary pack and appending it to md5sums.txt..." -f green
+	# pushd $env:temp
+	# & $md5sum ".\Tron v$NewVersion ($CUR_DATE).exe" | out-file .\md5sums.txt -Encoding utf8 -append
+	# popd
+# "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
+# write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
 # JOB: Calculate SHA256 hash of Tron .exe and append it to sha256 file
@@ -346,6 +349,26 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calcula
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
+
+# JOB: Wait for PGP signature on the SHA256 hash files. Once seen, upload entire master directory to seed server
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Waiting for PGP signature of sha256sums.txt..." -f green
+remove-item $env:temp\sha256sums.txt.asc -force -recurse -ea SilentlyContinue | out-null
+# Launch PortablePGP 
+#& $PortablePGP
+while (1 -eq 1) {
+	if (test-path $env:temp\sha256sums.txt.asc) {
+		write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+		"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
+		# file exists so we kill PortablePGP and break out of the loop
+		#Stop-Process -name javaw
+		break
+	}
+	# otherwise sleep for 5 seconds before looking again
+	start-sleep -s 7
+}
+
+
+
 # JOB: Build the FTP upload script
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Building FTP deployment script..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Building FTP deployment script..." -f green
@@ -354,10 +377,12 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Buildin
 "open ftp://$RepoFTP_Username`:$RepoFTP_Password@$RepoFTP_Host" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "cd $RepoFTP_DepositPath" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "rm *.exe" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
-"rm *.txt" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+"rm sha256sums*" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary`""
-add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\md5sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt`""
+add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
+# add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\md5sums.txt`""
+# add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\md5sums.txt.asc`""
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
@@ -386,8 +411,8 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -
 # JOB: Clean up after ourselves
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Cleaning up..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Cleaning up..." -f green
-	remove-item $env:temp\md5sums.txt -force -recurse -ea SilentlyContinue | out-null
-	remove-item $env:temp\sha256sum*.txt -force -recurse -ea SilentlyContinue | out-null
+	# remove-item $env:temp\md5sums.txt -force -recurse -ea SilentlyContinue | out-null
+	remove-item $env:temp\sha256sums* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\$NewBinary -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\deploy_tron_ftp_script.txt -force -recurse -ea SilentlyContinue | out-null
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
