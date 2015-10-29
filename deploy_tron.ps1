@@ -445,7 +445,7 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 ############
 # Finished #
 ############
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done " -f green
+log " Done " -f green
 log "                    Version deployed:                  v$NewVersion ($CUR_DATE)"
 log "                    Version replaced:                  v$OldVersion ($OldDate)"
 log "                    Local seed server:                 $SeedServer"
@@ -472,12 +472,13 @@ write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,Incl
 #############
 function log($message, $color)
 {
-	if ($Color -eq $null) {$color = "darkgray"}
+	if ($Color -eq $null) {$color = "gray"}
 	#console
-	write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host "$message" -f $color
+	write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host "$message" -f $color
 	#log
 	"$CUR_DATE "+ $(get-date -f hh:mm:ss) + "$message" | out-file -Filepath $logfile -append
 }
+
 
 # call the main script
 main
