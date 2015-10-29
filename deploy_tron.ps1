@@ -34,7 +34,16 @@ Version:       1.2.7 * Add ability to handle two seed directories (one for BT Sy
                1.1.0 * Add calculation of SHA256 sum of the binary pack and upload of respective sha256sums.txt to prepare for moving the Tron update checker away from using MD5 sums
                1.0.0 . Initial write
 
-Behavior:      Deletes content from seed server; uploads from Master Copy --> seed server; checksums everything, waits for GPG signature, packs files into .exe archive with appropriate version/name; fetches sha256sums.txt from repo; checksums .exe pack file; updates sha256sums.txt with new hash; deletes current version from repo server; uploads .exe pack and sha256sums.txt to repo server; uploads .exe pack to seed server static store; cleans up residual temp files; notifies of completion and advises to restart BT Sync
+Behavior/steps:
+1. Deletes content from seed server
+2. Calculates sha256 hashes of all files in \tron
+3. PGP-signs checksums.txt
+4. Creates binary pack 
+5. PGP-signs the binary pack
+6. Background uploads the binary pack to the seed server
+7. Fetches sha256sums.txt from repo and updates it with sha256sum of binary pack
+8. Deletes current version from repo server; uploads .exe pack and sha256sums.txt to repo server; cleans up residual temp files; notifies of completion and advises to restart BT Sync
+9. Builds FTP upload script
 #>
 
 # Are you sure?
@@ -274,39 +283,40 @@ if (!(test-path -literalpath $SeedServer\$SeedFolder\integrity_verification\voca
 ###########
 # EXECUTE #
 ###########
-
+# The rest of the script is wrapped in the "main" function. This is just so we can put the logging function at the bottom of the script instead of at the top
+function main() {
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Tron deployment script v$SCRIPT_VERSION" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Tron deployment script v$SCRIPT_VERSION" -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Tron deployment script v$SCRIPT_VERSION" -f green
 
 # JOB: Clear target area
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Clearing target area on seed server..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Clearing target area on seed server..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Clearing target area on seed server..." -f green
 	remove-item $SeedServer\$SeedFolder\tron\* -force -recurse | out-null
 	remove-item $SeedServer\$SeedFolder\integrity_verification\*txt* -force -recurse | out-null
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
 # JOB: Calculate hashes of every single file included in the \tron directory
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Calculating hashes, please wait..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calculating hashes, please wait..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Calculating hashes, please wait..." -f green
 	pushd $MasterCopy
 	del $env:temp\checksum* -force -recurse | out-null
 	& $HashDeep64 -s -e -c sha256 -l -r .\ | Out-File $env:temp\checksums.txt -encoding ascii
 	mv $env:temp\checksums.txt $MasterCopy\integrity_verification\checksums.txt -force
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
-# JOB: PGP sign the resulting checksums.txt. Then upload master directory to seed locations
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " PGP signing checksums.txt..." -f green
+# JOB: PGP sign the resulting checksums.txt then upload master directory to seed locations
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " PGP signing checksums.txt..." -f green
 remove-item $MasterCopy\integrity_verification\checksums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 
 #& $gpg --local-user vocatus.gate --armor --detach-sign $MasterCopy\integrity_verification\checksums.txt
 
 while (1 -eq 1) {
 	if (test-path $MasterCopy\integrity_verification\checksums.txt.asc) {
-		write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+		write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 		"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 		break
 	}
@@ -317,48 +327,48 @@ while (1 -eq 1) {
 
 # JOB: Upload from master copy to seed server directories
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Master copy is gold. Copying from master to seed locations..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Master copy is gold. Copying from master to seed locations..." -f green
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Loading BT Sync seed..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Master copy is gold. Copying from master to seed locations..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Loading BT Sync seed..." -f green
 	cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Loading SyncThing seed..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Loading SyncThing seed..." -f green
 	cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
 # Notify that we're done loading the seed server and are starting deployment to the master repo
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Seed server loaded. Updating master repo..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host "  Seed server loaded. Updating master repo..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host "  Seed server loaded. Updating master repo..." -f green
 
 
 # JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory. 
 # Create the file name using the new version number extracted from tron.bat and exclude any 
 # files with "sync" in the title (these are BT Sync hidden files, we don't need to pack them
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Building binary pack, please wait..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Building binary pack, please wait..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Building binary pack, please wait..." -f green
 	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
 # JOB: Background upload the binary pack to the static pack folder on the local seed server
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Background uploading $NewBinary to $SeedServer\$StaticPackStorageLocation..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Background uploading $NewBinary to $SeedServer\$StaticPackStorageLocation..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Background uploading $NewBinary to $SeedServer\$StaticPackStorageLocation..." -f green
 start-job -name tron_move_pack_to_seed_server -scriptblock {mv $env:temp\$NewBinary $SeedServer\$StaticPackStorageLocation -force}
 
 	
 # JOB: Fetch sha256sums.txt from the repo for updating
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Fetching repo copy of sha256sums.txt to update..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Fetching repo copy of sha256sums.txt to update..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Fetching repo copy of sha256sums.txt to update..." -f green
 	Invoke-WebRequest $Repo_URL/sha256sums.txt -outfile $env:temp\sha256sums.txt
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
 # JOB: Calculate SHA256 hash of newly-created binary pack and append it to sha256sums.txt
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." -f green
 	pushd $env:temp
 	# First hash the file
 	& $HashDeep64 -s -e -l -c sha256 "Tron v$NewVersion ($CUR_DATE).exe" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
@@ -370,16 +380,16 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calcula
 	gc .\sha256sums_TEMP2.txt | out-file .\sha256sums.txt -encoding utf8 -append
 	popd
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
 # JOB: PGP sign sha256sums.txt before FTP upload
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " PGP signing sha256sums.txt..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " PGP signing sha256sums.txt..." -f green
 remove-item $env:temp\sha256sums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 #& $gpg --local-user vocatus.gate --armor --detach-sign $env:temp\sha256sums.txt
 while (1 -eq 1) {
 	if (test-path $env:temp\sha256sums.txt.asc) {
-		write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+		write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 		"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 		break
 	}
@@ -391,7 +401,7 @@ while (1 -eq 1) {
 # JOB: Build FTP upload script
 # Tron exe will have "UPLOADING" appended to its name until upload is complete
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Building FTP deployment script..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Building FTP deployment script..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Building FTP deployment script..." -f green
 "option batch abort" | Out-File $env:temp\deploy_tron_ftp_script.txt -encoding ascii
 "option confirm off" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "open ftp://$Repo_FTP_Username`:$Repo_FTP_Password@$Repo_FTP_Host" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
@@ -404,60 +414,70 @@ add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=asc
 "mv $NewBinary.UPLOADING $NewBinary" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
 # JOB: Upload binary pack and hash files to FTP repo server
 # Get in TEMP directory and call WinSCP to run the script we just created
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Uploading $NewBinary to $Repo_FTP_Host..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Uploading $NewBinary to $Repo_FTP_Host..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Uploading $NewBinary to $Repo_FTP_Host..." -f green
 	pushd $env:temp
 	& $WinSCP /script=.\deploy_tron_ftp_script.txt
 	popd
 	Write-Host ""
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
 # JOB: Clean up after ourselves
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Cleaning up..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Cleaning up..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Cleaning up..." -f green
 	remove-item $env:temp\sha256sums* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\$NewBinary -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\deploy_tron_ftp_script.txt -force -recurse -ea SilentlyContinue | out-null
 	# Remove our background upload job from the job list
 	get-job | remove-job
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done" -f darkgreen
 
 
 
 ############
 # Finished #
 ############
-# Logfile
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done. Notify mirror ops and post release to Reddit." >> $LOGPATH\$LOGFILE
-write-output"                    Version deployed:                  v$NewVersion ($CUR_DATE)" >> $LOGPATH\$LOGFILE
-write-output"                    Version replaced:                  v$OldVersion ($OldDate)" >> $LOGPATH\$LOGFILE
-write-output"                    Local seed server:                 $SeedServer" >> $LOGPATH\$LOGFILE
-write-output"                    Local seed directory (BT Sync):    $SeedFolderBTS" >> $LOGPATH\$LOGFILE
-write-output"                    Local seed directory (SyncThing):  $SeedFolderST" >> $LOGPATH\$LOGFILE
-write-output"                    Local static pack storage:         $StaticPackStorageLocation" >> $LOGPATH\$LOGFILE
-write-output"                    Remote repo host:                  $Repo_FTP_Host" >> $LOGPATH\$LOGFILE
-write-output"                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath" >> $LOGPATH\$LOGFILE
-write-output"                    Log file:                          $LOGPATH\$LOGFILE" >> $LOGPATH\$LOGFILE
-
-# Console
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done " -f green
-write-host "                    Version deployed:                  v$NewVersion ($CUR_DATE)" -f darkgray
-write-host "                    Version replaced:                  v$OldVersion ($OldDate)" -f darkgray
-write-host "                    Local seed server:                 $SeedServer" -f darkgray
-write-host "                    Local seed directory (BT Sync):    $SeedFolderBTS" -f darkgray
-write-host "                    Local seed directory (SyncThing):  $SeedFolderST" -f darkgray
-write-host "                    Local static pack storage:         $StaticPackStorageLocation" -f darkgray
-write-host "                    Remote repo host:                  $Repo_FTP_Host" -f darkgray
-write-host "                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath" -f darkgray
-write-host "                    Log file:                          $LOGPATH\$LOGFILE" -f darkgray
-write-host "                                                       Notify mirror ops and post release to Reddit" -f blue
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host " Done " -f green
+log "                    Version deployed:                  v$NewVersion ($CUR_DATE)"
+log "                    Version replaced:                  v$OldVersion ($OldDate)"
+log "                    Local seed server:                 $SeedServer"
+log "                    Local seed directory (BT Sync):    $SeedFolderBTS"
+log "                    Local seed directory (SyncThing):  $SeedFolderST"
+log "                    Local static pack storage:         $StaticPackStorageLocation"
+log "                    Remote repo host:                  $Repo_FTP_Host"
+log "                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
+log "                    Log file:                          $LOGPATH\$LOGFILE"
+log "                                                       Notify mirror ops and post release to Reddit" -f blue
 
 write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+
+# Close the main() function. End of the script
+}
+
+
+
+
+
+
+#############
+# FUNCTIONS #
+#############
+function log($message, $color)
+{
+	if ($Color -eq $null) {$color = "darkgray"}
+	#console
+	write-host $CUR_DATE (get-date -f hh:mm:ss) -n; write-host "$message" -f $color
+	#log
+	"$CUR_DATE "+ $(get-date -f hh:mm:ss) + "$message" | out-file -Filepath $logfile -append
+}
+
+# call the main script
+main
