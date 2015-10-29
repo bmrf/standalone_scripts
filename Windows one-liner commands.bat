@@ -261,7 +261,9 @@ abcdefghijklmnopqrstuvwxyz
 #######################
 
 # POWERSHELL: dir /b equivalent
-ls -ad | ForEach-Object{$_.Name}
+ls -ad | ForEach-Object{$_.Name}		# PS v3.0 only
+ls -name
+cmd /c dir /b /a:-d						# ugly hack
 
 # Batch: globally enable Powershell scripts
 powershell "Set-ExecutionPolicy Unrestricted -force"
