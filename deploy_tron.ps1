@@ -472,11 +472,11 @@ write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,Incl
 #############
 function log($message, $color)
 {
-	if ($Color -eq $null) {$color = "gray"}
+	if ($color -eq $null) {$color = "gray"}
 	#console
-	write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host "$message" -f $color
+	write-host (get-date -f "yyyy-mm-dd hh:mm:ss") -n -f darkgray; write-host "$message" -f $color
 	#log
-	"$CUR_DATE "+ $(get-date -f hh:mm:ss) + "$message" | out-file -Filepath $logfile -append
+	(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath $logfile -append
 }
 
 
