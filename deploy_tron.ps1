@@ -2,15 +2,15 @@
 Purpose:       Deploys Tron
 Requirements:  1. Expects Master Copy directory to contain the following files:
                 - \resources
-                - Tron.bat
+                - tron.bat
                 - changelog-vX.Y.X-updated-yyyy-mm-dd.txt
                 - Instructions -- YES ACTUALLY READ THEM.txt
                
-               2. Expects master copy of Tron.bat to have accurate "set VERSION=yyyy-mm-dd" string because this is parsed and used to name everything correctly
+               2. Expects master tron.bat to have accurate "set VERSION=yyyy-mm-dd" string because this is parsed and used to name everything correctly
                
                3. Expects seed server directory structure to look like this:
                   
-                 \tron
+                 \tron\btsync
                      \tron
                        - changelog-vX.Y.Z-updated-YYYY-MM-DD.txt
                        - Instructions - YES ACTUALLY READ THEM.txt
@@ -21,7 +21,9 @@ Requirements:  1. Expects Master Copy directory to contain the following files:
                        - vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.6 / Disable all use of PortablePGP since we're reverting to using gpg4win
+Version:       1.2.7 * Add ability to handle two seed directories (one for BT Sync and one for SyncThing)
+                     * Add reporting of the date of the version we're replacing
+               1.2.6 / Disable all use of PortablePGP since we're reverting to using gpg4win
                1.2.5 + Add auto-killing of PortablePGP window after checksums.txt signature file appears
                1.2.4 ! Fix binary pack hash calculation by removing ".\" prefix on new binary path, which was breaking the update checker in Tron.bat
                1.2.3 / Suppress 7-Zip output (redirect to log file)
@@ -32,7 +34,7 @@ Version:       1.2.6 / Disable all use of PortablePGP since we're reverting to u
                1.1.0 * Add calculation of SHA256 sum of the binary pack and upload of respective sha256sums.txt to prepare for moving the Tron update checker away from using MD5 sums
                1.0.0 . Initial write
 
-Behavior:      Deletes content from seed server; uploads from Master Copy --> seed server; checksums everything, waits for GPG signature, packs files into .exe archive with appropriate version/name; fetches md5sums.txt from repo; checksums .exe pack file; updates md5sums.txt with new hash; deletes current version from repo server; uploads .exe pack and md5sums.txt to repo server; uploads .exe pack to seed server static store; cleans up residual temp files; notifies of completion and advises to restart BT Sync
+Behavior:      Deletes content from seed server; uploads from Master Copy --> seed server; checksums everything, waits for GPG signature, packs files into .exe archive with appropriate version/name; fetches sha256sums.txt from repo; checksums .exe pack file; updates sha256sums.txt with new hash; deletes current version from repo server; uploads .exe pack and sha256sums.txt to repo server; uploads .exe pack to seed server static store; cleans up residual temp files; notifies of completion and advises to restart BT Sync
 #>
 
 # Are you sure?
@@ -61,41 +63,40 @@ $logfile = "tron_deployment_script.log"
 # Path to 7z.exe
 $SevenZip = "C:\Program Files\7-Zip\7z.exe"
 
-# Path to PortablePGP.exe
-$PortablePGP = "R:\applications\PortablePGP\PortablePGP.exe"		# currently unused by script (2015-10-21)
-
 # Path to WinSCP.com
 $WinSCP = "R:\applications\WinSCP\WinSCP.com"
 
-# Path to hashdeep64.exe and md5sum.exe
+# Path to hashdeep64.exe
 $HashDeep64 = "$env:SystemRoot\syswow64\hashdeep64.exe"             # e.g. "$env:SystemRoot\syswow64\hashdeep64.exe"
-$md5sum = "$env:SystemRoot\syswow64\md5sum.exe"                     # e.g. "$env:SystemRoot\syswow64\md5sum.exe"
 
-# Master copy of Tron. Path to folder, not tron.bat
+# Path to gpg.exe (for signing)
+$gpg = "$env:ProgramFiles\gpg4win\bin\gpg.exe"						# e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
+
+# Master copy of Tron. Directory path, not tron.bat
 $MasterCopy = "r:\utilities\security\cleanup-repair\tron"           # e.g. "r:\utilities\security\cleanup-repair\tron"
 
-# Server holding the Tron seed folder
+# Server holding the Tron seed directories
 $SeedServer = "\\thebrain"                                          # e.g. "\\thebrain"
 
-# Subfolder containing Tron meta files (changelog, checksums.txt, etc)
+# Seeding subdirectories containing \tron and \integrity_verification directories
 # No leading or trailing slashes
-$SeedFolder = "downloads\seeders\tron"                              # e.g. "downloads\seeders\Tron"
+$SeedFolderBTS = "downloads\seeders\tron\btsync"                    # e.g. "downloads\seeders\tron\btsync"
+$SeedFolderST = "downloads\seeders\tron\syncthing"                  # e.g. "downloads\seeders\tron\syncthing"
 
-# Static pack storage location. Relative path on the local
-# deployment server. Where we stash the compiled .exe after 
-# uploading to the repo server.
+# Static pack storage location. RELATIVE path from root on the
+# local deployment server. Where we stash the compiled .exe
+# after uploading to the repo server.
 # No leading or trailing slashes
 $StaticPackStorageLocation = "downloads\seeders\static packs"       # e.g. "downloads\seeders\static packs"
 
-# Repository server where we'll fetch md5sums.txt and sha256sums.txt from
+# Repository server where we'll fetch sha256sums.txt from
 $Repo_URL = "http://bmrf.org/repos/tron"                            # e.g. "http://bmrf.org/repos/tron"
 
-
-# FTP information for where we'll upload the final md5sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-$RepoFTP_Host = "webserver-address-here"                            # e.g. "bmrf.org"
-$RepoFTP_Username = "username-here"
-$RepoFTP_Password = "password-here"
-$RepoFTP_DepositPath = "/path/to/public_html/"                      # e.g. "/public_html/repos/tron/"
+# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
+$Repo_FTP_Host = "webserver-address-here"                            # e.g. "bmrf.org"
+$Repo_FTP_Username = "username-here"
+$Repo_FTP_Password = "password-here"
+$Repo_FTP_DepositPath = "/path/to/public_html/"                      # e.g. "/public_html/repos/tron/"
 
 
 
@@ -110,18 +111,22 @@ $RepoFTP_DepositPath = "/path/to/public_html/"                      # e.g. "/pub
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION="1.2.6"
-$SCRIPT_UPDATED="2015-10-21"
+$SCRIPT_VERSION = "1.2.7"
+$SCRIPT_UPDATED = "2015-10-29"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
-# Extract version number from seed server copy of tron.bat and stash it in $OldVersion
+# Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
-$OldVersion = gc $SeedServer\$SeedFolder\tron\Tron.bat -ErrorAction SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
+$OldVersion = gc $SeedServer\$SeedFolderBTS\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
 $OldVersion = "$OldVersion".Split("=")[1]
+
+# Extract release date of current version from seed server copy of tron.bat and stash it in $OldDate
+$OldDate = gc $SeedServer\$SeedFolderBTS\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_DATE"
+$OldDate = "$OldDate".Split("=")[1]
 
 # Extract version number from master's tron.bat and stash it in $NewVersion, then calculate and store the full .exe name for the new binary we'll be building
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
-$NewVersion = gc $MasterCopy\tron\Tron.bat -ErrorAction SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
+$NewVersion = gc $MasterCopy\tron\Tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
 $NewVersion = "$NewVersion".Split("=")[1]
 $NewBinary = "Tron v$NewVersion ($CUR_DATE).exe"
 
@@ -129,117 +134,139 @@ $NewBinary = "Tron v$NewVersion ($CUR_DATE).exe"
 #################
 # SANITY CHECKS #
 #################
-# Test for existence of 7-Zip
-if (!$SevenZip) {
-	""
+# Local machine: Test for existence of 7-Zip
+if (!(test-path -literalpath $SevenZip)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find 7z.exe at the location specified ( $SevenZip )"
-	write-host "         Edit this script and change the `$SevenZip variable to point to 7z's location"
+	write-host " Couldn't find 7z.exe at:"
 	""
-	pause
+	write-host "         $SevenZip"
+	""
+	write-host "         Edit this script and change the `$SevenZip variable to"
+	write-host "         the correct location."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
 
-# Test for existence of WinSCP.com
-if (!$WinSCP) {
-	""
+# Local machine: Test for existence of WinSCP.com
+if (!(test-path -literalpath $WinSCP)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find WinSCP.com at the location specified ( $WinSCP )"
-	write-host "         Edit this script and change the `$WinSCP variable to point to 7z's location"
+	write-host " Couldn't find WinSCP.com at:"
 	""
-	pause
+	write-host "         $WinSCP"
+	""
+	write-host "         Edit this script and change the `$WinSCP variable to point"
+	write-host "         to the correct location."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
 
-# Master Copy: Test for existence of Tron's \resources subfolder
-if (!(test-path $MasterCopy\tron\resources)) {
+# Master copy: Test for existence of Tron's \resources subfolder
+if (!(test-path -literalpath $MasterCopy\tron\resources)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find Tron's \resources subfolder at $MasterCopy\resources"
+	write-host " Couldn't find Tron's \resources subfolder at:"
+	""
+	write-host "         $MasterCopy\resources"
+	""
 	write-host "         Check your paths."
 	""
-	pause
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
 
-# Master Copy: Test for existence of tron.bat inside the tron subfolder
-if (!(test-path $MasterCopy\tron\tron.bat)) {
+# Master copy: Test for existence of tron.bat inside the tron subfolder
+if (!(test-path -literalpath $MasterCopy\tron\tron.bat)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find tron.bat at:"
+	""
+	write-host "         $MasterCopy\tron.bat"
+	""
+	write-host "         Check your paths and make sure all the required files"
+	write-host "         exist in the appropriate locations."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Master copy: Test for existence of the changelog
+if (!(test-path -literalpath $MasterCopy\tron\changelog-v$NewVersion-updated-$CUR_DATE.txt)) {
 	""
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find tron.bat in $MasterCopy\tron.bat"
+	write-host " Couldn't find the changelog at:"
+	""
+	write-host "         $MasterCopy\changelog-v$NewVersion-updated-$CUR_DATE.txt"
+	""
 	write-host "         Check your paths and make sure all the required files exist in the"
 	write-host "         appropriate locations."
 	""
-	pause
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
 
-# Master Copy: Test for existence of the changelog
-if (!(test-path $MasterCopy\tron\changelog-v$NewVersion-updated-$CUR_DATE.txt)) {
-	""
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the changelog file at $MasterCopy\changelog-v$NewVersion-updated-$CUR_DATE.txt"
-	write-host "         Check your paths and make sure all the required files exist in the"
-	write-host "         appropriate locations."
-	""
-	pause
-	break
-}
-
-# Master Copy:  Test for existence of the Instructions file
+# Master copy:  Test for existence of the Instructions file
 if (!(test-path $MasterCopy\tron\Instructions*.txt)) {
 	""
-	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the Instructions file in $MasterCopy\"
+	write-host " Couldn't find the Instructions file at:"
+	""
+	write-host "         $MasterCopy\Instructions*.txt"
+	""
 	write-host "         Check your paths and make sure all the required files exist in the"
 	write-host "         appropriate locations."
 	""
-	pause
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
 
-# Seed Server: Test for existence of top level Tron folder
-if (!(test-path $SeedServer\$SeedFolder)) {
-	""
+# Seed server: Test for existence of top level Tron folder
+if (!(test-path -literalpath $SeedServer\$SeedFolder)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the Tron seed folder at $SeedServer\$SeedFolder"
-	write-host "         Check your paths and make sure you can reach the deployment server"
-	write-host "         and that you have write-access to the Tron seed folder."
+	write-host " Couldn't find the Tron seed folder at:"
 	""
-	pause
+	write-host "         $SeedServer\$SeedFolder"
+	""
+	write-host "         Check your paths and make sure the deployment server is"
+	write-host "         accessible and that you have write-access to the Tron seed folder."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
 
-# Seed Server: Test for existence of \tron\integrity_verification sub-folder
-if (!(test-path $SeedServer\$SeedFolder\integrity_verification)) {
-	""
+# Seed server: Test for existence of \tron\integrity_verification sub-folder
+if (!(test-path -literalpath $SeedServer\$SeedFolder\integrity_verification)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the integrity_verification folder at $SeedServer\$SeedFolder\integrity_verification\"
+	write-host " Couldn't find the integrity_verification folder at:"
+	""
+	write-host "         $SeedServer\$SeedFolder\integrity_verification\"
+	""
 	write-host "         Check your paths and make sure you can reach the deployment server,"
-	write-host "         that you have write-access to the Tron seed folder, and that the "
-	write-host "         integrity_verification sub-folder exists. "
+	write-host "         you have write-access to the Tron seed folder, and that the"
+	write-host "         \integrity_verification sub-folder exists. "
 	""
-	pause
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
 
-# Seed Server: Test for existence of the public key
-if (!(test-path $SeedServer\$SeedFolder\integrity_verification\vocatus-public-key.asc)) {
-	""
+# Seed server: Test for existence of the public key
+if (!(test-path -literalpath $SeedServer\$SeedFolder\integrity_verification\vocatus-public-key.asc)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the public key at $SeedServer\$SeedFolder\integrity_verification\"
+	write-host " Couldn't find the public key at:"
+	""
+	write-host "         $SeedServer\$SeedFolder\integrity_verification\vocatus-public-key.asc"
+	""
 	write-host "         Check your paths and make sure you can reach the deployment server"
 	write-host "         and that you have write-access to the Tron seed folder."
 	""
-	pause
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
 
@@ -260,7 +287,7 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Clearin
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# JOB: Calculate all hashes
+# JOB: Calculate hashes of every single file included in the \tron directory
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Calculating hashes, please wait..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calculating hashes, please wait..." -f green
 	pushd $MasterCopy
@@ -271,68 +298,65 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calcula
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# JOB: Wait for PGP signature on checksums.txt. Once seen, upload entire master directory to seed server
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Waiting for PGP signature of checksums.txt..." -f green
+# JOB: PGP sign the resulting checksums.txt. Then upload master directory to seed locations
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " PGP signing checksums.txt..." -f green
 remove-item $MasterCopy\integrity_verification\checksums.txt.asc -force -recurse -ea SilentlyContinue | out-null
-# Launch PortablePGP 
-#& $PortablePGP		# Disabled due to use of pgp4win
+
+#& $gpg --local-user vocatus.gate --armor --detach-sign $MasterCopy\integrity_verification\checksums.txt
+
 while (1 -eq 1) {
 	if (test-path $MasterCopy\integrity_verification\checksums.txt.asc) {
 		write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 		"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-		# file exists so we kill PortablePGP and break out of the loop
-		#Stop-Process -name javaw
 		break
 	}
-	# otherwise sleep for 5 seconds before looking again
+	# sleep for 3 seconds before looking again
 	start-sleep -s 3
 }
 
 
-# JOB: Upload from Master Copy to Seed server
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Master Copy is gold. Copying from Master to seed server..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Master Copy is gold. Copying from Master to seed server..." -f green
-	cp $MasterCopy\* $SeedServer\$SeedFolder\ -recurse -force
+# JOB: Upload from master copy to seed server directories
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Master copy is gold. Copying from master to seed locations..." >> $LOGPATH\$LOGFILE
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Master copy is gold. Copying from master to seed locations..." -f green
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Loading BT Sync seed..." -f green
+	cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Loading SyncThing seed..." -f green
+	cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# Notify that we're done with seed server operations and are starting deployment to the master repo
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Seed server deployment complete. Beginning master repo server update..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Seed server deployment complete. Beginning master repo server update..." -f green
+# Notify that we're done loading the seed server and are starting deployment to the master repo
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Seed server loaded. Updating master repo..." >> $LOGPATH\$LOGFILE
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host "  Seed server loaded. Updating master repo..." -f green
 
 
-# JOB: Pack Tron to into an .exe archive using 7z and stash it in the Temp directory. 
+# JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory. 
 # Create the file name using the new version number extracted from tron.bat and exclude any 
-# files with "Sync" in the title (these are BT Sync hidden files, we don't need to pack them
-# TODO: Delete existing files first
+# files with "sync" in the title (these are BT Sync hidden files, we don't need to pack them
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Building binary pack, please wait..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Building binary pack, please wait..." -f green
-	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*Sync* -x!*ini* >> $LOGPATH\$LOGFILE
+	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
+# JOB: Background upload the binary pack to the static pack folder on the local seed server
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Background uploading $NewBinary to $SeedServer\$StaticPackStorageLocation..." >> $LOGPATH\$LOGFILE
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Background uploading $NewBinary to $SeedServer\$StaticPackStorageLocation..." -f green
+start-job -name tron_move_pack_to_seed_server -scriptblock {mv $env:temp\$NewBinary $SeedServer\$StaticPackStorageLocation -force}
+
+	
 # JOB: Fetch sha256sums.txt from the repo for updating
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Fetching repo copy of sha256sums.txt to update..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Fetching repo copy of sha256sums.txt to update..." -f green
-#	Invoke-WebRequest $Repo_URL/md5sums.txt -outfile $env:temp\md5sums.txt
 	Invoke-WebRequest $Repo_URL/sha256sums.txt -outfile $env:temp\sha256sums.txt
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# # JOB: Calculate MD5 hash of Tron .exe and append it to md5sums file // LEGACY, this will be removed after a few versions due to the switch to SHA256 for checksumming
-# "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Calculating MD5 hash for binary pack and appending it to md5sums.txt..." >> $LOGPATH\$LOGFILE
-# write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calculating MD5 hash for binary pack and appending it to md5sums.txt..." -f green
-	# pushd $env:temp
-	# & $md5sum ".\Tron v$NewVersion ($CUR_DATE).exe" | out-file .\md5sums.txt -Encoding utf8 -append
-	# popd
-# "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-# write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
-
-
-# JOB: Calculate SHA256 hash of Tron .exe and append it to sha256 file
+# JOB: Calculate SHA256 hash of newly-created binary pack and append it to sha256sums.txt
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." -f green
 	pushd $env:temp
@@ -340,7 +364,7 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calcula
 	& $HashDeep64 -s -e -l -c sha256 "Tron v$NewVersion ($CUR_DATE).exe" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
 	# Strip out the annoying hashdeep header
 	gc .\sha256sums_TEMP.txt | Where-Object {$_ -notmatch '#'} | where-object {$_ -notmatch '%'} | sc .\sha256sums_TEMP2.txt
-	# Strip out blank lines and trailing spaces (not needed?) testing removal
+	# Strip out blank lines and trailing spaces (not needed?)
 	#(gc .\sha256sums_TEMP2.txt) | ? {$_.trim() -ne "" } | sc .\sha256sums_TEMP2.txt
 	# Append the result to the sha256sums.txt we pulled from the repo
 	gc .\sha256sums_TEMP2.txt | out-file .\sha256sums.txt -encoding utf8 -append
@@ -349,49 +373,44 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Calcula
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-
-# JOB: Wait for PGP signature on the SHA256 hash files. Once seen, upload entire master directory to seed server
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Waiting for PGP signature of sha256sums.txt..." -f green
+# JOB: PGP sign sha256sums.txt before FTP upload
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " PGP signing sha256sums.txt..." -f green
 remove-item $env:temp\sha256sums.txt.asc -force -recurse -ea SilentlyContinue | out-null
-# Launch PortablePGP 
-#& $PortablePGP
+#& $gpg --local-user vocatus.gate --armor --detach-sign $env:temp\sha256sums.txt
 while (1 -eq 1) {
 	if (test-path $env:temp\sha256sums.txt.asc) {
 		write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 		"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-		# file exists so we kill PortablePGP and break out of the loop
-		#Stop-Process -name javaw
 		break
 	}
 	# otherwise sleep for 5 seconds before looking again
-	start-sleep -s 7
+	start-sleep -s 5
 }
 
 
-
-# JOB: Build the FTP upload script
+# JOB: Build FTP upload script
+# Tron exe will have "UPLOADING" appended to its name until upload is complete
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Building FTP deployment script..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Building FTP deployment script..." -f green
 "option batch abort" | Out-File $env:temp\deploy_tron_ftp_script.txt -encoding ascii
 "option confirm off" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
-"open ftp://$RepoFTP_Username`:$RepoFTP_Password@$RepoFTP_Host" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
-"cd $RepoFTP_DepositPath" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+"open ftp://$Repo_FTP_Username`:$Repo_FTP_Password@$Repo_FTP_Host" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+"cd $Repo_FTP_DepositPath" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "rm *.exe" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "rm sha256sums*" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
-add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary`""
+add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-# add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\md5sums.txt`""
-# add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\md5sums.txt.asc`""
+"mv $NewBinary.UPLOADING $NewBinary" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# JOB: Upload binary pack and the hash files to the repo server
-# Now get in the TEMP directory and call the Windows built-in FTP command to do the heavy lifting
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Uploading $NewBinary to $RepoFTP_Host..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Uploading $NewBinary to $RepoFTP_Host..." -f green
+# JOB: Upload binary pack and hash files to FTP repo server
+# Get in TEMP directory and call WinSCP to run the script we just created
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Uploading $NewBinary to $Repo_FTP_Host..." >> $LOGPATH\$LOGFILE
+write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Uploading $NewBinary to $Repo_FTP_Host..." -f green
 	pushd $env:temp
 	& $WinSCP /script=.\deploy_tron_ftp_script.txt
 	popd
@@ -400,21 +419,14 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Uploadi
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
 
-# JOB: Save the packed binary to the static pack folder on the local seed server
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Saving $NewBinary to $SeedServer\$StaticPackStorageLocation..." >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Saving $NewBinary to $SeedServer\$StaticPackStorageLocation..." -f green
-	mv $env:temp\$NewBinary $SeedServer\$StaticPackStorageLocation -force
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
-write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
-
-
 # JOB: Clean up after ourselves
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Cleaning up..." >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Cleaning up..." -f green
-	# remove-item $env:temp\md5sums.txt -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\sha256sums* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\$NewBinary -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\deploy_tron_ftp_script.txt -force -recurse -ea SilentlyContinue | out-null
+	# Remove our background upload job from the job list
+	get-job | remove-job
 "$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done" >> $LOGPATH\$LOGFILE
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -f darkgreen
 
@@ -424,26 +436,28 @@ write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done" -
 # Finished #
 ############
 # Logfile
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done. Make sure to re-enable BT Sync and post release to Reddit." >> $LOGPATH\$LOGFILE
-echo "                    Version deployed:          v$NewVersion ($CUR_DATE)" >> $LOGPATH\$LOGFILE
-echo "                    Version replaced:          v$OldVersion" >> $LOGPATH\$LOGFILE
-echo "                    Local deployment server:   $SeedServer" >> $LOGPATH\$LOGFILE
-echo "                    Local seed folder          $SeedFolder" >> $LOGPATH\$LOGFILE
-echo "                    Local static pack storage: $StaticPackStorageLocation" >> $LOGPATH\$LOGFILE
-echo "                    Remote repo host:          $RepoFTP_Host" >> $LOGPATH\$LOGFILE
-echo "                    Remote repo upload path:   $RepoFTP_Host/$RepoFTP_DepositPath" >> $LOGPATH\$LOGFILE
-echo "                    Log file:                  $LOGPATH\$LOGFILE" >> $LOGPATH\$LOGFILE
+"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Done. Notify mirror ops and post release to Reddit." >> $LOGPATH\$LOGFILE
+write-output"                    Version deployed:                  v$NewVersion ($CUR_DATE)" >> $LOGPATH\$LOGFILE
+write-output"                    Version replaced:                  v$OldVersion ($OldDate)" >> $LOGPATH\$LOGFILE
+write-output"                    Local seed server:                 $SeedServer" >> $LOGPATH\$LOGFILE
+write-output"                    Local seed directory (BT Sync):    $SeedFolderBTS" >> $LOGPATH\$LOGFILE
+write-output"                    Local seed directory (SyncThing):  $SeedFolderST" >> $LOGPATH\$LOGFILE
+write-output"                    Local static pack storage:         $StaticPackStorageLocation" >> $LOGPATH\$LOGFILE
+write-output"                    Remote repo host:                  $Repo_FTP_Host" >> $LOGPATH\$LOGFILE
+write-output"                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath" >> $LOGPATH\$LOGFILE
+write-output"                    Log file:                          $LOGPATH\$LOGFILE" >> $LOGPATH\$LOGFILE
 
 # Console
 write-host $CUR_DATE (get-date -f hh:mm:ss) -n -f darkgray; write-host " Done " -f green
-write-host "                    Version deployed:          v$NewVersion ($CUR_DATE)" -f darkgray
-write-host "                    Version replaced:          v$OldVersion" -f darkgray
-write-host "                    Local deployment server:   $SeedServer" -f darkgray
-write-host "                    Local seed folder          $SeedFolder" -f darkgray
-write-host "                    Local static pack storage: $StaticPackStorageLocation" -f darkgray
-write-host "                    Remote repo host:          $RepoFTP_Host" -f darkgray
-write-host "                    Remote repo upload path:   $RepoFTP_Host/$RepoFTP_DepositPath" -f darkgray
-write-host "                    Log file:                  $LOGPATH\$LOGFILE" -f darkgray
-write-host "                                               Re-enable BT Sync and post release to Reddit" -f blue
+write-host "                    Version deployed:                  v$NewVersion ($CUR_DATE)" -f darkgray
+write-host "                    Version replaced:                  v$OldVersion ($OldDate)" -f darkgray
+write-host "                    Local seed server:                 $SeedServer" -f darkgray
+write-host "                    Local seed directory (BT Sync):    $SeedFolderBTS" -f darkgray
+write-host "                    Local seed directory (SyncThing):  $SeedFolderST" -f darkgray
+write-host "                    Local static pack storage:         $StaticPackStorageLocation" -f darkgray
+write-host "                    Remote repo host:                  $Repo_FTP_Host" -f darkgray
+write-host "                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath" -f darkgray
+write-host "                    Log file:                          $LOGPATH\$LOGFILE" -f darkgray
+write-host "                                                       Notify mirror ops and post release to Reddit" -f blue
 
-pause
+write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
