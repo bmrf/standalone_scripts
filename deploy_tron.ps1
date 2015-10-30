@@ -44,16 +44,9 @@ Behavior/steps:
 7. Fetches sha256sums.txt from repo and updates it with sha256sum of binary pack
 8. Deletes current version from repo server; uploads .exe pack and sha256sums.txt to repo server; cleans up residual temp files; notifies of completion and advises to restart BT Sync
 9. Builds FTP upload script
+10. Uploads via FTP
+11. Cleans up (deletes temp files used)
 #>
-
-# Are you sure?
-""
-write-host "Did you stop BT Sync?" -f red
-""
-Write-Host -n 'Press any key to continue...';
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
-""
-clear
 
 
 #############
@@ -64,48 +57,54 @@ clear
 #  * NO trailing slashes on paths! (bad:   c:\directory\            )
 #  * Spaces are okay               (okay:  c:\my folder\with spaces )
 #  * Network paths are okay        (okay:  \\server\share name      )
+param (
+	# Logging information
+	[string]$logpath = $env:systemdrive + "\Logs",
+	[string]$logfile = "tron_deployment_script.log",
 
-# Logging information
-$logpath = $env:systemdrive + "\Logs"
-$logfile = "tron_deployment_script.log"
+	# Path to 7z.exe
+	[string]$SevenZip = "C:\Program Files\7-Zip\7z.exe",
 
-# Path to 7z.exe
-$SevenZip = "C:\Program Files\7-Zip\7z.exe"
+	# Path to WinSCP.com
+	[string]$WinSCP = "R:\applications\WinSCP\WinSCP.com",
 
-# Path to WinSCP.com
-$WinSCP = "R:\applications\WinSCP\WinSCP.com"
+	# Path to hashdeep64.exe
+	[string]$HashDeep64 = "$env:SystemRoot\syswow64\hashdeep64.exe",            # e.g. "$env:SystemRoot\syswow64\hashdeep64.exe"
 
-# Path to hashdeep64.exe
-$HashDeep64 = "$env:SystemRoot\syswow64\hashdeep64.exe"             # e.g. "$env:SystemRoot\syswow64\hashdeep64.exe"
+	# Path to gpg.exe (for signing)
+	[string]$gpg = "$env:ProgramFiles\gpg4win\bin\gpg.exe",                     # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
 
-# Path to gpg.exe (for signing)
-$gpg = "$env:ProgramFiles\gpg4win\bin\gpg.exe"						# e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
+	# Master copy of Tron. Directory path, not tron.bat
+	[string]$MasterCopy = "r:\utilities\security\cleanup-repair\tron",          # e.g. "r:\utilities\security\cleanup-repair\tron"
 
-# Master copy of Tron. Directory path, not tron.bat
-$MasterCopy = "r:\utilities\security\cleanup-repair\tron"           # e.g. "r:\utilities\security\cleanup-repair\tron"
+	# Server holding the Tron seed directories
+	[string]$SeedServer = "\\thebrain",                                         # e.g. "\\thebrain"
 
-# Server holding the Tron seed directories
-$SeedServer = "\\thebrain"                                          # e.g. "\\thebrain"
+	# Seeding subdirectories containing \tron and \integrity_verification directories
+	# No leading or trailing slashes
+	[string]$SeedFolderBTS = "downloads\seeders\tron\tron",                     # e.g. "downloads\seeders\tron\btsync"
+	[string]$SeedFolderST = "downloads\seeders\tron_syncthing",                 # e.g. "downloads\seeders\tron\syncthing"
 
-# Seeding subdirectories containing \tron and \integrity_verification directories
-# No leading or trailing slashes
-$SeedFolderBTS = "downloads\seeders\tron\btsync"                    # e.g. "downloads\seeders\tron\btsync"
-$SeedFolderST = "downloads\seeders\tron\syncthing"                  # e.g. "downloads\seeders\tron\syncthing"
+	# Static pack storage location. RELATIVE path from root on the
+	# local deployment server. Where we stash the compiled .exe
+	# after uploading to the repo server.
+	# No leading or trailing slashes
+	[string]$StaticPackStorageLocation = "downloads\seeders\static packs",      # e.g. "downloads\seeders\static packs"
 
-# Static pack storage location. RELATIVE path from root on the
-# local deployment server. Where we stash the compiled .exe
-# after uploading to the repo server.
-# No leading or trailing slashes
-$StaticPackStorageLocation = "downloads\seeders\static packs"       # e.g. "downloads\seeders\static packs"
+	# Repository server where we'll fetch sha256sums.txt from
+	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
-# Repository server where we'll fetch sha256sums.txt from
-$Repo_URL = "http://bmrf.org/repos/tron"                            # e.g. "http://bmrf.org/repos/tron"
+	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
+	[string]$Repo_FTP_Host = "web.site",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "username",
+	[string]$Repo_FTP_Password = "password",
+	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
-# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-$Repo_FTP_Host = "webserver-address-here"                            # e.g. "bmrf.org"
-$Repo_FTP_Username = "username-here"
-$Repo_FTP_Password = "password-here"
-$Repo_FTP_DepositPath = "/path/to/public_html/"                      # e.g. "/public_html/repos/tron/"
+	# PGP key authentication information
+	[string]$gpgPassphrase = "string",
+	[string]$gpgUsername = "string"
+)
+
 
 
 
@@ -117,11 +116,12 @@ $Repo_FTP_DepositPath = "/path/to/public_html/"                      # e.g. "/pu
 
 
 
+
 ###################
 # PREP AND CHECKS #
 ###################
 $SCRIPT_VERSION = "1.2.7"
-$SCRIPT_UPDATED = "2015-10-29"
+$SCRIPT_UPDATED = "2015-10-xx"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -138,6 +138,17 @@ $OldDate = "$OldDate".Split("=")[1]
 $NewVersion = gc $MasterCopy\tron\Tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
 $NewVersion = "$NewVersion".Split("=")[1]
 $NewBinary = "Tron v$NewVersion ($CUR_DATE).exe"
+
+# Are you sure?
+""
+write-host "About to replace Tron $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)"
+""
+write-host "Are you sure?" -f red
+""
+Write-Host -n 'Press any key to continue...';
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+""
+clear
 
 
 #################
@@ -307,7 +318,7 @@ log " Done" darkgreen
 log " PGP signing checksums.txt..." green
 remove-item $MasterCopy\integrity_verification\checksums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 
-#& $gpg --local-user vocatus.gate --armor --detach-sign $MasterCopy\integrity_verification\checksums.txt
+& $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $MasterCopy\integrity_verification\checksums.txt
 
 while (1 -eq 1) {
 	if (test-path $MasterCopy\integrity_verification\checksums.txt.asc) {
@@ -371,7 +382,7 @@ log " Done" darkgreen
 # JOB: PGP sign sha256sums.txt before FTP upload
 log " PGP signing sha256sums.txt..." green
 remove-item $env:temp\sha256sums.txt.asc -force -recurse -ea SilentlyContinue | out-null
-#& $gpg --local-user vocatus.gate --armor --detach-sign $env:temp\sha256sums.txt
+& $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $env:temp\sha256sums.txt
 while (1 -eq 1) {
 	if (test-path $env:temp\sha256sums.txt.asc) {
 		log " Done" darkgreen
