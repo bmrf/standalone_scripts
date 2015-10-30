@@ -82,8 +82,8 @@ param (
 
 	# Seeding subdirectories containing \tron and \integrity_verification directories
 	# No leading or trailing slashes
-	[string]$SeedFolderBTS = "downloads\seeders\tron\tron",                     # e.g. "downloads\seeders\tron\btsync"
-	[string]$SeedFolderST = "downloads\seeders\tron_syncthing",                 # e.g. "downloads\seeders\tron\syncthing"
+	[string]$SeedFolderBTS = "downloads\seeders\tron\btsync",                   # e.g. "downloads\seeders\tron\btsync"
+	[string]$SeedFolderST = "downloads\seeders\tron\syncthing",                 # e.g. "downloads\seeders\tron\syncthing"
 
 	# Static pack storage location. RELATIVE path from root on the
 	# local deployment server. Where we stash the compiled .exe
@@ -95,14 +95,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "web.site",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "servername",                                      # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "username",
 	[string]$Repo_FTP_Password = "password",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "string",
-	[string]$gpgUsername = "string"
+	[string]$gpgPassphrase = "passphrase",
+	[string]$gpgUsername = "keyusername"
 )
 
 
@@ -121,7 +121,7 @@ param (
 # PREP AND CHECKS #
 ###################
 $SCRIPT_VERSION = "1.2.7"
-$SCRIPT_UPDATED = "2015-10-xx"
+$SCRIPT_UPDATED = "2015-10-29"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -141,9 +141,9 @@ $NewBinary = "Tron v$NewVersion ($CUR_DATE).exe"
 
 # Are you sure?
 ""
-write-host "About to replace Tron $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)"
+write-host " About to replace Tron $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)"
 ""
-write-host "Are you sure?" -f red
+write-host " Are you sure?" -f red
 ""
 Write-Host -n 'Press any key to continue...';
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
