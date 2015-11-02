@@ -472,32 +472,18 @@ if ( $JOB_TYPE -eq "purge" ) {
 
 
 
-:::::::::::::::::::::::
-# COMPLETION REPORT ::
-:::::::::::::::::::::::
-:done
+#####################
+# COMPLETION REPORT #
+#####################
 # One of these displays if the operation was a restore operation
-if %RESTORE_TYPE%==full (
-		log "   Restored full backup to $staging\$backup_prefix
-		log "   Restored full backup to $staging\$backup_prefix
-		)
+if ($RESTORE_TYPE -eq "full"){ log "   Restored full backup to $staging\$backup_prefix" }
+if ($RESTORE_TYPE -eq "differential"){ log "   Restored full and differential backup to $staging\$backup_prefix" }
 
-if %RESTORE_TYPE%==differential (
-		""
-		log "   Restored full and differential backup to $staging\$backup_prefix
-		log "   Restored full and differential backup to $staging\$backup_prefix
-		)
+log "$SCRIPT_NAME complete." green
+if ($JOB_ERROR -eq "1") { log " ! Note: Script exited with errors. Maybe check the log." yellow }
 
-""
-log "$SCRIPT_NAME complete.
-log "   $SCRIPT_NAME complete.
-if '%JOB_ERROR%'=='1' "" && log " ! Note: Script exited with errors.
-if '%JOB_ERROR%'=='1' "" && log " ! Note: Script exited with errors. Maybe check the log.
-
-:end
 # Clean up our temp exclude file
 if exist %TEMP%\DEATH_BY_HAMSTERS.txt del /F /Q %TEMP%\DEATH_BY_HAMSTERS.txt
-ENDLOCAL
 
 # Close the main() function. End of the script
 }
