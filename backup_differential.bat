@@ -2,31 +2,14 @@
 :: Requirements:  - forfiles.exe from Microsoft
 ::                - 7-Zip
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.5.1 * Add standard boilerplate comments
+:: Version:       1.5.2 + Merge :log function from Tron; convert most echo commands to use log function
+::                1.5.1 * Add standard boilerplate comments
 ::                1.5.0 * Overhauled Date/Time conversion so we can handle ALL versions of Windows using ANY local date-time format
 ::                1.4.9 * Reworked CUR_DATE variable to handle more than one Date/Time format
 ::                        Can now handle all Windows date formats
 ::                1.4.8 + Added SCRIPT_UPDATED variable to timestamp last update of the script
 ::                1.4.7 - Removed some redundant %TIME% stamps in the logs, under the Cleanup section
-::                1.4.6 + Added two additional "help" flags: "-h" and "--help"
-::                1.4.5 + Added better instructions for what variables can be set to
-::                1.4.4 + Added quotes around variables that could contain spaces in a few places
-::                      * Some comment cleanup, and some logging formatting cleanup.
-::                1.4.3 / Tweaked logging to only display exclamation point if there was an error
-::                      / Tweaked logging to display time correctly (no extra spaces)
-::                1.4.2 / Some logging tweaks
-::                1.4.1 / Some logging tweaks
-::                1.4   + Added quotes around SOURCE variable that were missing in a couple places
-::                1.3   * Fixed backup archiving - wasn't rotating properly on network paths. We use pushd to get around this
-::                      - Added "-s" option to show job options that the script WOULD execute with
-::                      - Major overhaul of code order and logic. Stuff should break less now.
-::                      - Many fixes to exclusions file checking
-::                1.2   - Fixed problem with cleaning backups. Now cleans staging area and long-term destination area. 
-::                        Normally an archive (-a) switch cleans the staging area, but now the -c switch does as well, just in case.
-::                      - Also fixed issue with forfiles.exe not being able to read UNC paths. We use pushd to get around this.
-::                        Pushd auto-assigns the next available drive letter to a UNC path, then discards it when we use popd.
-::                1.1   - Added option to use an exclude file to specify files/folders to exclude from the backup
-::                1.0b    Some tweaks to logging
+::                < -- remove outdate changelog comments -->
 ::                1.0     Initial write
 
 :: Notes:         My intention for this script was to keep the logic controlling schedules, backup type, etc out of the script and
@@ -69,10 +52,10 @@ set SOURCE=R:\
 
 :: Work area where everything is stored while compressing. Should be a fast drive or something that can handle a lot of writes
 :: Recommend not using a network share unless it's Gigabit or faster.
-set STAGING=P:\backup_staging
+set STAGING=P:\backup_staging\local
 
 :: This is the final, long-term destination for your backup after it is compressed.
-set DESTINATION=\\server\personal
+set DESTINATION=\\thebrain\backups
 
 :: If you want to customize the prefix of the backup files, do so here. Don't use any special characters (like underscores)
 :: The script automatically suffixes an underscore to this name. Recommend not changing this unless you really need to.
@@ -102,9 +85,9 @@ set FORFILES=%WINDIR%\system32\forfiles.exe
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.5.1
-set SCRIPT_UPDATED=2015-08-27
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
+set SCRIPT_VERSION=1.5.2
+set SCRIPT_UPDATED=2015-11-01
+:: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
@@ -167,7 +150,6 @@ if %JOB_TYPE%==help (
 :::::::::::::::::::::::
 :: LOG FILE HANDLING ::
 :::::::::::::::::::::::
-:log
 :: Make the logfile if it doesn't exist
 if not exist %LOGPATH% mkdir %LOGPATH%
 if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
@@ -191,42 +173,42 @@ popd
 :required_files_check
 :: Make sure we can find 7-Zip
 IF NOT EXIST %SEVENZIP% (
-		echo %TIME%   ERROR: Couldn't find 7z.exe when script was invoked.>> %LOGPATH%\%LOGFILE%
-		cls
-		color 0c
-		echo.
-		echo  ERROR:
-		echo.
-		echo  Cannot find 7z.exe. You must edit this script
-		echo  and specify the location of 7-Zip before continuing.
-		echo.
-		echo  Script tried to find it here:
-		echo  %SEVENZIP%
-		echo.
-		pause
-		color
-		cls
-		goto end 
-		)
+	echo %TIME%   ERROR: Couldn't find 7z.exe when script was invoked.>> %LOGPATH%\%LOGFILE%
+	cls
+	color 0c
+	echo.
+	echo  ERROR:
+	echo.
+	echo  Cannot find 7z.exe. You must edit this script
+	echo  and specify the location of 7-Zip before continuing.
+	echo.
+	echo  Script tried to find it here:
+	echo  %SEVENZIP%
+	echo.
+	pause
+	color
+	cls
+	goto end 
+)
 :: Make sure we can find forfiles.exe
 IF NOT EXIST %FORFILES% (
-		echo %TIME%   ERROR: Couldn't find forfiles.exe when script was invoked.>> %LOGPATH%\%LOGFILE%
-		cls
-		color 0c
-		echo.
-		echo  ERROR:
-		echo.
-		echo  Cannot find forfiles.exe. You must edit this script
-		echo  and specify the location of forfiles.exe before continuing.
-		echo.
-		echo  Script tried to find it here:
-		echo  %FORFILES%
-		echo.
-		pause
-		color
-		cls
-		goto end
-		)
+	echo %TIME%   ERROR: Couldn't find forfiles.exe when script was invoked.>> %LOGPATH%\%LOGFILE%
+	cls
+	color 0c
+	echo.
+	echo  ERROR:
+	echo.
+	echo  Cannot find forfiles.exe. You must edit this script
+	echo  and specify the location of forfiles.exe before continuing.
+	echo.
+	echo  Script tried to find it here:
+	echo  %FORFILES%
+	echo.
+	pause
+	color
+	cls
+	goto end
+)
 
 
 ::::::::::::::::::::
@@ -270,76 +252,61 @@ goto end
 :full
 :: Check for an exclude file and make sure it exists.
 if '%EXCLUSIONS_FILE%'=='' goto full_go
-IF NOT EXIST %EXCLUSIONS_FILE% (
-		echo.
-		echo %TIME%   ERROR: An exclusions file was specified but couldn't be found:>> %LOGPATH%\%LOGFILE%
-		echo                %EXCLUSIONS_FILE%>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   ERROR: An exclusions file was specified but couldn't be found:
-		echo                %EXCLUSIONS_FILE%
-		goto end
-		)
+if not exist %EXCLUSIONS_FILE% (
+	echo. && echo.>>%LOGPATH%\%LOGFILE%
+	call :log "%TIME%   ERROR: An exclusions file was specified but couldn't be found:"
+	call :log "           %EXCLUSIONS_FILE%"
+	echo. && echo.>>%LOGPATH%\%LOGFILE%
+	goto end
+)
 :full_go
-echo.
-echo.>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Script location:  %~dp0\%SCRIPT_NAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Job Options>> %LOGPATH%\%LOGFILE%
-echo   Job type:        Full backup>> %LOGPATH%\%LOGFILE%
-echo   Source:          %SOURCE%>> %LOGPATH%\%LOGFILE%
-echo   Destination:     %DESTINATION%>> %LOGPATH%\%LOGFILE%
-echo   Staging area:    %STAGING%>> %LOGPATH%\%LOGFILE%
-echo   Exclusions file: %EXCLUSIONS_FILE%>> %LOGPATH%\%LOGFILE%
-echo   Backup prefix:   %BACKUP_PREFIX%>> %LOGPATH%\%LOGFILE%
-echo   Log location:    %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
-echo   Log max size:    %LOG_MAX_SIZE% bytes>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Performing full backup of %SOURCE%...>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Performing full backup of %SOURCE%...
+call :log "---------------------------------------------------------------------------------------------------"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " Job Options"
+call :log "  Job type:        %JOB_TYPE%"
+call :log "  Source:          %SOURCE%"
+call :log "  Destination:     %DESTINATION%"
+call :log "  Staging area:    %STAGING%"
+call :log "  Exclusions file: %EXCLUSIONS_FILE%"
+call :log "  Backup prefix:   %BACKUP_PREFIX%"
+call :log "  Log location:    %LOGPATH%\%LOGFILE%"
+call :log "  Log max size:    %LOG_MAX_SIZE% bytes"
+call :log "---------------------------------------------------------------------------------------------------"
+call :log "%TIME%   Performing full backup of %SOURCE%..."
 
 :: Build archive
-echo.
-echo %TIME%   Building archive in staging area %STAGING%...>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Building archive in staging area %STAGING%...
-echo.>> %LOGPATH%\%LOGFILE%
-echo ------- [ Beginning of 7zip output ] ------->> %LOGPATH%\%LOGFILE% 2>&1
+call :log "%TIME%   Building archive in staging area %STAGING%..."
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " ------- [ Beginning of 7zip output ] ------- "
 if not '%EXCLUSIONS_FILE%'=='' %SEVENZIP% a "%STAGING%\%BACKUP_PREFIX%_full.7z" "%SOURCE%" -xr@"%EXCLUSIONS_FILE%" >> %LOGPATH%\%LOGFILE%
 if '%EXCLUSIONS_FILE%'=='' %SEVENZIP% a "%STAGING%\%BACKUP_PREFIX%_full.7z" "%SOURCE%" >> %LOGPATH%\%LOGFILE%
-echo ------- [    End of 7zip output    ] ------->> %LOGPATH%\%LOGFILE% 2>&1
-echo.>> %LOGPATH%\%LOGFILE%
-echo.
+call :log " ------- [    End of 7zip output    ] ------- "
+echo. && echo.>>%LOGPATH%\%LOGFILE%
 
 :: Report on the build
 if %ERRORLEVEL%==0 (
-		echo %TIME%   Archive built successfully.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Archive built successfully.
-		)
-if not %ERRORLEVEL%==0 (
-		set JOB_ERROR=1
-		echo %TIME% ! Archive built with errors.>> %LOGPATH%\%LOGFILE%
-		echo %TIME% ! Archive built with errors.
-		)
+	call :log "%TIME%   Archive built successfully."
+) else (
+	set JOB_ERROR=1
+	call :log "%TIME% ! Archive built with errors."
+)
+
 :: Upload to destination
-echo.
-echo %TIME%   Uploading %BACKUP_PREFIX%_full.7z to %DESTINATION%...>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Uploading %BACKUP_PREFIX%_full.7z to %DESTINATION%...
-echo.
-echo.>> %LOGPATH%\%LOGFILE%
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "%TIME%   Uploading %BACKUP_PREFIX%_full.7z to %DESTINATION%..."
+
 xcopy "%STAGING%\%BACKUP_PREFIX%_full.7z" "%DESTINATION%\" /Q /J /Y /Z >> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
 
 :: Report on the upload
 if %ERRORLEVEL%==0 (
-		echo %TIME%   Uploaded full backup to '%DESTINATION%' successfully.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Uploaded full backup to '%DESTINATION%' successfully.
-		) ELSE (
-		set JOB_ERROR=1
-		echo %TIME% ! Upload of full backup to '%DESTINATION%' failed.>> %LOGPATH%\%LOGFILE%
-		echo %TIME% ! Upload of full backup to '%DESTINATION%' failed.
-		)
+	call :log "%TIME%   Uploaded full backup to '%DESTINATION%' successfully."
+) else (
+	set JOB_ERROR=1
+	call :log "%TIME% ! Upload of full backup to '%DESTINATION%' failed."
+)
 
 goto done
 
@@ -350,86 +317,69 @@ goto done
 :differential
 :: Check for an exclude file and make sure it exists.
 if '%EXCLUSIONS_FILE%'=='' goto differential_go
-IF NOT EXIST %EXCLUSIONS_FILE% (
-		echo %TIME%   An exclusions file was specified but couldn't be found. Aborting.>> %LOGPATH%\%LOGFILE%
-		echo           Looked here: %EXCLUSIONS_FILE%>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   An exclusions file was specified but couldn't be found. Aborting.
-		echo           Looked here: %EXCLUSIONS_FILE%
-		goto end
-		)
+if not exist %EXCLUSIONS_FILE% (
+	echo. && echo.>>%LOGPATH%\%LOGFILE%
+	call :log "%TIME%   ERROR: An exclusions file was specified but couldn't be found:"
+	call :log "           %EXCLUSIONS_FILE%"
+	echo. && echo.>>%LOGPATH%\%LOGFILE%
+	goto end
+)
 :differential_go
-echo.>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Script location:  %SCRIPT_NAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Job Options>> %LOGPATH%\%LOGFILE%
-echo   Job type:        Differential backup>> %LOGPATH%\%LOGFILE%
-echo   Source:          %SOURCE%>> %LOGPATH%\%LOGFILE%
-echo   Destination:     %DESTINATION%>> %LOGPATH%\%LOGFILE%
-echo   Staging area:    %STAGING%>> %LOGPATH%\%LOGFILE%
-echo   Exclusions file: %EXCLUSIONS_FILE%>> %LOGPATH%\%LOGFILE%
-echo   Backup prefix:   %BACKUP_PREFIX%>> %LOGPATH%\%LOGFILE%
-echo   Log location:    %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
-echo   Log max size:    %LOG_MAX_SIZE% bytes>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo.
+call :log "---------------------------------------------------------------------------------------------------"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " Job Options"
+call :log "  Job type:        %JOB_TYPE%"
+call :log "  Source:          %SOURCE%"
+call :log "  Destination:     %DESTINATION%"
+call :log "  Staging area:    %STAGING%"
+call :log "  Exclusions file: %EXCLUSIONS_FILE%"
+call :log "  Backup prefix:   %BACKUP_PREFIX%"
+call :log "  Log location:    %LOGPATH%\%LOGFILE%"
+call :log "  Log max size:    %LOG_MAX_SIZE% bytes"
+call :log "---------------------------------------------------------------------------------------------------"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+
 :: Check for full backup existence
 if not exist "%STAGING%\%BACKUP_PREFIX%_full.7z" (
-		set JOB_ERROR=1
-		echo %TIME% ! ERROR: Couldn't find full backup file ^(%BACKUP_PREFIX%_full.7z^). You must create a full backup before a differential can be created.>> %LOGPATH%\%LOGFILE%
-		echo %TIME% ! ERROR: Couldn't find full backup file ^(%BACKUP_PREFIX%_full.7z^). You must create a full backup before a differential can be created.
-		goto end
-		) ELSE (
-		:: Backup existed, so go ahead
-		echo %TIME%   Performing differential backup of %SOURCE%...>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Performing differential backup of %SOURCE%...
-		)
+	set JOB_ERROR=1
+	call :log "%TIME% ! ERROR: Couldn't find full backup file ^(%BACKUP_PREFIX%_full.7z^). You must create a full backup before a differential can be created."
+	goto end
+) else (
+	call :log "%TIME%   Performing differential backup of %SOURCE%..."
+)
 		
 :: Build archive
 :differential_build
-echo.
-echo %TIME%   Building archive in staging area %STAGING%...>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Building archive in staging area %STAGING%...
-echo.>> %LOGPATH%\%LOGFILE%
-echo ------- [ Beginning of 7zip output ] ------->> %LOGPATH%\%LOGFILE% 2>&1
+call :log "%TIME%   Building archive in staging area %STAGING%..."
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " ------- [ Beginning of 7zip output ] -------"
 if not '%EXCLUSIONS_FILE%'=='' %SEVENZIP% u "%STAGING%\%BACKUP_PREFIX%_full.7z" "%SOURCE%" -ms=off -mx=9 -xr@"%EXCLUSIONS_FILE%" -t7z -u- -up0q3r2x2y2z0w2!"%STAGING%\%BACKUP_PREFIX%_differential_%CUR_DATE%.7z" >> %LOGPATH%\%LOGFILE% 2>&1
 if '%EXCLUSIONS_FILE%'=='' %SEVENZIP% u "%STAGING%\%BACKUP_PREFIX%_full.7z" "%SOURCE%" -ms=off -mx=9 -t7z -u- -up0q3r2x2y2z0w2!"%STAGING%\%BACKUP_PREFIX%_differential_%CUR_DATE%.7z" >> %LOGPATH%\%LOGFILE% 2>&1
-echo ------- [    End of 7zip output    ] ------->> %LOGPATH%\%LOGFILE% 2>&1
-echo.>> %LOGPATH%\%LOGFILE%
-echo.
+call :log " ------- [    End of 7zip output    ] -------"
+
 :: Report on the build
 if %ERRORLEVEL%==0 (
-		echo %TIME%   Archive built successfully.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Archive built successfully.
-		)
-if not %ERRORLEVEL%==0 (
-		set JOB_ERROR=1
-		echo %TIME% ! Archive built with errors.>> %LOGPATH%\%LOGFILE%
-		echo %TIME% ! Archive built with errors.
-		)
+	call :log "%TIME%   Archive built successfully."
+) else (
+	set JOB_ERROR=1
+	call :log "%TIME% ! Archive built with errors."
+)
 
 
 :: Upload to destination
-echo.
-echo %TIME%   Uploading %BACKUP_PREFIX%_differential_%CUR_DATE%.7z to %DESTINATION%... >> %LOGPATH%\%LOGFILE%
-echo %TIME%   Uploading %BACKUP_PREFIX%_differential_%CUR_DATE%.7z to %DESTINATION%...
-echo.>> %LOGPATH%\%LOGFILE%
+call :log "%TIME%   Uploading %BACKUP_PREFIX%_differential_%CUR_DATE%.7z to %DESTINATION%..."
 xcopy "%STAGING%\%BACKUP_PREFIX%_differential_%CUR_DATE%.7z" "%DESTINATION%\" /Q /J /Y /Z >> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
+
 :: Report on the upload
 if %ERRORLEVEL%==0 (
-		echo %TIME%   Uploaded differential file successfully.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Uploaded differential file successfully.
-		)
-
-if not %ERRORLEVEL%==0 (
-		set JOB_ERROR=1
-		echo %TIME% ! Upload of differential file failed.>> %LOGPATH%\%LOGFILE%
-		echo %TIME% ! Upload of differential file failed.
-		)
+	call :log "%TIME%   Uploaded differential file successfully."
+) else (
+	set JOB_ERROR=1
+	call :log "%TIME% ! Upload of differential file failed."
+)
 
 goto done
 
@@ -455,9 +405,9 @@ if %BACKUP_FILE%==exit goto end
 echo.
 :: Make sure user didn't fat-finger the file name
 if not exist "%STAGING%\%BACKUP_FILE%" (
-		echo  ! ERROR: That file wasn^'t found. Check your typing and try again. && echo. && goto restore_menu
-		goto restore_menu
-		)
+	echo  ! ERROR: That file wasn^'t found. Check your typing and try again. && echo.
+	goto restore_menu
+)
 
 set CHOICE=y
 echo  ! Selected file '%BACKUP_FILE%' 
@@ -476,73 +426,63 @@ if not %BACKUP_FILE%==%BACKUP_PREFIX%_full.7z set RESTORE_TYPE=differential
 
 
 :restore_go
-echo.>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Script location:  %SCRIPT_NAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Job Options>> %LOGPATH%\%LOGFILE%
-echo   Job type:        %RESTORE_TYPE% restore>> %LOGPATH%\%LOGFILE%
-echo   Source:          %STAGING%\%BACKUP_PREFIX%_full.7z>> %LOGPATH%\%LOGFILE%
-echo   Destination:     %STAGING%\%BACKUP_PREFIX%\>> %LOGPATH%\%LOGFILE%
-echo   Staging area:    %STAGING%>> %LOGPATH%\%LOGFILE%
-echo   Exclusions file: %EXCLUSIONS_FILE%>> %LOGPATH%\%LOGFILE%
-echo   Backup prefix:   %BACKUP_PREFIX%>> %LOGPATH%\%LOGFILE%
-echo   Log location:    %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
-echo   Log max size:    %LOG_MAX_SIZE% bytes>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo.
+call :log "---------------------------------------------------------------------------------------------------"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " Job Options"
+call :log "  Job type:        %JOB_TYPE%"
+call :log "  Source:          %SOURCE%"
+call :log "  Destination:     %DESTINATION%"
+call :log "  Staging area:    %STAGING%"
+call :log "  Exclusions file: %EXCLUSIONS_FILE%"
+call :log "  Backup prefix:   %BACKUP_PREFIX%"
+call :log "  Log location:    %LOGPATH%\%LOGFILE%"
+call :log "  Log max size:    %LOG_MAX_SIZE% bytes"
+call :log "---------------------------------------------------------------------------------------------------"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
 :: Detect our backup type and inform the user
 if %RESTORE_TYPE%==differential (
-		echo %TIME%   Restoring from differential backup. Will unpack full backup then differential.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Restoring from differential backup. Will unpack full backup then differential.
-		)
+	call :log "%TIME%   Restoring from differential backup. Will unpack full backup then differential."
+)
 if %RESTORE_TYPE%==full (
-		echo %TIME%   Restoring from full backup.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Restoring from full backup.
-		echo %TIME%   Unpacking full backup...>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Unpacking full backup...
-		)
+	call :log "%TIME%   Restoring from full backup."
+	call :log "%TIME%   Unpacking full backup..."
+)
 
 :: Start the restoration
-echo.>> %LOGPATH%\%LOGFILE%
-echo.
-echo ------- [ Beginning of 7zip output ] ------->> %LOGPATH%\%LOGFILE% 2>&1
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " ------- [ Beginning of 7zip output ] -------"
 %SEVENZIP% x "%STAGING%\%BACKUP_PREFIX%_full.7z" -y -o"%STAGING%\%BACKUP_PREFIX%_restore\">> %LOGPATH%\%LOGFILE% 2>&1
-echo ------- [    End of 7zip output    ] ------->> %LOGPATH%\%LOGFILE% 2>&1
+call :log " ------- [    End of 7zip output    ] -------"
+
 :: Report on the unpack
 if %ERRORLEVEL%==0 (
-		echo %TIME%   Full backup unpacked successfully.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Full backup unpacked successfully.
-		)
-if not %ERRORLEVEL%==0 (
-		set JOB_ERROR=1
-		echo %TIME% ! Full backup unpacked with errors.>> %LOGPATH%\%LOGFILE%
-		echo %TIME% ! Full backup unpacked with errors.
-		)
+	call :log "%TIME%   Full backup unpacked successfully."
+) else (
+	set JOB_ERROR=1
+	call :log "%TIME% ! Full backup unpacked with errors."
+)
 :: If we're just doing a full restore (no differential), then go to the end
 if %RESTORE_TYPE%==full goto done
-		
+
 :: Now we unpack our differential file
-echo.
-echo %TIME%   Unpacking differential file %BACKUP_FILE%...>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Unpacking differential file %BACKUP_FILE%...
-echo.>> %LOGPATH%\%LOGFILE%
-echo ------- [ Beginning of 7zip output ] ------->> %LOGPATH%\%LOGFILE% 2>&1
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "%TIME%   Unpacking differential file %BACKUP_FILE%..."
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " ------- [ Beginning of 7zip output ] -------"
 %SEVENZIP% x "%STAGING%\%BACKUP_FILE%" -aoa -y -o"%STAGING%\%BACKUP_PREFIX%_restore\">> %LOGPATH%\%LOGFILE% 2>&1
-echo ------- [    End of 7zip output    ] ------->> %LOGPATH%\%LOGFILE% 2>&1
-echo.
+call :log " ------- [    End of 7zip output    ] -------"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+
 :: Report on the unpack
 if %ERRORLEVEL%==0 (
-		echo %TIME%   Differential file unpacked successfully.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Differential file unpacked successfully.
-		) ELSE (
-		:: Something broke!
-		set JOB_ERROR=1
-		echo %TIME% ! Differential file unpacked with errors.>> %LOGPATH%\%LOGFILE%
-		echo %TIME% ! Differential file unpacked with errors.
-		)
+	call :log "%TIME%   Differential file unpacked successfully."
+) else (
+	:: Something broke!
+	set JOB_ERROR=1
+	call :log "%TIME% ! Differential file unpacked with errors."
+)
 goto done
 
 
@@ -550,43 +490,36 @@ goto done
 :: ARCHIVE BACKUP SET :: aka rotate backups
 ::::::::::::::::::::::::
 :archive_backup_set
-echo.>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Script location:  %SCRIPT_NAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Job Options>> %LOGPATH%\%LOGFILE%
-echo   Job type:        Archive/rotate backup set>> %LOGPATH%\%LOGFILE%
-echo   Source:          %SOURCE%>> %LOGPATH%\%LOGFILE%
-echo   Destination:     %DESTINATION%>> %LOGPATH%\%LOGFILE%
-echo   Staging area:    %STAGING%>> %LOGPATH%\%LOGFILE%
-echo   Exclusions file: %EXCLUSIONS_FILE%>> %LOGPATH%\%LOGFILE%
-echo   Backup prefix:   %BACKUP_PREFIX%>> %LOGPATH%\%LOGFILE%
-echo   Log location:    %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
-echo   Log max size:    %LOG_MAX_SIZE% bytes>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Archiving current backup set to %DESTINATION%\%CUR_DATE%_%BACKUP_PREFIX%_set.>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Archiving current backup set to %DESTINATION%\%CUR_DATE%_%BACKUP_PREFIX%_set.
+call :log "---------------------------------------------------------------------------------------------------"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " Job Options"
+call :log "  Job type:        %JOB_TYPE%"
+call :log "  Source:          %SOURCE%"
+call :log "  Destination:     %DESTINATION%"
+call :log "  Staging area:    %STAGING%"
+call :log "  Exclusions file: %EXCLUSIONS_FILE%"
+call :log "  Backup prefix:   %BACKUP_PREFIX%"
+call :log "  Log location:    %LOGPATH%\%LOGFILE%"
+call :log "  Log max size:    %LOG_MAX_SIZE% bytes"
+call :log "---------------------------------------------------------------------------------------------------"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "%TIME%   Archiving current backup set to %DESTINATION%\%CUR_DATE%_%BACKUP_PREFIX%_set."
 :: Final destination: Make directory, move files
 pushd "%DESTINATION%"
 mkdir %CUR_DATE%_%BACKUP_PREFIX%_set >> %LOGPATH%\%LOGFILE%
 move /Y *.* %CUR_DATE%_%BACKUP_PREFIX%_set >> %LOGPATH%\%LOGFILE%
 popd
-echo.
-echo %TIME%   Deleting all copies in the staging area...>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Deleting all copies in the staging area...
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "%TIME%   Deleting all copies in the staging area..."
 :: Staging area: Delete old files
 del /Q /F "%STAGING%\*.7z">> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo.
 
 :: Report
-echo.>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Backup set archived. All unarchived files in staging area were deleted.>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Backup set archived. All unarchived files in staging area were deleted.
-echo.>> %LOGPATH%\%LOGFILE%
+call :log "%TIME%   Backup set archived. All unarchived files in staging area were deleted."
+
 goto done
 
 
@@ -645,24 +578,23 @@ echo  Okay, starting deletion.
 
 :: Go ahead and do the cleanup. 
 :cleanup_archives_go
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo  Script location:  %SCRIPT_NAME%>> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo   Job type:        Delete archived backup sets older than %DAYS% days.>> %LOGPATH%\%LOGFILE%
-echo   Source:          %SOURCE%>> %LOGPATH%\%LOGFILE%
-echo   Destination:     %DESTINATION%>> %LOGPATH%\%LOGFILE%
-echo   Staging area:    %STAGING%>> %LOGPATH%\%LOGFILE%
-echo   Exclusions file: %EXCLUSIONS_FILE%>> %LOGPATH%\%LOGFILE%
-echo   Backup prefix:   %BACKUP_PREFIX%>> %LOGPATH%\%LOGFILE%
-echo   Log location:    %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
-echo   Log max size:    %LOG_MAX_SIZE% bytes>> %LOGPATH%\%LOGFILE%
-echo --------------------------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
-echo.>> %LOGPATH%\%LOGFILE%
-echo.
-echo %TIME%   Deleting backup sets that are older than %DAYS% days...>> %LOGPATH%\%LOGFILE%
-echo %TIME%   Deleting backup sets that are older than %DAYS% days...
+call :log "---------------------------------------------------------------------------------------------------"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log " Job Options"
+call :log "  Job type:        %JOB_TYPE%"
+call :log "  Source:          %SOURCE%"
+call :log "  Destination:     %DESTINATION%"
+call :log "  Staging area:    %STAGING%"
+call :log "  Exclusions file: %EXCLUSIONS_FILE%"
+call :log "  Backup prefix:   %BACKUP_PREFIX%"
+call :log "  Log location:    %LOGPATH%\%LOGFILE%"
+call :log "  Log max size:    %LOG_MAX_SIZE% bytes"
+call :log "---------------------------------------------------------------------------------------------------"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "%TIME%   Deleting backup sets that are older than %DAYS% days..."
 
 :: This cleans out the staging area.
 :: First FORFILES command tells the logfile what will get deleted. Second command actually deletes.
@@ -681,14 +613,11 @@ popd
 echo.
 :: Report on the cleanup
 if %ERRORLEVEL%==0 (
-		echo %TIME%   Cleanup completed successfully.>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Cleanup completed successfully.
-		)
-if not %ERRORLEVEL%==0 (
-		set JOB_ERROR=1
-		echo %TIME% ! Cleanup completed with errors.>> %LOGPATH%\%LOGFILE%
-		echo %TIME% ! Cleanup completed with errors.
-		)
+	call :log "%TIME%   Cleanup completed successfully."
+) else (
+	set JOB_ERROR=1
+	call :log "%TIME% ! Cleanup completed with errors."
+)
 goto done
 
 
@@ -697,24 +626,31 @@ goto done
 :::::::::::::::::::::::
 :done
 :: One of these displays if the operation was a restore operation
-if %RESTORE_TYPE%==full (
-		echo %TIME%   Restored full backup to %STAGING%\%BACKUP_PREFIX%>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Restored full backup to %STAGING%\%BACKUP_PREFIX%
-		)
+if %RESTORE_TYPE%==full (call :log "%TIME%   Restored full backup to %STAGING%\%BACKUP_PREFIX%")
+if %RESTORE_TYPE%==differential (call :log "%TIME%   Restored full and differential backup to %STAGING%\%BACKUP_PREFIX%")
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "%TIME%   %SCRIPT_NAME% complete."
+if '%JOB_ERROR%'=='1' call :log "%TIME% ! Note: Script exited with errors. Maybe check the log."
 
-if %RESTORE_TYPE%==differential (
-		echo.
-		echo %TIME%   Restored full and differential backup to %STAGING%\%BACKUP_PREFIX%>> %LOGPATH%\%LOGFILE%
-		echo %TIME%   Restored full and differential backup to %STAGING%\%BACKUP_PREFIX%
-		)
-
-echo.
-echo %TIME%   %SCRIPT_NAME% complete.>> %LOGPATH%\%LOGFILE%
-echo %TIME%   %SCRIPT_NAME% complete.
-if '%JOB_ERROR%'=='1' echo. && echo %TIME% ! Note: Script exited with errors.>> %LOGPATH%\%LOGFILE%
-if '%JOB_ERROR%'=='1' echo. && echo %TIME% ! Note: Script exited with errors. Maybe check the log.
 
 :end
 :: Clean up our temp exclude file
 if exist %TEMP%\DEATH_BY_HAMSTERS.txt del /F /Q %TEMP%\DEATH_BY_HAMSTERS.txt
+
+
+
+:::::::::::::::
+:: FUNCTIONS ::
+:::::::::::::::
+:: Since no new variable names are defined, there's no need for SETLOCAL.
+:: The %1 reference contains the first argument passed to the function. When the
+:: whole argument string is wrapped in double quotes, it is sent as an argument.
+:: The tilde syntax (%~1) removes the double quotes around the argument.
+:log
+echo:%~1 >> "%LOGPATH%\%LOGFILE%"
+echo:%~1
+goto :eof
+
+
 ENDLOCAL
+:eof
