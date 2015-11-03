@@ -413,14 +413,14 @@ if ( $JOB_TYPE -eq "purge" ) {
 	dir /B /A:D "$destination"
 	""
 	set DAYS=180
-	logliteral " Delete backup sets older than how many days? (you will be prompted for confirmation)
+	logliteral " Delete backup sets older than how many days? (you will be prompted for confirmation)"
 	set /p DAYS=[%DAYS%]?: 
 	if %DAYS%==exit goto end
 	""
 	# Tell user what will happen
 	logliteral " THESE BACKUP SETS WILL BE DELETED:"
 	logliteral " ----------------------------------"
-	# List files that would match. 
+	# List files that would match
 	# We have to use PushD to get around forfiles.exe not using UNC paths. pushd automatically assigns the next free drive letter
 	logliteral " From staging:"
 	pushd "$staging"
