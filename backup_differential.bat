@@ -20,9 +20,9 @@
 ::                 -a   archive (close out/rotate) the current backup set. This:
 ::                      1. moves all .7z files in the %DESTINATION% into a folder named with the current date
 ::                      2. deletes all .7z files from the staging area
-::                 -c   clean up (delete) old backup sets from staging and destination. If you specify a number 
+::                 -p   purge (delete) old backup sets from staging and destination. If you specify a number 
 ::                      of days after the command it will run automatically without any confirmation. Be careful with this!
-::                 -s   show job options (show what the variables are set to)
+::                 -c   show job options (show what the variables are set to)
 
 :: Important:     If you want to set this script up in Windows Task Scheduler, be aware that Task Scheduler
 ::                can't use mapped network drives (X:\, Z:\, etc) when it is set to "Run even if user isn't logged on."
@@ -30,6 +30,7 @@
 ::                UNC paths instead (\\server\backup_folder etc) for your source, destination, and staging areas.
 
 :: TODO:          1. Add md5sum checksum file in the backup directory (md5sum each full and diff and store in a file)
+@echo off
 SETLOCAL
 
 
@@ -73,15 +74,16 @@ set SEVENZIP="C:\Program Files\7-Zip\7z.exe"
 set FORFILES=%WINDIR%\system32\forfiles.exe
 
 
+
 :: --------------------------- Don't edit anything below this line --------------------------- ::
+
 
 
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-@echo off && cls
 set SCRIPT_VERSION=1.5.2
-set SCRIPT_UPDATED=2015-11-03
+set SCRIPT_DATE=2015-11-03
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -98,48 +100,36 @@ set SCRIPT_NAME=%0%
 ::::::::::::::::::::::::::::
 :: JOB TYPE DETERMINATION ::
 ::::::::::::::::::::::::::::
-:job_type_determination
-if '%JOB_TYPE%'=='' set JOB_TYPE=help
-if '%JOB_TYPE%'=='/?' set JOB_TYPE=help
-if '%JOB_TYPE%'=='-?' set JOB_TYPE=help
-if '%JOB_TYPE%'=='-h' set JOB_TYPE=help
-if '%JOB_TYPE%'=='--help' set JOB_TYPE=help
-if /i '%1'=='/f' set JOB_TYPE=full
-if /i '%1'=='-f' set JOB_TYPE=full
-if /i '%1'=='/d' set JOB_TYPE=differential
-if /i '%1'=='-d' set JOB_TYPE=differential
-if /i '%1'=='/r' set JOB_TYPE=restore
-if /i '%1'=='-r' set JOB_TYPE=restore
-if /i '%1'=='/a' set JOB_TYPE=archive_backup_set
-if /i '%1'=='-a' set JOB_TYPE=archive_backup_set
-if /i '%1'=='/c' set JOB_TYPE=cleanup_archives
-if /i '%1'=='-c' set JOB_TYPE=cleanup_archives
-if /i '%1'=='/s' goto show_options
-if /i '%1'=='-s' goto show_options
-:: If none of the above were specified then show the help screen
+
+:: Parse command-line arguments (functions are at bottom of script)
+call :parse_cmdline_args %*
+
+:: Show help if requested
 if %JOB_TYPE%==help (
 	echo. 
-	echo   %SCRIPT_NAME% v%SCRIPT_VERSION%
+	echo  %SCRIPT_NAME% v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo.
-	echo   Usage: %SCRIPT_NAME% ^< -f ^| -d ^| -r ^| -a ^| -c ^[days^] ^>
+	echo  Usage: %SCRIPT_NAME% ^< -f ^| -d ^| -r ^| -a ^| -p ^[days^] ^| -c ^>
 	echo.
-	echo   Flags:
-	echo    -f:  create a full backup
-	echo    -d:  create a differential backup ^(requires an existing full backup^)
-	echo    -r:  restore from a backup ^(extracts to %STAGING%\%BACKUP_PREFIX%_restore^)
-	echo    -a:  archive the current backup set. This will:
-	echo           1. move all .7z files located in:
-	echo               %DESTINATION% 
-	echo              into a dated archive folder.
-	echo           2. purge ^(delete^) all copies in the staging area ^(%STAGING%^)
-	echo    -c:  clean ^(AKA delete^) archived backup sets from staging and long-term storage.
-	echo         Optionally specify number of days to run automatically. Be careful with this!
-	echo         Note that this requires a previously-archived backup set ^(-a option^)
-	echo    -s:  show job options ^(show what parameters the script WOULD execute with^)
+	echo  Flags:
+	echo   -f:  create a full backup
+	echo   -d:  create a differential backup ^(requires an existing full backup^)
+	echo   -r:  restore from a backup, extracts to:
+	echo          %STAGING%\%BACKUP_PREFIX%_restore
+	echo   -a:  archive the current backup set. This will:
+	echo          1. move all .7z files located in:
+	echo              %DESTINATION% 
+	echo             ...into a dated archive folder.
+	echo          2. purge ^(delete^) all copies from the staging area:
+	echo              %STAGING%
+	echo   -p:  purge ^(delete^) archived backup sets from staging and long-term storage
+	echo        Optionally specify number of days to run automatically. Be careful with this!
+	echo        Note that this requires a previously-archived backup set ^(-a option^)
+	echo   -c:  show job options ^(show what parameters the script WOULD execute with^)
 	echo.
-	echo   Edit this script before running it to specify your source, destination, and work directories.
+	echo  Edit this script before running it to specify your source, destination, and work directories.
 	goto end
-	)
+)
 
 
 :::::::::::::::::::::::
@@ -169,7 +159,6 @@ popd
 :: Make sure we can find 7-Zip
 IF NOT EXIST %SEVENZIP% (
 	echo %TIME%   ERROR: Couldn't find 7z.exe when script was invoked.>> %LOGPATH%\%LOGFILE%
-	cls
 	color 0c
 	echo.
 	echo  ERROR:
@@ -182,13 +171,11 @@ IF NOT EXIST %SEVENZIP% (
 	echo.
 	pause
 	color
-	cls
 	goto end 
 )
 :: Make sure we can find forfiles.exe
 IF NOT EXIST %FORFILES% (
 	echo %TIME%   ERROR: Couldn't find forfiles.exe when script was invoked.>> %LOGPATH%\%LOGFILE%
-	cls
 	color 0c
 	echo.
 	echo  ERROR:
@@ -201,7 +188,6 @@ IF NOT EXIST %FORFILES% (
 	echo.
 	pause
 	color
-	cls
 	goto end
 )
 
@@ -214,19 +200,19 @@ if '%JOB_TYPE%'=='full' goto %JOB_TYPE%
 if '%JOB_TYPE%'=='differential' goto %JOB_TYPE%
 if '%JOB_TYPE%'=='restore' goto %JOB_TYPE%
 if '%JOB_TYPE%'=='archive_backup_set' goto %JOB_TYPE%
-if '%JOB_TYPE%'=='cleanup_archives' goto %JOB_TYPE%
+if '%JOB_TYPE%'=='purge_archives' goto %JOB_TYPE%
 goto end
 
 
-::::::::::::::::::::::
-:: SHOW JOB OPTIONS ::
-::::::::::::::::::::::
-:show_options
+:::::::::::::::::
+:: Config dump ::
+:::::::::::::::::
+:config_dump
 echo.
 echo  Current configuration:
 echo.
 echo   Script Version:       %SCRIPT_VERSION%
-echo   Script Updated:       %SCRIPT_UPDATED%
+echo   Script Updated:       %SCRIPT_DATE%
 echo   Source:               %SOURCE%
 echo   Destination:          %DESTINATION%
 echo   Staging area:         %STAGING%
@@ -528,11 +514,11 @@ goto done
 :::::::::::::::::::::::::::::::::::
 :: CLEAN UP ARCHIVED BACKUP SETS :: aka delete old sets
 :::::::::::::::::::::::::::::::::::
-:cleanup_archives
-IF NOT '%DAYS%'=='' goto cleanup_archives_go
+:purge_archives
+IF NOT '%DAYS%'=='' goto purge_archives_go
 
 :: List the backup sets
-:cleanup_archives_list
+:purge_archives_list
 echo.
 echo CURRENT BACKUP SETS:
 echo.
@@ -545,7 +531,7 @@ echo IN LONG-TERM STORAGE: ^(%DESTINATION%^)
 echo ---------------------
 dir /B /A:D "%DESTINATION%" 2>&1
 echo.
-:cleanup_archives_list2
+:purge_archives_list2
 echo.
 set DAYS=180
 echo Delete backup sets older than how many days? ^(you will be prompted for confirmation^)
@@ -569,17 +555,17 @@ popd
 echo.
 set HMMM=n
 set /p HMMM=Is this okay [%HMMM%]?: 
-if /i %HMMM%==n echo. && echo Canceled. Returning to menu. && goto cleanup_archives_list2
+if /i %HMMM%==n echo. && echo Canceled. Returning to menu. && goto purge_archives_list2
 if %DAYS%==exit goto end
 echo.
 set CHOICE=n
 set /p CHOICE=Are you absolutely sure [%CHOICE%]?: 
-if not %CHOICE%==y echo. && echo Canceled. Returning to menu. && goto cleanup_archives_list2
+if not %CHOICE%==y echo. && echo Canceled. Returning to menu. && goto purge_archives_list2
 echo.
 echo  Okay, starting deletion.
 
 :: Go ahead and do the cleanup. 
-:cleanup_archives_go
+:purge_archives_go
 call :log "---------------------------------------------------------------------------------------------------"
 call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% %TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
@@ -656,5 +642,29 @@ echo:%~1
 goto :eof
 
 
+:parse_cmdline_args
+for %%i in (%1) do (
+	if /i '%%i'=='/f' set JOB_TYPE=full
+	if /i '%%i'=='-f' set JOB_TYPE=full
+	if /i '%%i'=='/d' set JOB_TYPE=differential
+	if /i '%%i'=='-d' set JOB_TYPE=differential
+	if /i '%%i'=='/r' set JOB_TYPE=restore
+	if /i '%%i'=='-r' set JOB_TYPE=restore
+	if /i '%%i'=='/a' set JOB_TYPE=archive_backup_set
+	if /i '%%i'=='-a' set JOB_TYPE=archive_backup_set
+	if /i '%%i'=='/p' set JOB_TYPE=purge_archives
+	if /i '%%i'=='-p' set JOB_TYPE=purge_archives
+	if /i '%%i'=='' set JOB_TYPE=help
+	if /i '%%i'=='/?' set JOB_TYPE=help
+	if /i '%%i'=='-?' set JOB_TYPE=help
+	if /i '%%i'=='-h' set JOB_TYPE=help
+	if /i '%%i'=='--help' set JOB_TYPE=help
+	if /i '%%i'=='/c' goto config_dump
+	if /i '%%i'=='-c' goto config_dump
+	)
+goto :eof
+
+
 ENDLOCAL
 :eof
+color
