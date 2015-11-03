@@ -48,14 +48,14 @@ SETLOCAL
 ::  * Network paths are okay           (okay:  \\server\share name      )
 ::                                     (       \\172.16.1.5\share name  )
 :: Specify the folder you want to back up here.
-set SOURCE=R:\
+set SOURCE=%userprofile%\root\scripts\sysadmin
 
 :: Work area where everything is stored while compressing. Should be a fast drive or something that can handle a lot of writes
 :: Recommend not using a network share unless it's Gigabit or faster.
-set STAGING=P:\backup_staging\local
+set STAGING=%TEMP%\backup_staging
 
 :: This is the final, long-term destination for your backup after it is compressed.
-set DESTINATION=\\thebrain\backups
+set DESTINATION=%userprofile%\desktop\backups
 
 :: If you want to customize the prefix of the backup files, do so here. Don't use any special characters (like underscores)
 :: The script automatically suffixes an underscore to this name. Recommend not changing this unless you really need to.
@@ -66,7 +66,7 @@ set BACKUP_PREFIX=backup
 :: files or folders (wildcards in the form of * are allowed and recommended) to exclude.
 :: If you specify a file here and the script can't find it, it will abort.
 :: If you leave this blank, the script won't ignore any files.
-set EXCLUSIONS_FILE=R:\Scripts\sysadmin\backup_differential_excludes.txt
+set EXCLUSIONS_FILE=
 
 :: Log settings. Max size is how big (in bytes) the log can be before it is archived. 1048576 bytes is one megabyte
 set LOGPATH=%SystemDrive%\Logs
@@ -263,7 +263,7 @@ if not exist %EXCLUSIONS_FILE% (
 call :log "---------------------------------------------------------------------------------------------------"
 call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
-call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+call :log "  Script location:  %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -328,7 +328,7 @@ if not exist %EXCLUSIONS_FILE% (
 call :log "---------------------------------------------------------------------------------------------------"
 call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
-call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+call :log "  Script location:  %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -359,6 +359,7 @@ call :log " ------- [ Beginning of 7zip output ] -------"
 if not '%EXCLUSIONS_FILE%'=='' %SEVENZIP% u "%STAGING%\%BACKUP_PREFIX%_full.7z" "%SOURCE%" -ms=off -mx=9 -xr@"%EXCLUSIONS_FILE%" -t7z -u- -up0q3r2x2y2z0w2!"%STAGING%\%BACKUP_PREFIX%_differential_%CUR_DATE%.7z" >> %LOGPATH%\%LOGFILE% 2>&1
 if '%EXCLUSIONS_FILE%'=='' %SEVENZIP% u "%STAGING%\%BACKUP_PREFIX%_full.7z" "%SOURCE%" -ms=off -mx=9 -t7z -u- -up0q3r2x2y2z0w2!"%STAGING%\%BACKUP_PREFIX%_differential_%CUR_DATE%.7z" >> %LOGPATH%\%LOGFILE% 2>&1
 call :log " ------- [    End of 7zip output    ] -------"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
 
 :: Report on the build
 if %ERRORLEVEL%==0 (
@@ -428,7 +429,7 @@ if not %BACKUP_FILE%==%BACKUP_PREFIX%_full.7z set RESTORE_TYPE=differential
 :restore_go
 call :log "---------------------------------------------------------------------------------------------------"
 call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
-call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+call :log "  Script location:  %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -455,6 +456,7 @@ echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " ------- [ Beginning of 7zip output ] -------"
 %SEVENZIP% x "%STAGING%\%BACKUP_PREFIX%_full.7z" -y -o"%STAGING%\%BACKUP_PREFIX%_restore\">> %LOGPATH%\%LOGFILE% 2>&1
 call :log " ------- [    End of 7zip output    ] -------"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
 
 :: Report on the unpack
 if %ERRORLEVEL%==0 (
@@ -493,7 +495,7 @@ goto done
 call :log "---------------------------------------------------------------------------------------------------"
 call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
-call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+call :log "  Script location:  %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -581,7 +583,7 @@ echo  Okay, starting deletion.
 call :log "---------------------------------------------------------------------------------------------------"
 call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
-call :log "  Script location:  %~dp0\%SCRIPT_NAME%"
+call :log "  Script location:  %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
