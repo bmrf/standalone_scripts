@@ -4,11 +4,6 @@
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
 :: Version:       1.5.2 + Merge :log function from Tron; convert most echo commands to use log function
 ::                1.5.1 * Add standard boilerplate comments
-::                1.5.0 * Overhauled Date/Time conversion so we can handle ALL versions of Windows using ANY local date-time format
-::                1.4.9 * Reworked CUR_DATE variable to handle more than one Date/Time format
-::                        Can now handle all Windows date formats
-::                1.4.8 + Added SCRIPT_UPDATED variable to timestamp last update of the script
-::                1.4.7 - Removed some redundant %TIME% stamps in the logs, under the Cleanup section
 ::                < -- remove outdate changelog comments -->
 ::                1.0     Initial write
 
@@ -86,7 +81,7 @@ set FORFILES=%WINDIR%\system32\forfiles.exe
 :::::::::::::::::::::
 @echo off && cls
 set SCRIPT_VERSION=1.5.2
-set SCRIPT_UPDATED=2015-11-01
+set SCRIPT_UPDATED=2015-11-03
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -134,7 +129,7 @@ if %JOB_TYPE%==help (
 	echo    -r:  restore from a backup ^(extracts to %STAGING%\%BACKUP_PREFIX%_restore^)
 	echo    -a:  archive the current backup set. This will:
 	echo           1. move all .7z files located in:
-	echo              %DESTINATION% 
+	echo               %DESTINATION% 
 	echo              into a dated archive folder.
 	echo           2. purge ^(delete^) all copies in the staging area ^(%STAGING%^)
 	echo    -c:  clean ^(AKA delete^) archived backup sets from staging and long-term storage.
@@ -261,9 +256,10 @@ if not exist %EXCLUSIONS_FILE% (
 )
 :full_go
 call :log "---------------------------------------------------------------------------------------------------"
-call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% %TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
-call :log "  Script location:  %~dp0%SCRIPT_NAME%"
+call :log "  Script location:"
+call :log "   %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -326,9 +322,10 @@ if not exist %EXCLUSIONS_FILE% (
 )
 :differential_go
 call :log "---------------------------------------------------------------------------------------------------"
-call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% %TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
-call :log "  Script location:  %~dp0%SCRIPT_NAME%"
+call :log "  Script location:"
+call :log "   %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -428,8 +425,10 @@ if not %BACKUP_FILE%==%BACKUP_PREFIX%_full.7z set RESTORE_TYPE=differential
 
 :restore_go
 call :log "---------------------------------------------------------------------------------------------------"
-call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
-call :log "  Script location:  %~dp0%SCRIPT_NAME%"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% %TIME% by %USERDOMAIN%\%USERNAME%"
+echo. && echo.>>%LOGPATH%\%LOGFILE%
+call :log "  Script location:"
+call :log "   %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -493,9 +492,10 @@ goto done
 ::::::::::::::::::::::::
 :archive_backup_set
 call :log "---------------------------------------------------------------------------------------------------"
-call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% %TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
-call :log "  Script location:  %~dp0%SCRIPT_NAME%"
+call :log "  Script location:"
+call :log "   %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -581,9 +581,10 @@ echo  Okay, starting deletion.
 :: Go ahead and do the cleanup. 
 :cleanup_archives_go
 call :log "---------------------------------------------------------------------------------------------------"
-call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% at%TIME% by %USERDOMAIN%\%USERNAME%"
+call :log "  Differential Backup Script v%SCRIPT_VERSION% - initialized %CUR_DATE% %TIME% by %USERDOMAIN%\%USERNAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
-call :log "  Script location:  %~dp0%SCRIPT_NAME%"
+call :log "  Script location:"
+call :log "   %~dp0%SCRIPT_NAME%"
 echo. && echo.>>%LOGPATH%\%LOGFILE%
 call :log " Job Options"
 call :log "  Job type:        %JOB_TYPE%"
@@ -601,14 +602,14 @@ call :log "%TIME%   Deleting backup sets that are older than %DAYS% days..."
 :: This cleans out the staging area.
 :: First FORFILES command tells the logfile what will get deleted. Second command actually deletes.
 pushd "%STAGING%"
-FORFILES /D -%DAYS% /C "cmd /c IF @isdir == TRUE echo @path" >> %LOGPATH%\%LOGFILE%
+FORFILES /D -%DAYS% /C "cmd /c IF @isdir == TRUE echo @path" >> %LOGPATH%\%LOGFILE% 2>NUL
 FORFILES /S /D -%DAYS% /C "cmd /c IF @isdir == TRUE rmdir /S /Q @path"
 popd
 
 :: This cleans out the destination / long-term storage area.
 :: First FORFILES command tells the logfile what will get deleted. Second command actually deletes.
 pushd "%DESTINATION%"
-FORFILES /D -%DAYS% /C "cmd /c IF @isdir == TRUE echo @path" >> %LOGPATH%\%LOGFILE%
+FORFILES /D -%DAYS% /C "cmd /c IF @isdir == TRUE echo @path" >> %LOGPATH%\%LOGFILE% 2>NUL
 FORFILES /S /D -%DAYS% /C "cmd /c IF @isdir == TRUE rmdir /S /Q @path"
 popd
 
