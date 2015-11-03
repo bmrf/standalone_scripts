@@ -396,7 +396,7 @@ echo   These backups are available:
 echo.
 dir /B /A:-D "%STAGING%" 2>NUL
 echo.
-echo  Enter the filename to restore from exactly as it appears above.
+echo  Enter the filename to restore from EXACTLY as it appears above.
 echo  ^(Note: archived backup sets are not shown^)
 echo.
 :restore_menu
