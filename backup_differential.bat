@@ -637,6 +637,7 @@ if '%JOB_ERROR%'=='1' call :log "%TIME% ! Note: Script exited with errors. Maybe
 :: Clean up our temp exclude file
 if exist %TEMP%\DEATH_BY_HAMSTERS.txt del /F /Q %TEMP%\DEATH_BY_HAMSTERS.txt
 
+goto :eof
 
 
 :::::::::::::::
