@@ -9,6 +9,7 @@ Requirements:  1. Expects Master Copy directory to contain the following files:
                2. Expects master tron.bat to have accurate "set VERSION=yyyy-mm-dd" string because this is parsed and used to name everything correctly
                
                3. Expects seed server directory structure to look like this:
+                  
                  \tron\btsync
                      \tron
                        - changelog-vX.Y.Z-updated-YYYY-MM-DD.txt
@@ -94,14 +95,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "host.name",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "host.name",                                       # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "username",
 	[string]$Repo_FTP_Password = "password",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
 	[string]$gpgPassphrase = "passphrase",
-	[string]$gpgUsername = "keyusername"
+	[string]$gpgUsername = "vocatus.gate"
 )
 
 
@@ -337,6 +338,7 @@ if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification\vo
 
 
 
+
 ###########
 # EXECUTE #
 ###########
@@ -373,8 +375,8 @@ while (1 -eq 1) {
 		log " Done" darkgreen
 		break
 	}
-	# sleep for 3 seconds before looking again
-	start-sleep -s 1
+	# sleep before looking again
+	start-sleep -s 2
 }
 
 
@@ -397,13 +399,13 @@ log " Seed server loaded. Updating master repo..." green
 # Create the file name using the new version number extracted from tron.bat and exclude any 
 # files with "sync" in the title (these are BT Sync hidden files, we don't need to pack them
 log " Building binary pack, please wait..." green
-	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
+	& "$SevenZip" a -sfx "$env:temp\$NewBinary.UPLOADING" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
 log " Done" darkgreen
 
 
 # JOB: Background upload the binary pack to the static pack folder on the local seed server
 log " Background uploading $NewBinary to $SeedServer\$StaticPackStorageLocation..." green
-start-job -name tron_move_pack_to_seed_server -scriptblock {mv $env:temp\$NewBinary $SeedServer\$StaticPackStorageLocation -force}
+start-job -name tron_move_pack_to_seed_server -scriptblock {cp $env:temp\$NewBinary.UPLOADING $SeedServer\$StaticPackStorageLocation -force}
 
 	
 # JOB: Fetch sha256sums.txt from the repo for updating
@@ -437,8 +439,8 @@ while (1 -eq 1) {
 		
 		break
 	}
-	# otherwise sleep for 5 seconds before looking again
-	start-sleep -s 1
+	# sleep before looking again
+	start-sleep -s 2
 }
 
 
@@ -474,10 +476,12 @@ log " Done" darkgreen
 # JOB: Clean up after ourselves
 log " Cleaning up..." green
 	remove-item $env:temp\sha256sums* -force -recurse -ea SilentlyContinue | out-null
-	remove-item $env:temp\$NewBinary -force -recurse -ea SilentlyContinue | out-null
+	remove-item $env:temp\$NewBinary* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\deploy_tron_ftp_script.txt -force -recurse -ea SilentlyContinue | out-null
 	# Remove our background upload job from the job list
 	get-job | remove-job
+	# Rename the file we uploaded to the static pack storage location earlier
+	mv $SeedServer\$StaticPackStorageLocation\$NewBinary.UPLOADING $SeedServer\$StaticPackStorageLocation\$NewBinary -force
 log " Done" darkgreen
 
 
@@ -516,7 +520,7 @@ function log($message, $color)
 	#console
 	write-host (get-date -f "yyyy-mm-dd hh:mm:ss") -n -f darkgray; write-host "$message" -f $color
 	#log
-	(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath $logfile -append
+	(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath $logpath\$logfile -append
 }
 
 
