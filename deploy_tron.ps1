@@ -9,7 +9,6 @@ Requirements:  1. Expects Master Copy directory to contain the following files:
                2. Expects master tron.bat to have accurate "set VERSION=yyyy-mm-dd" string because this is parsed and used to name everything correctly
                
                3. Expects seed server directory structure to look like this:
-                  
                  \tron\btsync
                      \tron
                        - changelog-vX.Y.Z-updated-YYYY-MM-DD.txt
@@ -391,7 +390,7 @@ log " Done" darkgreen
 log " Done" darkgreen
 
 # Notify that we're done loading the seed server and are starting deployment to the master repo
-log "  Seed server loaded. Updating master repo..." green
+log " Seed server loaded. Updating master repo..." green
 
 
 # JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory. 
