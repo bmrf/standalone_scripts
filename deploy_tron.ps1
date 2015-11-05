@@ -72,7 +72,7 @@ param (
 	[string]$HashDeep64 = "$env:SystemRoot\syswow64\hashdeep64.exe",            # e.g. "$env:SystemRoot\syswow64\hashdeep64.exe"
 
 	# Path to gpg.exe (for signing)
-	[string]$gpg = "$env:ProgramFiles\gpg4win\bin\gpg.exe",                     # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
+	[string]$gpg = "${env:ProgramFiles(x86)}\GNU\GnuPG\pub\gpg.exe",            # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
 
 	# Master copy of Tron. Directory path, not tron.bat
 	[string]$MasterCopy = "r:\utilities\security\cleanup-repair\tron",          # e.g. "r:\utilities\security\cleanup-repair\tron"
