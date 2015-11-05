@@ -457,7 +457,7 @@ log " Building FTP deployment script..." green
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-"mv $NewBinary.UPLOADING $NewBinary" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+"mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 
 log " Done" darkgreen
