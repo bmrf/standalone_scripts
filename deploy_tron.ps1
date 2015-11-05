@@ -82,8 +82,8 @@ param (
 
 	# Seeding subdirectories containing \tron and \integrity_verification directories
 	# No leading or trailing slashes
-	[string]$SeedFolderBTS = "downloads\seeders\tron\btsync",                   # e.g. "downloads\seeders\tron\btsync"
-	[string]$SeedFolderST = "downloads\seeders\tron\syncthing",                 # e.g. "downloads\seeders\tron\syncthing"
+	[string]$SeedFolderBTS = "downloads\seeders\tron\btsync\tron",              # e.g. "downloads\seeders\tron\btsync"
+	[string]$SeedFolderST = "downloads\seeders\tron\syncthing\tron",            # e.g. "downloads\seeders\tron\syncthing"
 
 	# Static pack storage location. RELATIVE path from root on the
 	# local deployment server. Where we stash the compiled .exe
@@ -95,14 +95,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "servername",                                      # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "host.name",                                       # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "username",
 	[string]$Repo_FTP_Password = "password",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
 	[string]$gpgPassphrase = "passphrase",
-	[string]$gpgUsername = "keyusername"
+	[string]$gpgUsername = "keyid"
 )
 
 
@@ -121,7 +121,7 @@ param (
 # PREP AND CHECKS #
 ###################
 $SCRIPT_VERSION = "1.2.7"
-$SCRIPT_UPDATED = "2015-10-29"
+$SCRIPT_UPDATED = "2015-11-05"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -244,13 +244,13 @@ if (!(test-path $MasterCopy\tron\Instructions*.txt)) {
 	break
 }
 
-# Seed server: Test for existence of top level Tron folder
-if (!(test-path -literalpath $SeedServer\$SeedFolder)) {
+# Seed server: Test for existence of top level Tron folder (BT Sync)
+if (!(test-path -literalpath $SeedServer\$SeedFolderBTS)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the Tron seed folder at:"
+	write-host " Couldn't find the Tron BT Sync seed folder at:"
 	""
-	write-host "         $SeedServer\$SeedFolder"
+	write-host "         $SeedServer\$SeedFolderBTS"
 	""
 	write-host "         Check your paths and make sure the deployment server is"
 	write-host "         accessible and that you have write-access to the Tron seed folder."
@@ -259,13 +259,28 @@ if (!(test-path -literalpath $SeedServer\$SeedFolder)) {
 	break
 }
 
-# Seed server: Test for existence of \tron\integrity_verification sub-folder
-if (!(test-path -literalpath $SeedServer\$SeedFolder\integrity_verification)) {
+# Seed server: Test for existence of top level Tron folder (SyncThing)
+if (!(test-path -literalpath $SeedServer\$SeedFolderST)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the integrity_verification folder at:"
+	write-host " Couldn't find the Tron SyncThing seed folder at:"
 	""
-	write-host "         $SeedServer\$SeedFolder\integrity_verification\"
+	write-host "         $SeedServer\$SeedFolderST"
+	""
+	write-host "         Check your paths and make sure the deployment server is"
+	write-host "         accessible and that you have write-access to the Tron seed folder."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Seed server: Test for existence of \tron\integrity_verification sub-folder (BT Sync)
+if (!(test-path -literalpath $SeedServer\$SeedFolderBTS\integrity_verification)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find the BT Sync integrity_verification folder at:"
+	""
+	write-host "         $SeedServer\$SeedFolderBTS\integrity_verification\"
 	""
 	write-host "         Check your paths and make sure you can reach the deployment server,"
 	write-host "         you have write-access to the Tron seed folder, and that the"
@@ -275,13 +290,29 @@ if (!(test-path -literalpath $SeedServer\$SeedFolder\integrity_verification)) {
 	break
 }
 
-# Seed server: Test for existence of the public key
-if (!(test-path -literalpath $SeedServer\$SeedFolder\integrity_verification\vocatus-public-key.asc)) {
+# Seed server: Test for existence of \tron\integrity_verification sub-folder (SyncThing)
+if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find the SyncThing integrity_verification folder at:"
+	""
+	write-host "         $SeedServer\$SeedFolderST\integrity_verification\"
+	""
+	write-host "         Check your paths and make sure you can reach the deployment server,"
+	write-host "         you have write-access to the Tron seed folder, and that the"
+	write-host "         \integrity_verification sub-folder exists. "
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Seed server: Test for existence of the public key (BT Sync)
+if (!(test-path -literalpath $SeedServer\$SeedFolderBTS\integrity_verification\vocatus-public-key.asc)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
 	write-host " Couldn't find the public key at:"
 	""
-	write-host "         $SeedServer\$SeedFolder\integrity_verification\vocatus-public-key.asc"
+	write-host "         $SeedServer\$SeedFolderBTS\integrity_verification\vocatus-public-key.asc"
 	""
 	write-host "         Check your paths and make sure you can reach the deployment server"
 	write-host "         and that you have write-access to the Tron seed folder."
@@ -289,6 +320,22 @@ if (!(test-path -literalpath $SeedServer\$SeedFolder\integrity_verification\voca
 	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
+
+# Seed server: Test for existence of the public key (SyncThing)
+if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification\vocatus-public-key.asc)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find the public key at:"
+	""
+	write-host "         $SeedServer\$SeedFolderST\integrity_verification\vocatus-public-key.asc"
+	""
+	write-host "         Check your paths and make sure you can reach the deployment server"
+	write-host "         and that you have write-access to the Tron seed folder."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
 
 
 ###########
@@ -300,8 +347,10 @@ log " Tron deployment script v$SCRIPT_VERSION" green
 
 # JOB: Clear target area
 log " Clearing target area on seed server..." green
-	remove-item $SeedServer\$SeedFolder\tron\* -force -recurse | out-null
-	remove-item $SeedServer\$SeedFolder\integrity_verification\*txt* -force -recurse | out-null
+	remove-item $SeedServer\$SeedFolderBTS\tron\* -force -recurse | out-null
+	remove-item $SeedServer\$SeedFolderBTS\integrity_verification\*txt* -force -recurse | out-null
+	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse | out-null
+	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse | out-null
 log " Done" darkgreen
 
 
@@ -326,7 +375,7 @@ while (1 -eq 1) {
 		break
 	}
 	# sleep for 3 seconds before looking again
-	start-sleep -s 3
+	start-sleep -s 1
 }
 
 
@@ -390,7 +439,7 @@ while (1 -eq 1) {
 		break
 	}
 	# otherwise sleep for 5 seconds before looking again
-	start-sleep -s 5
+	start-sleep -s 1
 }
 
 
@@ -405,7 +454,7 @@ log " Building FTP deployment script..." green
 "rm *.exe" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "rm sha256sums*" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
-add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt`""
+add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
 "mv $NewBinary.UPLOADING $NewBinary" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
