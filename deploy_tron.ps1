@@ -82,8 +82,8 @@ param (
 
 	# Seeding subdirectories containing \tron and \integrity_verification directories
 	# No leading or trailing slashes
-	[string]$SeedFolderBTS = "downloads\seeders\tron\btsync\tron",              # e.g. "downloads\seeders\tron\btsync"
-	[string]$SeedFolderST = "downloads\seeders\tron\syncthing\tron",            # e.g. "downloads\seeders\tron\syncthing"
+	[string]$SeedFolderBTS = "downloads\seeders\tron\btsync",                   # e.g. "downloads\seeders\tron\btsync"
+	[string]$SeedFolderST = "downloads\seeders\tron\syncthing",                 # e.g. "downloads\seeders\tron\syncthing"
 
 	# Static pack storage location. RELATIVE path from root on the
 	# local deployment server. Where we stash the compiled .exe
@@ -95,14 +95,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "host.name",                                       # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "host.name",                                        # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "username",
 	[string]$Repo_FTP_Password = "password",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
 	[string]$gpgPassphrase = "passphrase",
-	[string]$gpgUsername = "keyid"
+	[string]$gpgUsername = "keyusername"
 )
 
 
@@ -126,11 +126,11 @@ $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
-$OldVersion = gc $SeedServer\$SeedFolderBTS\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
+$OldVersion = gc $SeedServer\$SeedFolderBTS\tron\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
 $OldVersion = "$OldVersion".Split("=")[1]
 
 # Extract release date of current version from seed server copy of tron.bat and stash it in $OldDate
-$OldDate = gc $SeedServer\$SeedFolderBTS\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_DATE"
+$OldDate = gc $SeedServer\$SeedFolderBTS\tron\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_DATE"
 $OldDate = "$OldDate".Split("=")[1]
 
 # Extract version number from master's tron.bat and stash it in $NewVersion, then calculate and store the full .exe name for the new binary we'll be building
