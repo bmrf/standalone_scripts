@@ -59,7 +59,7 @@ Behavior/steps:
 #  * Network paths are okay        (okay:  \\server\share name      )
 param (
 	# Logging information
-	[string]$logpath = $env:systemdrive + "\Logs",
+	[string]$logpath = "$env:systemdrive\Logs",
 	[string]$logfile = "tron_deployment_script.log",
 
 	# Path to 7z.exe
@@ -95,13 +95,13 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "host.name",                                       # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "username",
-	[string]$Repo_FTP_Password = "password",
+	[string]$Repo_FTP_Host = "asdf",                                            # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "asdf",
+	[string]$Repo_FTP_Password = "asdf",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "passphrase",
+	[string]$gpgPassphrase = "asdf",
 	[string]$gpgUsername = "vocatus.gate"
 )
 
@@ -520,7 +520,7 @@ function log($message, $color)
 	#console
 	write-host (get-date -f "yyyy-mm-dd hh:mm:ss") -n -f darkgray; write-host "$message" -f $color
 	#log
-	(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath $logpath\$logfile -append
+	(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath "$logpath\$logfile" -append
 }
 
 
