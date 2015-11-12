@@ -21,7 +21,8 @@ Requirements:  1. Expects Master Copy directory to contain the following files:
                        - vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.7 * Add ability to handle two seed directories (one for BT Sync and one for SyncThing)
+Version:       1.2.8 * Add automatic PGP signature verification
+               1.2.7 * Add ability to handle two seed directories (one for BT Sync and one for SyncThing)
                      * Add reporting of the date of the version we're replacing
                1.2.6 / Disable all use of PortablePGP since we're reverting to using gpg4win
                1.2.5 + Add auto-killing of PortablePGP window after checksums.txt signature file appears
@@ -95,14 +96,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "web.site",                                        # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "username",
-	[string]$Repo_FTP_Password = "password",
+	[string]$Repo_FTP_Host = "zzz",                                             # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "zzz",
+	[string]$Repo_FTP_Password = "zzz",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "xxx",
-	[string]$gpgUsername = "xxx"
+	[string]$gpgPassphrase = "zzz",
+	[string]$gpgUsername = "zzz"
 )
 
 
@@ -120,8 +121,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.2.7"
-$SCRIPT_UPDATED = "2015-11-05"
+$SCRIPT_VERSION = "1.2.8"
+$SCRIPT_UPDATED = "2015-11-12"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -404,7 +405,7 @@ log " Done" darkgreen
 
 # JOB: Background upload the binary pack to the static pack folder on the local seed server
 log " Background uploading $NewBinary to $SeedServer\$StaticPackStorageLocation..." green
-start-job -name tron_copy_pack_to_seed_server -scriptblock {cp $env:temp\$NewBinary.UPLOADING $SeedServer\$StaticPackStorageLocation -force}
+start-job -name tron_copy_pack_to_seed_server -scriptblock {cp "$env:temp\$($args[0]).UPLOADING" "$($args[1])\$($args[2])" -force} -ArgumentList $NewBinary, $SeedServer, $StaticPackStorageLocation
 
 	
 # JOB: Fetch sha256sums.txt from the repo for updating
@@ -428,18 +429,27 @@ log " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt
 log " Done" darkgreen
 
 
-# JOB: PGP sign sha256sums.txt before FTP upload
+# JOB: PGP sign sha256sums.txt
 log " PGP signing sha256sums.txt..." green
 remove-item $env:temp\sha256sums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 & $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $env:temp\sha256sums.txt
 while (1 -eq 1) {
 	if (test-path $env:temp\sha256sums.txt.asc) {
 		log " Done" darkgreen
-		
 		break
 	}
 	# sleep before looking again
 	start-sleep -s 2
+}
+
+
+# JOB: Verify PGP signature before FTP upload
+log " Verifying PGP signature..." green
+& $gpg --batch --yes --verbose --verify $env:temp\sha256sums.txt.asc $env:temp\sha256sums.txt
+if ($? -eq "True") { 
+	log " Done" darkgreen
+} else {
+	log " ! There was a problem verifying the signature!" red
 }
 
 
@@ -477,10 +487,10 @@ log " Cleaning up..." green
 	remove-item $env:temp\sha256sums* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\$NewBinary* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\deploy_tron_ftp_script.txt -force -recurse -ea SilentlyContinue | out-null
-	# Remove our background upload job from the job list
-	get-job | remove-job
 	# Rename the file we uploaded to the static pack storage location earlier
 	mv $SeedServer\$StaticPackStorageLocation\$NewBinary.UPLOADING $SeedServer\$StaticPackStorageLocation\$NewBinary -force
+	# Remove our background upload job from the job list
+	get-job | remove-job
 log " Done" darkgreen
 
 
