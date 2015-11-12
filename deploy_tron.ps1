@@ -82,8 +82,8 @@ param (
 
 	# Seeding subdirectories containing \tron and \integrity_verification directories
 	# No leading or trailing slashes
-	[string]$SeedFolderBTS = "downloads\seeders\tron\btsync",                   # e.g. "downloads\seeders\tron\btsync"
-	[string]$SeedFolderST = "downloads\seeders\tron\syncthing",                 # e.g. "downloads\seeders\tron\syncthing"
+	[string]$SeedFolderBTS = "downloads\seeders\btsync\tron",                   # e.g. "downloads\seeders\tron\btsync"
+	[string]$SeedFolderST = "downloads\seeders\syncthing\tron",                 # e.g. "downloads\seeders\tron\syncthing"
 
 	# Static pack storage location. RELATIVE path from root on the
 	# local deployment server. Where we stash the compiled .exe
@@ -95,14 +95,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "asdf",                                            # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "asdf",
-	[string]$Repo_FTP_Password = "asdf",
+	[string]$Repo_FTP_Host = "web.site",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "username",
+	[string]$Repo_FTP_Password = "password",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "asdf",
-	[string]$gpgUsername = "vocatus.gate"
+	[string]$gpgPassphrase = "xxx",
+	[string]$gpgUsername = "xxx"
 )
 
 
@@ -381,7 +381,6 @@ while (1 -eq 1) {
 
 
 # JOB: Upload from master copy to seed server directories
-"$CUR_DATE "+ $(get-date -f hh:mm:ss) + " Master copy is gold. Copying from master to seed locations..." >> $LOGPATH\$LOGFILE
 log " Master copy is gold. Copying from master to seed locations..." green
 log " Loading BT Sync seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
@@ -457,7 +456,7 @@ log " Building FTP deployment script..." green
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-"mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+write-output "mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 
 log " Done" darkgreen
@@ -520,7 +519,8 @@ function log($message, $color)
 	#console
 	write-host (get-date -f "yyyy-mm-dd hh:mm:ss") -n -f darkgray; write-host "$message" -f $color
 	#log
-	(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath "$logpath\$logfile" -append
+	#(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath "$logpath\$logfile" -append
+	(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath "C:\logs\tron_deployment_script.log" -append
 }
 
 
