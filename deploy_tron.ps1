@@ -457,7 +457,7 @@ log " Done" darkgreen
 log " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." green
 	pushd $env:temp
 	# First hash the file
-	& $HashDeep64 -s -e -l -c sha256 "Tron v$NewVersion ($CUR_DATE).UPLOADING.exe" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
+	& $HashDeep64 -s -e -l -c sha256 "Tron v$NewVersion ($CUR_DATE).exe.UPLOADING" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
 	# Strip out the annoying hashdeep header
 	gc .\sha256sums_TEMP.txt | Where-Object {$_ -notmatch '#'} | where-object {$_ -notmatch '%'} | sc .\sha256sums_TEMP2.txt
 	# Strip out blank lines and trailing spaces (not needed?)
