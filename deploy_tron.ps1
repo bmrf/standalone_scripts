@@ -59,34 +59,6 @@ Behavior/steps:
 11. Cleans up (deletes temp files used)
 #>
 
-Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.8 * Add automatic PGP signature verification
-               1.2.7 * Add ability to handle two seed directories (one for BT Sync and one for SyncThing)
-                     * Add reporting of the date of the version we're replacing
-               1.2.6 / Disable all use of PortablePGP since we're reverting to using gpg4win
-               1.2.5 + Add auto-killing of PortablePGP window after checksums.txt signature file appears
-               1.2.4 ! Fix binary pack hash calculation by removing ".\" prefix on new binary path, which was breaking the update checker in Tron.bat
-               1.2.3 / Suppress 7-Zip output (redirect to log file)
-               1.2.2 + Add automatic launching of PortablePGP.exe to signing portion, along with associated $PortablePGP variable
-               1.2.1 / Update to account for changed Tron sub-folder and new integrity_verification directory
-                     + Add $OldVersion variable and associated code to display the version we replaced
-               1.2.0 + Replace built-in Windows FTP client with WinSCP and add associated $WinSCP variable and checks
-               1.1.0 * Add calculation of SHA256 sum of the binary pack and upload of respective sha256sums.txt to prepare for moving the Tron update checker away from using MD5 sums
-               1.0.0 . Initial write
-
-Behavior/steps:
-1. Deletes content from seed server
-2. Calculates sha256 hashes of all files in \tron
-3. PGP-signs checksums.txt
-4. Creates binary pack 
-5. PGP-signs the binary pack
-6. Background uploads the binary pack to the seed server
-7. Fetches sha256sums.txt from repo and updates it with sha256sum of binary pack
-8. Deletes current version from repo server; uploads .exe pack and sha256sums.txt to repo server; cleans up residual temp files; notifies of completion and advises to restart BT Sync
-9. Builds FTP upload script
-10. Uploads via FTP
-11. Cleans up (deletes temp files used)
-#>
 
 
 #############
