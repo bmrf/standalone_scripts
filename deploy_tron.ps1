@@ -31,7 +31,8 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.8 * Add automatic PGP signature verification
+Version:       1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
+               1.2.8 * Add automatic PGP signature verification
                1.2.7 * Add ability to handle two seed directories (one for BT Sync and one for SyncThing)
                      * Add reporting of the date of the version we're replacing
                1.2.6 / Disable all use of PortablePGP since we're reverting to using gpg4win
@@ -132,8 +133,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.2.8"
-$SCRIPT_UPDATED = "2015-11-12"
+$SCRIPT_VERSION = "1.2.9"
+$SCRIPT_UPDATED = "2015-11-30"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -225,6 +226,111 @@ if (!(test-path -literalpath $MasterCopy\tron\tron.bat)) {
 	break
 }
 
+# Master copy: Test for existence of stage_0_prep.bat inside the resources subfolder
+if (!(test-path -literalpath $MasterCopy\tron\resources\stage_0_prep\stage_0_prep.bat)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find stage_0_prep.bat at:"
+	""
+	write-host "         $MasterCopy\resources\stage_0_prep\stage_0_prep.bat"
+	""
+	write-host "         Check your paths and make sure all the required files"
+	write-host "         exist in the appropriate locations."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Master copy: Test for existence of stage_1_tempclean.bat inside the resources subfolder
+if (!(test-path -literalpath $MasterCopy\tron\resources\stage_1_tempclean\stage_1_tempclean.bat)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find stage_1_tempclean.bat at:"
+	""
+	write-host "         $MasterCopy\resources\stage_1_tempclean\stage_1_tempclean.bat"
+	""
+	write-host "         Check your paths and make sure all the required files"
+	write-host "         exist in the appropriate locations."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Master copy: Test for existence of stage_2_de-bloat.bat inside the resources subfolder
+if (!(test-path -literalpath $MasterCopy\tron\resources\stage_2_de-bloat\stage_2_de-bloat.bat)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find stage_2_de-bloat.bat at:"
+	""
+	write-host "         $MasterCopy\resources\stage_2_de-bloat\stage_2_de-bloat.bat"
+	""
+	write-host "         Check your paths and make sure all the required files"
+	write-host "         exist in the appropriate locations."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Master copy: Test for existence of stage_3_disinfect.bat inside the resources subfolder
+if (!(test-path -literalpath $MasterCopy\tron\resources\stage_3_disinfect\stage_3_disinfect.bat)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find stage_3_disinfect.bat at:"
+	""
+	write-host "         $MasterCopy\resources\stage_3_disinfect\stage_3_disinfect.bat"
+	""
+	write-host "         Check your paths and make sure all the required files"
+	write-host "         exist in the appropriate locations."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Master copy: Test for existence of stage_4_repair.bat inside the resources subfolder
+if (!(test-path -literalpath $MasterCopy\tron\resources\stage_4_repair\stage_4_repair.bat)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find stage_4_repair.bat at:"
+	""
+	write-host "         $MasterCopy\resources\stage_4_repair\stage_4_repair.bat"
+	""
+	write-host "         Check your paths and make sure all the required files"
+	write-host "         exist in the appropriate locations."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Master copy: Test for existence of stage_5_patch.bat inside the resources subfolder
+if (!(test-path -literalpath $MasterCopy\tron\resources\stage_5_patch\stage_5_patch.bat)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find stage_5_patch.bat at:"
+	""
+	write-host "         $MasterCopy\resources\stage_5_patch\stage_5_patch.bat"
+	""
+	write-host "         Check your paths and make sure all the required files"
+	write-host "         exist in the appropriate locations."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Master copy: Test for existence of stage_6_optimize.bat inside the resources subfolder
+if (!(test-path -literalpath $MasterCopy\tron\resources\stage_6_optimize\stage_6_optimize.bat)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find stage_6_optimize.bat at:"
+	""
+	write-host "         $MasterCopy\resources\stage_6_optimize\stage_6_optimize.bat"
+	""
+	write-host "         Check your paths and make sure all the required files"
+	write-host "         exist in the appropriate locations."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
 # Master copy: Test for existence of the changelog
 if (!(test-path -literalpath $MasterCopy\tron\changelog-v$NewVersion-updated-$CUR_DATE.txt)) {
 	""
@@ -241,8 +347,8 @@ if (!(test-path -literalpath $MasterCopy\tron\changelog-v$NewVersion-updated-$CU
 	break
 }
 
-# Master copy:  Test for existence of the Instructions file
-if (!(test-path $MasterCopy\tron\Instructions*.txt)) {
+# Master copy: Test for existence of the Instructions file
+if (!(test-path -literalpath $MasterCopy\tron\Instructions*.txt)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
 	write-host " Couldn't find the Instructions file at:"
@@ -358,8 +464,9 @@ if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification\vo
 function main() {
 log " Tron deployment script v$SCRIPT_VERSION" green
 
+
 # JOB: Clear target area
-log " Clearing target area on seed server..." green
+log " Clearing target areas on local seed server..." green
 	remove-item $SeedServer\$SeedFolderBTS\tron\* -force -recurse | out-null
 	remove-item $SeedServer\$SeedFolderBTS\integrity_verification\*txt* -force -recurse | out-null
 	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse | out-null
@@ -379,9 +486,7 @@ log " Done" darkgreen
 # JOB: PGP sign the resulting checksums.txt then upload master directory to seed locations
 log " PGP signing checksums.txt..." green
 remove-item $MasterCopy\integrity_verification\checksums.txt.asc -force -recurse -ea SilentlyContinue | out-null
-
 & $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $MasterCopy\integrity_verification\checksums.txt
-
 while (1 -eq 1) {
 	if (test-path $MasterCopy\integrity_verification\checksums.txt.asc) {
 		log " Done" darkgreen
@@ -401,6 +506,7 @@ log " Loading SyncThing seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
 log " Done" darkgreen
 log " Done" darkgreen
+
 
 # Notify that we're done loading the seed server and are starting deployment to the master repo
 log " Seed server loaded. Updating master repo..." green
