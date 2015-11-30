@@ -505,11 +505,11 @@ log " Done" darkgreen
 log " Loading SyncThing seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
 log " Done" darkgreen
-log " Done" darkgreen
+log " Done, seed server loaded." darkgreen
 
 
 # Notify that we're done loading the seed server and are starting deployment to the master repo
-log " Seed server loaded. Updating master repo..." green
+log " Updating master repo..." green
 
 
 # JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory. 
@@ -521,7 +521,7 @@ log " Done" darkgreen
 
 
 # JOB: Background upload the binary pack to the static pack folder on the local seed server
-log " Background uploading $NewBinary to $SeedServer\$StaticPackStorageLocation..." green
+log " Starting background upload of $NewBinary to $SeedServer\$StaticPackStorageLocation..." green
 start-job -name tron_copy_pack_to_seed_server -scriptblock {cp "$env:temp\$($args[0]).UPLOADING" "$($args[1])\$($args[2])" -force} -ArgumentList $NewBinary, $SeedServer, $StaticPackStorageLocation
 
 	
