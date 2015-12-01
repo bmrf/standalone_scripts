@@ -1,6 +1,6 @@
 :: One liner commands for windows – cheat sheet
-:: v1.0.7
-:: 2015-10-29
+:: v1.0.8
+:: 2015-12-01
 :: Batch commands first, Powershell commands below
 :: This line just in case someone accidentally runs the file
 goto :eof
@@ -216,9 +216,6 @@ runas /user:administrator cmd
 :: BATCH: Determine whether a system is 32 or 64 bit
 wmic cpu get DataWidth /format:list
 
-# POWERSHELL one liner download file
-(new-object System.Net.WebClient).Downloadfile("http://example.com/file.txt", "C:\Users\Travis\file.txt")
-
 :: BATCH: Information about OS version and other useful system information
 systeminformation
 
@@ -296,6 +293,12 @@ get-eventlog security | Where-Object {$_.Index -eq 3982270} | format-list | find
 
 # POWERSHELL: Get list of all NICs in the system along with their MAC addresses
 Get-WmiObject -Class Win32_NetworkAdapter Format-Table DeviceId, Name, MACAddress -AutoSize
+
+# POWERSHELL: Download a file from the web
+(new-object System.Net.WebClient).Downloadfile("http://example.com/file.txt", "C:\Users\Travis\file.txt")
+
+# POWERSHELL: Measure how long a command takes to finish
+Measure-Command {.\mybatchfile.bat}|%{$_.TotalMilliseconds}
 
 
 :eof
