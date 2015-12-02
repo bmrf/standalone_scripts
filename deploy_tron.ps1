@@ -31,8 +31,8 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.0 ! Fix bug where we hashed the new Tron binary pack when it had .UPLOADING appended to the name
-                     _ Add automatic PGP signature verification of new Tron binary pack
+Version:       1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
+                     + Add automatic PGP signature verification of new Tron binary pack
                1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
                1.2.8 * Add automatic PGP signature verification of Tron's internal checksums.txt
                1.2.7 * Add ability to handle two seed directories (one for BT Sync and one for SyncThing)
