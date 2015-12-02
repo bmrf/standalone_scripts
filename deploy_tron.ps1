@@ -348,7 +348,7 @@ if (!(test-path -literalpath $MasterCopy\tron\changelog-v$NewVersion-updated-$CU
 }
 
 # Master copy: Test for existence of the Instructions file
-if (!(test-path -literalpath $MasterCopy\tron\Instructions*.txt)) {
+if (!(test-path $MasterCopy\tron\Instructions*.txt)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
 	write-host " Couldn't find the Instructions file at:"
