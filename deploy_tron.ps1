@@ -136,7 +136,7 @@ param (
 # PREP AND CHECKS #
 ###################
 $SCRIPT_VERSION = "1.2.9"
-$SCRIPT_UPDATED = "2015-11-30"
+$SCRIPT_UPDATED = "2015-12-02"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
