@@ -510,7 +510,7 @@ if ($? -eq "True") {
 
 
 # JOB: Upload from master copy to seed server directories
-log "   Master copy is gold. Copying from master to seed locations..." green
+log "   Master copy is gold. Copying from master to local seed locations..." green
 log "   Loading BT Sync seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
 log "   Done" darkgreen
@@ -521,7 +521,7 @@ log "   Done, seed server loaded." darkgreen
 
 
 # Notify that we're done loading the seed server and are starting deployment to the master repo
-log "   Updating master repo..." green
+log "   Updating master repo (remote)..." green
 
 
 # JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory. 
