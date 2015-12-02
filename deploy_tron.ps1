@@ -135,7 +135,7 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.2.9"
+$SCRIPT_VERSION = "1.3.0"
 $SCRIPT_UPDATED = "2015-12-02"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
