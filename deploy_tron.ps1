@@ -104,7 +104,7 @@ param (
 	# local deployment server. Where we stash the compiled .exe
 	# after uploading to the repo server.
 	# No leading or trailing slashes
-	[string]$StaticPackStorageLocation = "downloads\seeders\static packs",      # e.g. "downloads\seeders\static packs"
+	[string]$StaticPackStorageLocation = "downloads\seeders\static_packs",      # e.g. "downloads\seeders\static packs"
 
 	# Repository server where we'll fetch sha256sums.txt from
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
