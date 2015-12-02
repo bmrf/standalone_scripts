@@ -13,7 +13,7 @@ Requirements:  1. Expects Master Copy directory to look like this:
 					\btsync\tron
 						\tron
 							- changelog-vX.Y.Z-updated-YYYY-MM-DD.txt
-							- Instructions - YES ACTUALLY READ THEM.txt
+							- Instructions -- YES ACTUALLY READ THEM.txt
 							- Tron.bat
 						\integrity_verification
 							- checksums.txt
@@ -23,7 +23,7 @@ Requirements:  1. Expects Master Copy directory to look like this:
 					\syncthing\tron
 						\tron
 							- changelog-vX.Y.Z-updated-YYYY-MM-DD.txt
-							- Instructions - YES ACTUALLY READ THEM.txt
+							- Instructions -- YES ACTUALLY READ THEM.txt
 							- Tron.bat
 						\integrity_verification
 							- checksums.txt
@@ -31,8 +31,10 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
-               1.2.8 * Add automatic PGP signature verification
+Version:       1.3.0 ! Fix bug where we hashed the new Tron binary pack when it had .UPLOADING appended to the name
+                     _ Add automatic PGP signature verification of new Tron binary pack
+               1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
+               1.2.8 * Add automatic PGP signature verification of Tron's internal checksums.txt
                1.2.7 * Add ability to handle two seed directories (one for BT Sync and one for SyncThing)
                      * Add reporting of the date of the version we're replacing
                1.2.6 / Disable all use of PortablePGP since we're reverting to using gpg4win
@@ -53,7 +55,7 @@ Behavior/steps:
 4. Creates binary pack 
 5. PGP-signs the binary pack
 6. Background uploads the binary pack to the seed server
-7. Fetches sha256sums.txt from repo and updates it with sha256sum of binary pack
+7. Fetches sha256sums.txt from repo and updates it with sha256sum of the new binary pack
 8. Deletes current version from repo server; uploads .exe pack and sha256sums.txt to repo server; cleans up residual temp files; notifies of completion and advises to restart BT Sync
 9. Builds FTP upload script
 10. Uploads via FTP
@@ -497,42 +499,52 @@ while (1 -eq 1) {
 }
 
 
+# JOB: Verify PGP signature before FTP upload
+log "   Verifying PGP signature of checksums.txt..." green
+& $gpg --batch --yes --verbose --verify $MasterCopy\integrity_verification\checksums.txt.asc $MasterCopy\integrity_verification\checksums.txt
+if ($? -eq "True") { 
+	log "   Done" darkgreen
+} else {
+	log " ! There was a problem verifying the signature!" red
+}
+
+
 # JOB: Upload from master copy to seed server directories
-log " Master copy is gold. Copying from master to seed locations..." green
-log " Loading BT Sync seed..." green
+log "   Master copy is gold. Copying from master to seed locations..." green
+log "   Loading BT Sync seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
-log " Done" darkgreen
-log " Loading SyncThing seed..." green
+log "   Done" darkgreen
+log "   Loading SyncThing seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
-log " Done" darkgreen
-log " Done, seed server loaded." darkgreen
+log "   Done" darkgreen
+log "   Done, seed server loaded." darkgreen
 
 
 # Notify that we're done loading the seed server and are starting deployment to the master repo
-log " Updating master repo..." green
+log "   Updating master repo..." green
 
 
 # JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory. 
 # Create the file name using the new version number extracted from tron.bat and exclude any 
 # files with "sync" in the title (these are BT Sync hidden files, we don't need to pack them
-log " Building binary pack, please wait..." green
-	& "$SevenZip" a -sfx "$env:temp\$NewBinary.UPLOADING" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
-log " Done" darkgreen
+log "   Building binary pack, please wait..." green
+	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
+log "   Done" darkgreen
 
 
 # JOB: Background upload the binary pack to the static pack folder on the local seed server
-log " Starting background upload of $NewBinary to $SeedServer\$StaticPackStorageLocation..." green
-start-job -name tron_copy_pack_to_seed_server -scriptblock {cp "$env:temp\$($args[0]).UPLOADING" "$($args[1])\$($args[2])" -force} -ArgumentList $NewBinary, $SeedServer, $StaticPackStorageLocation
+log "   Starting background upload of $NewBinary to $SeedServer\$StaticPackStorageLocation..." green
+start-job -name tron_copy_pack_to_seed_server -scriptblock {cp "$env:temp\$($args[0])" "$($args[1])\$($args[2])" -force} -ArgumentList $NewBinary, $SeedServer, $StaticPackStorageLocation
 
 	
 # JOB: Fetch sha256sums.txt from the repo for updating
-log " Fetching repo copy of sha256sums.txt to update..." green
+log "   Fetching repo copy of sha256sums.txt to update..." green
 	Invoke-WebRequest $Repo_URL/sha256sums.txt -outfile $env:temp\sha256sums.txt
-log " Done" darkgreen
+log "   Done" darkgreen
 
 
 # JOB: Calculate SHA256 hash of newly-created binary pack and append it to sha256sums.txt
-log " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." green
+log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." green
 	pushd $env:temp
 	# First hash the file
 	& $HashDeep64 -s -e -l -c sha256 "Tron v$NewVersion ($CUR_DATE).exe" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
@@ -545,16 +557,16 @@ log " Calculating SHA256 hash for binary pack and appending it to sha256sums.txt
 	# Rename the file to prepare it for uploading
 	ren "$env:temp\$NewBinary" "$env:temp\$NewBinary.UPLOADING"
 	popd
-log " Done" darkgreen
+log "   Done" darkgreen
 
 
 # JOB: PGP sign sha256sums.txt
-log " PGP signing sha256sums.txt..." green
+log "   PGP signing sha256sums.txt..." green
 remove-item $env:temp\sha256sums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 & $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $env:temp\sha256sums.txt
 while (1 -eq 1) {
 	if (test-path $env:temp\sha256sums.txt.asc) {
-		log " Done" darkgreen
+		log "   Done" darkgreen
 		break
 	}
 	# sleep before looking again
@@ -563,10 +575,10 @@ while (1 -eq 1) {
 
 
 # JOB: Verify PGP signature before FTP upload
-log " Verifying PGP signature..." green
+log "   Verifying PGP signature of sha256sums.txt..." green
 & $gpg --batch --yes --verbose --verify $env:temp\sha256sums.txt.asc $env:temp\sha256sums.txt
 if ($? -eq "True") { 
-	log " Done" darkgreen
+	log "   Done" darkgreen
 } else {
 	log " ! There was a problem verifying the signature!" red
 }
@@ -574,7 +586,7 @@ if ($? -eq "True") {
 
 # JOB: Build FTP upload script
 # Tron exe will have "UPLOADING" appended to its name until upload is complete
-log " Building FTP deployment script..." green
+log "   Building FTP deployment script..." green
 
 "option batch abort" | Out-File $env:temp\deploy_tron_ftp_script.txt -encoding ascii
 "option confirm off" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
@@ -585,24 +597,24 @@ log " Building FTP deployment script..." green
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-write-output "mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+write-output "rename "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 
-log " Done" darkgreen
+log "   Done" darkgreen
 
 
 # JOB: Upload binary pack and hash files to FTP repo server
 # Get in TEMP directory and call WinSCP to run the script we just created
-log " Uploading $NewBinary to $Repo_FTP_Host..." green
+log "   Uploading $NewBinary to $Repo_FTP_Host..." green
 	pushd $env:temp
 	& $WinSCP /script=.\deploy_tron_ftp_script.txt
 	popd
 	Write-Host ""
-log " Done" darkgreen
+log "   Done" darkgreen
 
 
 # JOB: Clean up after ourselves
-log " Cleaning up..." green
+log "   Cleaning up..." green
 	remove-item $env:temp\sha256sums* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\$NewBinary* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\deploy_tron_ftp_script.txt -force -recurse -ea SilentlyContinue | out-null
@@ -610,14 +622,14 @@ log " Cleaning up..." green
 	mv $SeedServer\$StaticPackStorageLocation\$NewBinary.UPLOADING $SeedServer\$StaticPackStorageLocation\$NewBinary -force
 	# Remove our background upload job from the job list
 	get-job | remove-job
-log " Done" darkgreen
+log "   Done" darkgreen
 
 
 
 ############
 # Finished #
 ############
-log " Done " green
+log "   Done " green
 log "                    Version deployed:                  v$NewVersion ($CUR_DATE)"
 log "                    Version replaced:                  v$OldVersion ($OldDate)"
 log "                    Local seed server:                 $SeedServer"
@@ -627,7 +639,7 @@ log "                    Local static pack storage:         $StaticPackStorageLo
 log "                    Remote repo host:                  $Repo_FTP_Host"
 log "                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
 log "                    Log file:                          $LOGPATH\$LOGFILE"
-log "                                                       Notify mirror ops and post release to Reddit" -f blue
+log "                                                       Notify mirror ops and post release to Reddit" blue
 
 write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 
