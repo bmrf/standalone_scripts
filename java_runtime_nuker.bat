@@ -10,7 +10,9 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.7.3 * COMMENTS:    Minor comment cleanup
+:: Version:       1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
+::                      * IMPROVEMENT: Import logging function used in Tron and convert all double "echo" statements to log calls
+::                      * COMMENTS:    Minor comment cleanup
 ::                1.7.2 * IMPROVEMENT: Add section to remove leftover symlinks in PATH folder to JRE exes. Thanks to /u/turnerf
 ::                1.7.1 * IMPROVEMENT: Remove all /va flags. This had the effect of deleting key values but leaving keys intact, which could break re-installations that thought Java was still installed when in fact it was not. Big thanks to /u/RazorZero
 ::                      * IMPROVEMENT: Reduce 10 JavaSoft registry key deletion commands to 2 by deleting entire JavaSoft key instead of individual subkeys. Thanks to /u/RazorZero
@@ -63,9 +65,11 @@ set JAVA_ARGUMENTS_x86=/s
 
 
 
+
 :: =============================================================================================== ::
 :: ======  Think of everything below this line like a feral badger: Look, but Do Not Touch  ====== ::
 :: =============================================================================================== ::
+
 
 
 
@@ -73,8 +77,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.7.2
-set SCRIPT_UPDATED=2015-03-16
+set SCRIPT_VERSION=1.8.0
+set SCRIPT_UPDATED=2015-12-03
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -102,16 +106,14 @@ if exist "%LOGPATH%\%LOGFILE%" del "%LOGPATH%\%LOGFILE%"
 echo.
 echo  JAVA RUNTIME NUKER
 echo  v%SCRIPT_VERSION%, updated %SCRIPT_UPDATED%
-if %OS_VERSION%==XP echo. && echo  ! Windows XP detected, using alternate command set to compensate.
+if %OS_VERSION%==XP echo. && call :log "%CUR_DATE% %TIME%  ! Windows XP detected, using alternate command set to compensate."
 echo.
-echo %CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX...
+call :log "%CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX..."
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
 wmic timezone >NUL
 if not %ERRORLEVEL%==0 (
-    echo %CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...>> "%LOGPATH%\%LOGFILE%"
-    echo %CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...
+    call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient..."
     net stop winmgmt
     pushd %WINDIR%\system32\wbem
     for %%i in (*.dll) do RegSvr32 -s %%i
@@ -137,8 +139,7 @@ if not %ERRORLEVEL%==0 (
 :::::::::::::::::::::::::::
 if %FORCE_CLOSE_PROCESSES%==yes (
 	:: Kill all browsers and running Java instances
-	echo %CUR_DATE% %TIME%   Looking for and closing all running browsers and Java instances...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Looking for and closing all running browsers and Java instances...
+	call :log "%CUR_DATE% %TIME%   Looking for and closing all running browsers and Java instances..."
 	if %OS_VERSION%==XP (
 		:: XP version of the task killer
 		:: this loop contains the processes we should kill
@@ -162,8 +163,7 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 
 :: If we DON'T want to force-close Java, then check for possible running Java processes and abort the script if we find any
 if %FORCE_CLOSE_PROCESSES%==no (
-	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES is set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES is set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.
+	call :log "%CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES is set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution."
 
 	:: Don't ask...
 	:: Okay so basically we loop through this list of processes, and for each one we dump the result of the search in the '%%a' variable. 
@@ -171,27 +171,39 @@ if %FORCE_CLOSE_PROCESSES%==no (
 	:: specified at the beginning of the script. Normally you'd use ERRORLEVEL for this, but because it is very flaky (it doesn't 
 	:: always get set, even when it should) we instead resort to using this method of dumping the results in a variable and checking it.
 	FOR %%i IN (java,javaw,javaws,jqs,jusched,jp2launcher,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
-		echo %CUR_DATE% %TIME%   Searching for %%i.exe...
+		call :log "%CUR_DATE% %TIME%   Searching for %%i.exe...
 		for /f "delims=" %%a in ('tasklist ^| find /i "%%i"') do (
 			if not [%%a]==[] (
-				echo %CUR_DATE% %TIME% ! ERROR: Process '%%i' is currently running, aborting.>> "%LOGPATH%\%LOGFILE%"
-				echo %CUR_DATE% %TIME% ! ERROR: Process '%%i' is currently running, aborting.
+				call :log "%CUR_DATE% %TIME% ! ERROR: Process '%%i' is currently running, aborting."
 				exit /b %FORCE_CLOSE_PROCESSES_EXIT_CODE%
 			)
 		)
 	)
 	:: If we made it this far, we didn't find anything, so we can go ahead
-	echo %CUR_DATE% %TIME%   All clear, no running processes found. Going ahead with removal...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   All clear, no running processes found. Going ahead with removal...
+	call :log "%CUR_DATE% %TIME%   All clear, no running processes found. Going ahead with removal..."
 )
+
+
+
+
+::::::::::::::::
+:: PRE-DELETE ::
+::::::::::::::::
+:: Sometimes the JRE uninstallers will fail if they can't find some files; deleting the reg keys seems to resolve it
+:: Thanks to /u/GoogleDrummer for this section
+regedit /e "%TEMP%\dump.txt" HKEY_CLASSES_ROOT\Installer\Products
+find "HKEY_CLASSES_ROOT\Installer\Products\4EA42A62" "%TEMP%\dump.txt" > "%TEMP%\keys_to_delete.txt"
+for /f "delims=[]" %%i in (%TEMP%\keys_to_delete.txt) do reg delete "%%i" /f
+del "%TEMP%\dump.txt"
+del "%TEMP%\keys_to_delete.txt"
+
 
 
 :::::::::::::::::::::::::
 :: UNINSTALLER SECTION :: -- Basically here we just brute-force every "normal" method for
-:::::::::::::::::::::::::    removing Java, and then resort to more painstaking methods later
-echo %CUR_DATE% %TIME%   Targeting individual JRE versions...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Targeting individual JRE versions...
-echo %CUR_DATE% %TIME%   This might take a few minutes. Don't close this window.
+:::::::::::::::::::::::::    removing Java, then resort to more painstaking methods later
+call :log "%CUR_DATE% %TIME%   Targeting individual JRE versions..."
+call :log "%CUR_DATE% %TIME%   This might take a few minutes. Don't close this window."
 
 :: EXPOSITION DUMP: OK, so all JRE runtimes (series 4-8) use certain GUIDs that increment with each new update (e.g. Update 66)
 :: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
@@ -199,37 +211,31 @@ echo %CUR_DATE% %TIME%   This might take a few minutes. Don't close this window.
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
 :: JRE 8
-echo %CUR_DATE% %TIME%   JRE 8...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 8...
+call :log "%CUR_DATE% %TIME%   JRE 8..."
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 7
-echo %CUR_DATE% %TIME%   JRE 7...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 7...
+call :log "%CUR_DATE% %TIME%   JRE 7..."
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 6
-echo %CUR_DATE% %TIME%   JRE 6...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 6...
+call :log "%CUR_DATE% %TIME%   JRE 6..."
 :: 1st line is for updates 23-xx, after Oracle introduced 64-bit runtimes
 :: 2nd line is for updates 1-22, before 64-bit JRE 6 runtimes existed
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 5
-echo %CUR_DATE% %TIME%   JRE 5...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 5...
+call :log "%CUR_DATE% %TIME%   JRE 5..."
 %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 4
-echo %CUR_DATE% %TIME%   JRE 4...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 4...
+call :log "%CUR_DATE% %TIME%   JRE 4..."
 %WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 3 (AKA "Java 2 Runtime Environment Standard Edition" v1.3.1_00-25)
-echo %CUR_DATE% %TIME%   JRE 3 (AKA Java 2 Runtime v1.3.xx)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 3 (AKA Java 2 Runtime v1.3.xx)...
+call :log "%CUR_DATE% %TIME%   JRE 3 (AKA Java 2 Runtime v1.3.xx)..."
 :: This version is so old we have to resort to different methods of removing it
 :: Loop through each sub-version
 FOR %%i IN (01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25) DO (
@@ -241,18 +247,15 @@ FOR %%i IN (01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23
 %SystemRoot%\IsUninst.exe -f"%ProgramFiles(x86)%\JavaSoft\JRE\1.3\Uninst.isu" -a 2>NUL
 
 :: Java Update Service
-echo %CUR_DATE% %TIME%   Java Update Service...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Java Update Service...
+call :log "%CUR_DATE% %TIME%   Java Update Service..."
 wmic product where "name like 'Java Auto Updater'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: Wildcard uninstallers
-echo %CUR_DATE% %TIME%   Specific targeting done. Now running WMIC wildcard catchall uninstallation...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Specific targeting done. Now running WMIC wildcard catchall uninstallation...
+call :log "%CUR_DATE% %TIME%   Specific targeting done. Now running WMIC wildcard catchall uninstallation..."
 %WMIC% product where "name like '%%J2SE Runtime%%'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "name like 'Java%%Runtime%%'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "name like 'JavaFX%%'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+call :log "%CUR_DATE% %TIME%   Done."
 
 
 ::::::::::::::::::::::
@@ -260,19 +263,15 @@ echo %CUR_DATE% %TIME%   Done.
 ::::::::::::::::::::::
 :: If we're on XP we skip this entire block due to differences in the reg.exe binary
 if '%OS_VERSION%'=='XP' (
-    echo %CUR_DATE% %TIME% ! Registry cleanup doesn't work on Windows XP. Skipping...>> "%LOGPATH%\%LOGFILE%"
-    echo %CUR_DATE% %TIME% ! Registry cleanup doesn't work on Windows XP. Skipping...
+	call :log "%CUR_DATE% %TIME% ! Registry cleanup doesn't work on Windows XP. Skipping..."
 	goto file_cleanup
 	)
 
-echo %CUR_DATE% %TIME%   Commencing registry cleanup...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Commencing registry cleanup...
-echo %CUR_DATE% %TIME%   Searching for residual registry keys...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Searching for residual registry keys...
+call :log "%CUR_DATE% %TIME%   Commencing registry cleanup..."
+call :log "%CUR_DATE% %TIME%   Searching for residual registry keys..."
 
 :: Search MSIExec installer class hive for keys
-echo %CUR_DATE% %TIME%   Looking in HKLM\software\classes\installer\products...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Looking in HKLM\software\classes\installer\products...
+call :log "%CUR_DATE% %TIME%   Looking in HKLM\software\classes\installer\products..."
 reg query HKLM\software\classes\installer\products /f "J2SE Runtime" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 reg query HKLM\software\classes\installer\products /f "Java(TM) 6 Update" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 reg query HKLM\software\classes\installer\products /f "Java 7" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
@@ -280,8 +279,7 @@ reg query HKLM\software\classes\installer\products /f "Java 8" /s | find "HKEY_L
 reg query HKLM\software\classes\installer\products /f "Java*Runtime" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 
 :: Search the Add/Remove programs list (this helps with broken Java installations)
-echo %CUR_DATE% %TIME%   Looking in HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Looking in HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall...
+call :log "%CUR_DATE% %TIME%   Looking in HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall..."
 reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall /f "J2SE Runtime" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall /f "Java(TM) 6 Update" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall /f "Java 7" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
@@ -289,8 +287,7 @@ reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall /f "Java 8" /
 reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall /f "Java*Runtime" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 
 :: Search the Add/Remove programs list, x86/Wow64 node (this helps with broken Java installations)
-echo %CUR_DATE% %TIME%   Looking in HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Looking in HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall...
+call :log "%CUR_DATE% %TIME%   Looking in HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall..."
 reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall /f "J2SE Runtime" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall /f "Java(TM) 6 Update" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall /f "Java 7" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
@@ -298,8 +295,7 @@ reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall /
 reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall /f "Java*Runtime" /s | find "HKEY_LOCAL_MACHINE" >> %TEMP%\java_purge_registry_keys.txt
 
 :: List the leftover registry keys
-echo %CUR_DATE% %TIME%   Found these keys...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Found these keys...
+call :log "%CUR_DATE% %TIME%   Found these keys..."
 echo.>> "%LOGPATH%\%LOGFILE%"
 echo.
 type %TEMP%\java_purge_registry_keys.txt>> "%LOGPATH%\%LOGFILE%"
@@ -309,22 +305,18 @@ echo.
 
 :: Backup the various registry keys that will get deleted (if they exist)
 :: We do this mainly because we're using wildcards, so we want a method to roll back if we accidentally nuke the wrong thing
-echo %CUR_DATE% %TIME%   Backing up keys...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Backing up keys...
+call :log "%CUR_DATE% %TIME%   Backing up keys..."
 if exist "%TEMP%\java_purge_registry_backup" rmdir /s /q "%TEMP%\java_purge_registry_backup" 2>NUL
 mkdir %TEMP%\java_purge_registry_backup >NUL
 :: This line walks through the file we generated and dumps each key to a file
 for /f "tokens=* delims= " %%a in (%TEMP%\java_purge_registry_keys.txt) do (reg query %%a) >> %TEMP%\java_purge_registry_backup\java_reg_keys_1.bak
 
 echo.
-echo %CUR_DATE% %TIME%   Keys backed up to %TEMP%\java_purge_registry_backup\ >> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Keys backed up to %TEMP%\java_purge_registry_backup\
-echo %CUR_DATE% %TIME%   This directory will be deleted at next reboot, so get it now if you need it! >> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   This directory will be deleted at next reboot, so get it now if you need it!
+call :log "%CUR_DATE% %TIME%   Keys backed up to %TEMP%\java_purge_registry_backup\"
+call :log "%CUR_DATE% %TIME%   This directory will be deleted at next reboot, so get it now if you need it!"
 
 :: Purge the keys
-echo %CUR_DATE% %TIME%   Purging keys...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Purging keys...
+call :log "%CUR_DATE% %TIME%   Purging keys..."
 echo.
 :: This line walks through the file we generated and deletes each key listed
 for /f "tokens=* delims= " %%a in (%TEMP%\java_purge_registry_keys.txt) do reg delete %%a /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -342,10 +334,8 @@ reg delete "HKLM\SOFTWARE\JavaSoft" /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
 reg delete "HKLM\SOFTWARE\JreMetrics" /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 echo.
-echo %CUR_DATE% %TIME%   Keys purged.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Keys purged.
-echo %CUR_DATE% %TIME%   Registry cleanup done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Registry cleanup done.
+call :log "%CUR_DATE% %TIME%   Keys purged."
+call :log "%CUR_DATE% %TIME%   Registry cleanup done."
 echo.
 
 
@@ -353,12 +343,10 @@ echo.
 :: FILE AND DIRECTORY CLEANUP ::
 ::::::::::::::::::::::::::::::::
 :file_cleanup
-echo %CUR_DATE% %TIME%   Commencing file and directory cleanup...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Commencing file and directory cleanup...
+call :log "%CUR_DATE% %TIME%   Commencing file and directory cleanup..."
 
 :: Kill the accursed Java tasks in Task Scheduler
-echo %CUR_DATE% %TIME%   Removing Java tasks from the Windows Task Scheduler...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Removing Java tasks from the Windows Task Scheduler...
+call :log "%CUR_DATE% %TIME%   Removing Java tasks from the Windows Task Scheduler..."
 if exist %WINDIR%\tasks\Java*.job del /F /Q %WINDIR%\tasks\Java*.job >> "%LOGPATH%\%LOGFILE%"
 if exist %WINDIR%\System32\tasks\Java*.job del /F /Q %WINDIR%\System32\tasks\Java*.job >> "%LOGPATH%\%LOGFILE%"
 if exist %WINDIR%\SysWOW64\tasks\Java*.job del /F /Q %WINDIR%\SysWOW64\tasks\Java*.job >> "%LOGPATH%\%LOGFILE%"
@@ -367,8 +355,7 @@ echo.
 :: Kill the accursed Java Quickstarter service
 sc query JavaQuickStarterService >NUL
 if not %ERRORLEVEL%==1060 (
-	echo %CUR_DATE% %TIME%   De-registering and removing Java Quickstarter service...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   De-registering and removing Java Quickstarter service...
+	call :log "%CUR_DATE% %TIME%   De-registering and removing Java Quickstarter service..."
 	net stop JavaQuickStarterService >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	sc delete JavaQuickStarterService >> "%LOGPATH%\%LOGFILE%" 2>NUL
 )
@@ -376,8 +363,7 @@ if not %ERRORLEVEL%==1060 (
 :: Kill the accursed Java Update Scheduler service
 sc query jusched >NUL
 if not %ERRORLEVEL%==1060 (
-	echo %CUR_DATE% %TIME%   De-registering and removing Java Update Scheduler service...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   De-registering and removing Java Update Scheduler service...
+	call :log "%CUR_DATE% %TIME%   De-registering and removing Java Update Scheduler service..."
 	net stop jusched >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	sc delete jusched >> "%LOGPATH%\%LOGFILE%" 2>NUL
 )
@@ -395,16 +381,14 @@ msiexec.exe /x {4A03706F-666A-4037-7777-5F2748764D10} /qn /norestart
 
 :: Nuke 32-bit Java installation directories
 if exist "%ProgramFiles(x86)%" (
-	echo %CUR_DATE% %TIME%   Removing "%ProgramFiles(x86)%\Java\jre*" directories...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Removing "%ProgramFiles(x86)%\Java\jre*" directories...
+	call :log "%CUR_DATE% %TIME%   Removing "%ProgramFiles(x86)%\Java\jre*" directories..."
 	for /D /R "%ProgramFiles(x86)%\Java\" %%x in (j2re*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 	for /D /R "%ProgramFiles(x86)%\Java\" %%x in (jre*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 	if exist "%ProgramFiles(x86)%\JavaSoft\JRE" rmdir /S /Q "%ProgramFiles(x86)%\JavaSoft\JRE" >> "%LOGPATH%\%LOGFILE%"
 	)
 
 :: Nuke 64-bit Java installation directories
-echo %CUR_DATE% %TIME%   Removing "%ProgramFiles%\Java\jre*" directories...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Removing "%ProgramFiles%\Java\jre*" directories...
+call :log "%CUR_DATE% %TIME%   Removing "%ProgramFiles%\Java\jre*" directories..."
 for /D /R "%ProgramFiles%\Java\" %%x in (j2re*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 for /D /R "%ProgramFiles%\Java\" %%x in (jre*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 if exist "%ProgramFiles%\JavaSoft\JRE" rmdir /S /Q "%ProgramFiles%\JavaSoft\JRE" >> "%LOGPATH%\%LOGFILE%"
@@ -414,8 +398,7 @@ rmdir /S /Q "%CommonProgramFiles%\Java\Java Update\">> "%LOGPATH%\%LOGFILE%" 2>N
 rmdir /S /Q "%CommonProgramFiles(x86)%\Java\Java Update\">> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: Nuke Java installer cache ( thanks to cannibalkitteh )
-echo %CUR_DATE% %TIME%   Purging Java installer cache...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Purging Java installer cache...
+call :log "%CUR_DATE% %TIME%   Purging Java installer cache..."
 :: XP VERSION
 if %OS_VERSION%==XP (
     :: Dump list of users to a file, then iterate through the list of profiles deleting the respective AU folder
@@ -436,16 +419,15 @@ if %OS_VERSION%==XP (
     )
 
 :: Miscellaneous stuff, sometimes left over by the installers
-echo %CUR_DATE% %TIME%   Searching for and purging other Java Runtime-related directories...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Searching for and purging other Java Runtime-related directories...
+call :log "%CUR_DATE% %TIME%   Searching for and purging other Java Runtime-related directories..."
 del /F /Q %SystemDrive%\1033.mst >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /S /Q "%SystemDrive%\J2SE Runtime Environment*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /S /Q "%SystemDrive%\Documents and Settings\All Users\Application Data\Oracle\Java\javapath\*.exe" 2>NUL
 if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\" rmdir /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\"
 echo.
 
-echo %CUR_DATE% %TIME%   File and directory cleanup done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   File and directory cleanup done.
+
+call :log "%CUR_DATE% %TIME%   File and directory cleanup done."
 echo. >> "%LOGPATH%\%LOGFILE%"
 echo.
 
@@ -455,29 +437,39 @@ echo.
 :::::::::::::::::::::::::
 :: x64
 if %REINSTALL_JAVA_x64%==yes (
-    echo %CUR_DATE% %TIME% ! Variable "REINSTALL_JAVA_x64" was set to 'yes'. Now installing %JAVA_BINARY_x64%...>> "%LOGPATH%\%LOGFILE%"
-    echo %CUR_DATE% %TIME% ! Variable "REINSTALL_JAVA_x64" was set to 'yes'. Now installing %JAVA_BINARY_x64%...
-    "%JAVA_LOCATION_x64%\%JAVA_BINARY_x64%" %JAVA_ARGUMENTS_x64%
-    java -version
-    echo Done.>> "%LOGPATH%\%LOGFILE%"
-    )
+	call :log "%CUR_DATE% %TIME% ! Variable "REINSTALL_JAVA_x64" was set to 'yes'. Now installing %JAVA_BINARY_x64%..."
+	"%JAVA_LOCATION_x64%\%JAVA_BINARY_x64%" %JAVA_ARGUMENTS_x64%
+	java -version
+	echo Done.>> "%LOGPATH%\%LOGFILE%"
+)
 
 :: x86
 if %REINSTALL_JAVA_x86%==yes (
-    echo %CUR_DATE% %TIME% ! Variable "REINSTALL_JAVA_x86" was set to 'yes'. Now installing %JAVA_BINARY_x86%...>> "%LOGPATH%\%LOGFILE%"
-    echo %CUR_DATE% %TIME% ! Variable "REINSTALL_JAVA_x86" was set to 'yes'. Now installing %JAVA_BINARY_x86%...
-    "%JAVA_LOCATION_x86%\%JAVA_BINARY_x86%" %JAVA_ARGUMENTS_x86%
-    java -version
-    echo Done.>> "%LOGPATH%\%LOGFILE%"
-    )
+	call :log "%CUR_DATE% %TIME% ! Variable "REINSTALL_JAVA_x86" was set to 'yes'. Now installing %JAVA_BINARY_x86%..."
+	"%JAVA_LOCATION_x86%\%JAVA_BINARY_x86%" %JAVA_ARGUMENTS_x86%
+	java -version
+	echo Done.>> "%LOGPATH%\%LOGFILE%"
+)
 
 :: Done.
-echo %CUR_DATE% %TIME%   Registry hive backups: %TEMP%\java_purge_registry_backup\>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Registry hive backups: %TEMP%\java_purge_registry_backup\
-echo %CUR_DATE% %TIME%   Log file: "%LOGPATH%\%LOGFILE%">> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Log file: "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JAVA NUKER COMPLETE. Recommend rebooting and washing your hands.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JAVA NUKER COMPLETE. Recommend rebooting and washing your hands.
+call :log "%CUR_DATE% %TIME%   Registry hive backups: %TEMP%\java_purge_registry_backup\"
+call :log "%CUR_DATE% %TIME%   Log file: "%LOGPATH%\%LOGFILE%""
+call :log "%CUR_DATE% %TIME%   JAVA NUKER COMPLETE. Recommend rebooting and washing your hands."
 
 :: Return exit code to SCCM/PDQ Deploy/PSexec/etc
 exit /B %EXIT_CODE%
+
+
+
+
+
+
+
+
+:::::::::::::::
+:: FUNCTIONS ::
+:::::::::::::::
+:log
+echo:%~1 >> "%LOGPATH%\%LOGFILE%"
+echo:%~1
+goto :eof
