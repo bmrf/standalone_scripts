@@ -10,7 +10,7 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: History:       1.7.3 + IMPROVEMENT: Add MicrosoftEdge to list of running browsers to check for before executing
+:: Version:       1.7.3 * COMMENTS:    Minor comment cleanup
 ::                1.7.2 * IMPROVEMENT: Add section to remove leftover symlinks in PATH folder to JRE exes. Thanks to /u/turnerf
 ::                1.7.1 * IMPROVEMENT: Remove all /va flags. This had the effect of deleting key values but leaving keys intact, which could break re-installations that thought Java was still installed when in fact it was not. Big thanks to /u/RazorZero
 ::                      * IMPROVEMENT: Reduce 10 JavaSoft registry key deletion commands to 2 by deleting entire JavaSoft key instead of individual subkeys. Thanks to /u/RazorZero
@@ -73,9 +73,9 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.7.3
-set SCRIPT_UPDATED=2015-09-28
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
+set SCRIPT_VERSION=1.7.2
+set SCRIPT_UPDATED=2015-03-16
+:: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
@@ -102,7 +102,7 @@ if exist "%LOGPATH%\%LOGFILE%" del "%LOGPATH%\%LOGFILE%"
 echo.
 echo  JAVA RUNTIME NUKER
 echo  v%SCRIPT_VERSION%, updated %SCRIPT_UPDATED%
-if %OS_VERSION%==XP echo. && echo  ! Windows XP detected, using alternate commands to compensate.
+if %OS_VERSION%==XP echo. && echo  ! Windows XP detected, using alternate command set to compensate.
 echo.
 echo %CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX...
@@ -149,10 +149,10 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 		)
 		echo.
 	) else (
-		:: 7/8/10/2008/2008R2/2012/etc version of the task killer
+		:: 7/8/2008/2008R2/2012/etc version of the task killer
 		:: this loop contains the processes we should kill
 		echo.
-		FOR %%i IN (java,javaw,javaws,jqs,jusched,jp2launcher,iexplore,iexplorer,firefox,chrome,palemoon,opera,MicrosoftEdge) DO (
+		FOR %%i IN (java,javaw,javaws,jqs,jusched,jp2launcher,iexplore,iexplorer,firefox,chrome,palemoon,opera) DO (
 			echo Searching for %%i.exe...
 			%WinDir%\system32\taskkill.exe /f /im %%i.exe /T >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
@@ -162,8 +162,8 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 
 :: If we DON'T want to force-close Java, then check for possible running Java processes and abort the script if we find any
 if %FORCE_CLOSE_PROCESSES%==no (
-	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.
+	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES is set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   Variable FORCE_CLOSE_PROCESSES is set to '%FORCE_CLOSE_PROCESSES%'. Checking for running processes before execution.
 
 	:: Don't ask...
 	:: Okay so basically we loop through this list of processes, and for each one we dump the result of the search in the '%%a' variable. 
@@ -193,10 +193,10 @@ echo %CUR_DATE% %TIME%   Targeting individual JRE versions...>> "%LOGPATH%\%LOGF
 echo %CUR_DATE% %TIME%   Targeting individual JRE versions...
 echo %CUR_DATE% %TIME%   This might take a few minutes. Don't close this window.
 
-:: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
+:: EXPOSITION DUMP: OK, so all JRE runtimes (series 4-8) use certain GUIDs that increment with each new update (e.g. Update 66)
 :: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
-:: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit "Update XX" revision number, we also check architecture 
-:: type, which always equals '32' or '64'. So first wildcard is architecture and second is revision/update number.
+:: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
+:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
 :: JRE 8
 echo %CUR_DATE% %TIME%   JRE 8...>> "%LOGPATH%\%LOGFILE%"
@@ -212,8 +212,8 @@ echo %CUR_DATE% %TIME%   JRE 7...
 :: JRE 6
 echo %CUR_DATE% %TIME%   JRE 6...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   JRE 6...
-:: 1st line is for updates 23-xx, after 64-bit runtimes were introduced.
-:: 2nd line is for updates 1-22, before Oracle released 64-bit JRE 6 runtimes
+:: 1st line is for updates 23-xx, after Oracle introduced 64-bit runtimes
+:: 2nd line is for updates 1-22, before 64-bit JRE 6 runtimes existed
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
