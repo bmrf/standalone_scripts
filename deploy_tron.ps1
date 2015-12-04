@@ -33,6 +33,7 @@ Requirements:  1. Expects Master Copy directory to look like this:
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 Version:       1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
                      + Add note at beginning of script telling us which version we're replacing and with what version it's being replaced
+					 * Minor formatting and log cleanup
                1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
                      + Add automatic PGP signature verification of new Tron binary pack
                1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
@@ -487,7 +488,7 @@ log " Done" darkgreen
 
 
 # JOB: Calculate hashes of every single file included in the \tron directory
-log " Calculating hashes, please wait..." green
+log " Calculating individual hashes of all included files, please wait..." green
 	pushd $MasterCopy
 	del $env:temp\checksum* -force -recurse | out-null
 	& $HashDeep64 -s -e -c sha256 -l -r .\ | Out-File $env:temp\checksums.txt -encoding ascii
@@ -497,10 +498,12 @@ log " Done" darkgreen
 
 # JOB: PGP sign the resulting checksums.txt then upload master directory to seed locations
 log " PGP signing checksums.txt..." green
+""
 remove-item $MasterCopy\integrity_verification\checksums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 & $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $MasterCopy\integrity_verification\checksums.txt
 while (1 -eq 1) {
 	if (test-path $MasterCopy\integrity_verification\checksums.txt.asc) {
+		""
 		log " Done" darkgreen
 		break
 	}
@@ -511,8 +514,10 @@ while (1 -eq 1) {
 
 # JOB: Verify PGP signature before FTP upload
 log "   Verifying PGP signature of checksums.txt..." green
+""
 & $gpg --batch --yes --verbose --verify $MasterCopy\integrity_verification\checksums.txt.asc $MasterCopy\integrity_verification\checksums.txt
-if ($? -eq "True") { 
+if ($? -eq "True") {
+	""
 	log "   Done" darkgreen
 } else {
 	log " ! There was a problem verifying the signature!" red
@@ -520,7 +525,7 @@ if ($? -eq "True") {
 
 
 # JOB: Upload from master copy to seed server directories
-log "   Master copy is gold. Copying from master to local seed locations..." green
+log "   Master copy is gold. Copying from master to local seed directories..." green
 log "   Loading BT Sync seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
 log "   Done" darkgreen
@@ -545,6 +550,7 @@ log "   Done" darkgreen
 # JOB: Background upload the binary pack to the static pack folder on the local seed server
 log "   Starting background upload of $NewBinary to $SeedServer\$StaticPackStorageLocation..." green
 start-job -name tron_copy_pack_to_seed_server -scriptblock {cp "$env:temp\$($args[0])" "$($args[1])\$($args[2])" -force} -ArgumentList $NewBinary, $SeedServer, $StaticPackStorageLocation
+""
 
 	
 # JOB: Fetch sha256sums.txt from the repo for updating
@@ -572,10 +578,12 @@ log "   Done" darkgreen
 
 # JOB: PGP sign sha256sums.txt
 log "   PGP signing sha256sums.txt..." green
+""
 remove-item $env:temp\sha256sums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 & $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $env:temp\sha256sums.txt
 while (1 -eq 1) {
 	if (test-path $env:temp\sha256sums.txt.asc) {
+		""
 		log "   Done" darkgreen
 		break
 	}
@@ -584,7 +592,7 @@ while (1 -eq 1) {
 }
 
 
-# JOB: Verify PGP signature before FTP upload
+# JOB: Verify PGP signature of sha256sums.txt
 log "   Verifying PGP signature of sha256sums.txt..." green
 & $gpg --batch --yes --verbose --verify $env:temp\sha256sums.txt.asc $env:temp\sha256sums.txt
 if ($? -eq "True") { 
@@ -616,6 +624,7 @@ log "   Done" darkgreen
 # JOB: Upload binary pack and hash files to FTP repo server
 # Get in TEMP directory and call WinSCP to run the script we just created
 log "   Uploading $NewBinary to $Repo_FTP_Host..." green
+	""
 	pushd $env:temp
 	& $WinSCP /script=.\deploy_tron_ftp_script.txt
 	popd
