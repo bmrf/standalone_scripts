@@ -570,6 +570,8 @@ log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.t
 	#(gc .\sha256sums_TEMP2.txt) | ? {$_.trim() -ne "" } | sc .\sha256sums_TEMP2.txt
 	# Append the result to the sha256sums.txt we pulled from the repo
 	gc .\sha256sums_TEMP2.txt | out-file .\sha256sums.txt -encoding utf8 -append
+	# Sleep for a few seconds to make sure the pack has had time to finish uploading to the local seed server static pack location
+	start-sleep -s 10
 	# Rename the file to prepare it for uploading
 	ren "$env:temp\$NewBinary" "$env:temp\$NewBinary.UPLOADING"
 	popd
@@ -615,7 +617,7 @@ log "   Building FTP deployment script..." green
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-write-output "rename "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+write-output "ren "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 
 log "   Done" darkgreen
@@ -637,8 +639,6 @@ log "   Cleaning up..." green
 	remove-item $env:temp\sha256sums* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\$NewBinary* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $env:temp\deploy_tron_ftp_script.txt -force -recurse -ea SilentlyContinue | out-null
-	# Rename the file we uploaded to the static pack storage location earlier
-	mv $SeedServer\$StaticPackStorageLocation\$NewBinary.UPLOADING $SeedServer\$StaticPackStorageLocation\$NewBinary -force
 	# Remove our background upload job from the job list
 	get-job | remove-job
 log "   Done" darkgreen
