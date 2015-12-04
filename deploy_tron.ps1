@@ -31,7 +31,8 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
+Version:       1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
+               1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
                      + Add automatic PGP signature verification of new Tron binary pack
                1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
                1.2.8 * Add automatic PGP signature verification of Tron's internal checksums.txt
@@ -110,14 +111,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "zzz",                                             # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "zzz",
-	[string]$Repo_FTP_Password = "zzz",
+	[string]$Repo_FTP_Host = "bmrf.org",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "zzzz",
+	[string]$Repo_FTP_Password = "zzzz",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "zzz",
-	[string]$gpgUsername = "zzz"
+	[string]$gpgPassphrase = "zzzz",
+	[string]$gpgUsername = "zzzz"
 )
 
 
@@ -135,8 +136,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.3.0"
-$SCRIPT_UPDATED = "2015-12-02"
+$SCRIPT_VERSION = "1.3.1"
+$SCRIPT_UPDATED = "2015-12-04"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -154,16 +155,6 @@ $NewVersion = gc $MasterCopy\tron\Tron.bat -ea SilentlyContinue | Select-String 
 $NewVersion = "$NewVersion".Split("=")[1]
 $NewBinary = "Tron v$NewVersion ($CUR_DATE).exe"
 
-# Are you sure?
-""
-write-host " About to replace Tron $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)"
-""
-write-host " Are you sure?" -f red
-""
-Write-Host -n 'Press any key to continue...';
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
-""
-clear
 
 
 #################
@@ -455,6 +446,19 @@ if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification\vo
 	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 	break
 }
+
+
+
+# Are you sure?
+""
+write-host " About to replace Tron $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)"
+""
+write-host " Are you sure?" -f red
+""
+Write-Host -n 'Press any key to continue...';
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+""
+clear
 
 
 
