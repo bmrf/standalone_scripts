@@ -32,6 +32,7 @@ Requirements:  1. Expects Master Copy directory to look like this:
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 Version:       1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
+                     + Add note at beginning of script telling us which version we're replacing and with what version it's being replaced
                1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
                      + Add automatic PGP signature verification of new Tron binary pack
                1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
@@ -451,6 +452,8 @@ if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification\vo
 
 # Are you sure?
 ""
+write-host " Build passed all sanity checks." -f green
+""
 write-host " About to replace Tron $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)"
 ""
 write-host " Are you sure?" -f red
@@ -468,7 +471,10 @@ clear
 ###########
 # The rest of the script is wrapped in the "main" function. This is just so we can put the logging function at the bottom of the script instead of at the top
 function main() {
-log " Tron deployment script v$SCRIPT_VERSION" green
+""
+log " Tron deployment script v$SCRIPT_VERSION" blue
+""
+log " Replacing $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)" green
 
 
 # JOB: Clear target area
@@ -518,7 +524,7 @@ log "   Master copy is gold. Copying from master to local seed locations..." gre
 log "   Loading BT Sync seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
 log "   Done" darkgreen
-log "   Loading SyncThing seed..." green
+log "   Loading Syncthing seed..." green
 	cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
 log "   Done" darkgreen
 log "   Done, seed server loaded." darkgreen
