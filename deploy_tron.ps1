@@ -33,7 +33,7 @@ Requirements:  1. Expects Master Copy directory to look like this:
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 Version:       1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
                      + Add note at beginning of script telling us which version we're replacing and with what version it's being replaced
-					 * Minor formatting and log cleanup
+                     * Minor formatting and log cleanup
                1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
                      + Add automatic PGP signature verification of new Tron binary pack
                1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
