@@ -33,7 +33,7 @@ Requirements:  1. Expects Master Copy directory to look like this:
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 Version:       1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
                      + Add note at beginning of script telling us which version we're replacing and with what version it's being replaced
-                     * Minor formatting and log cleanup
+					 * Minor formatting and log cleanup
                1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
                      + Add automatic PGP signature verification of new Tron binary pack
                1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
@@ -113,14 +113,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "bmrf.org",                                        # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "zzzz",
-	[string]$Repo_FTP_Password = "zzzz",
+	[string]$Repo_FTP_Host = "xxxx",                                            # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "xxxx",
+	[string]$Repo_FTP_Password = "xxxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "zzzz",
-	[string]$gpgUsername = "zzzz"
+	[string]$gpgPassphrase = "xxxx",
+	[string]$gpgUsername = "xxxx"
 )
 
 
@@ -453,9 +453,9 @@ if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification\vo
 
 # Are you sure?
 ""
-write-host " Build passed all sanity checks." -f green
+write-host " Build passed sanity checks." -f green
 ""
-write-host " About to replace Tron $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)"
+write-host " About to replace Tron v$OldVersion ($OldDate) with v$NewVersion ($CUR_DATE)"
 ""
 write-host " Are you sure?" -f red
 ""
@@ -475,15 +475,15 @@ function main() {
 ""
 log " Tron deployment script v$SCRIPT_VERSION" blue
 ""
-log " Replacing $OldVersion ($OldDate) with $NewVersion ($CUR_DATE)" green
+log " Replacing v$OldVersion ($OldDate) with v$NewVersion ($CUR_DATE)" green
 
 
 # JOB: Clear target area
 log " Clearing target areas on local seed server..." green
-	remove-item $SeedServer\$SeedFolderBTS\tron\* -force -recurse | out-null
-	remove-item $SeedServer\$SeedFolderBTS\integrity_verification\*txt* -force -recurse | out-null
-	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse | out-null
-	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse | out-null
+	remove-item $SeedServer\$SeedFolderBTS\tron\* -force -recurse -ea SilentlyContinue | out-null
+	remove-item $SeedServer\$SeedFolderBTS\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
+	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse -ea SilentlyContinue | out-null
+	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 log " Done" darkgreen
 
 
@@ -617,7 +617,8 @@ log "   Building FTP deployment script..." green
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-write-output "ren "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"$NewBinary.UPLOADING`" `"$NewBinary`""
+write-output "mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 
 log "   Done" darkgreen
