@@ -31,7 +31,8 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
+Version:       1.3.2 ! Re-order FTP upload commands to remove .UPLOADING from the new binary name PRIOR to uploading new sha256sums.txt
+               1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
                      + Add note at beginning of script telling us which version we're replacing and with what version it's being replaced
 					 * Minor formatting and log cleanup
                1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
@@ -113,14 +114,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "xxxx",                                            # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "xxxx",
-	[string]$Repo_FTP_Password = "xxxx",
+	[string]$Repo_FTP_Host = "xxx",                                             # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "xxx",
+	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "xxxx",
-	[string]$gpgUsername = "xxxx"
+	[string]$gpgPassphrase = "xxx",
+	[string]$gpgUsername = "xxx"
 )
 
 
@@ -138,8 +139,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.3.1"
-$SCRIPT_UPDATED = "2015-12-04"
+$SCRIPT_VERSION = "1.3.2"
+$SCRIPT_UPDATED = "2016-01-18"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -615,10 +616,10 @@ log "   Building FTP deployment script..." green
 "rm *.exe" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "rm sha256sums*" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
+add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"$NewBinary.UPLOADING`" `"$NewBinary`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"$NewBinary.UPLOADING`" `"$NewBinary`""
-write-output "mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+#write-output "mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 "exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 
 log "   Done" darkgreen
