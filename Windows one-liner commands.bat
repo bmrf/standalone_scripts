@@ -312,5 +312,26 @@ Get-ChildItem 'C:\search\directory\' -recurse -include *.mp3 | select-object ful
 # POWERSHELL: List all installed Microsoft hotfixes/patches
 Get-HotFix | select-object hotfixid,installedon | sort installedon
 
+# POWERSHELL: Start an interactive PowerShell session on the remote computer myserver:
+Enter-PsSession myserver
+
+# POWERSHELL: Stop an interactive PowerShell session:
+Exit-PsSession
+
+# POWERSHELL: Run a command on a list of remote machines:
+Invoke-Command -computername myserver1, myserver2, myserver3 {get-Process}
+
+# POWERSHELL: Run a remote script on a list of remote machines:
+Invoke-Command -computername myserver1,myserver2,myserver3 -filepath \\scriptserver\c\scripts\script.psl
+
+# POWERSHELL: Operate interactively on a list of machines by setting up a "session" of open connections:
+$InteractiveSession = new-pssession -computername myserver1, myserver2, myserver3
+
+# POWERSHELL: Run a remote command on the new session. This runs it all the connections in the session:
+Invoke-Command -session $InteractiveSession {Get-Process} 
+
+# POWERSHELL: Run the remote command on the session, but report only certain objects:
+invoke-command -session $InteractiveSession {Get-Process | select-object name,VM,CPU }
+
 
 :eof
