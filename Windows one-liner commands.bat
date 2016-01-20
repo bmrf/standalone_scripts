@@ -1,6 +1,6 @@
 :: One liner commands for windows – cheat sheet
-:: v1.0.8
-:: 2015-12-01
+:: v1.0.9
+:: 2016-01-20
 :: Batch commands first, Powershell commands below
 :: This line just in case someone accidentally runs the file
 goto :eof
@@ -117,7 +117,7 @@ wmic diskdrive get serialnumber,name,description
 wmic /node:REMOTE-COMPUTER-NAME bios get serialnumber
 
 
-:: BATCH: List all patches
+:: BATCH: List all installed Microsoft hotfixes/patches
 wmic qfe
 
 :: BATCH: Look for a particular patch
@@ -294,11 +294,23 @@ get-eventlog security | Where-Object {$_.Index -eq 3982270} | format-list | find
 # POWERSHELL: Get list of all NICs in the system along with their MAC addresses
 Get-WmiObject -Class Win32_NetworkAdapter Format-Table DeviceId, Name, MACAddress -AutoSize
 
+# POWERSHELL: Get all IP information for the system
+Get-WMIobject win32_networkadapterconfiguration | where {$_.IPEnabled -eq "True"} | Select-Object pscomputername,ipaddress,defaultipgateway,ipsubnet,dnsserversearchorder,winsprimaryserver | format-Table -Auto
+
 # POWERSHELL: Download a file from the web
 (new-object System.Net.WebClient).Downloadfile("http://example.com/file.txt", "C:\Users\Travis\file.txt")
 
 # POWERSHELL: Measure how long a command takes to finish
 Measure-Command {.\mybatchfile.bat}|%{$_.TotalMilliseconds}
+
+# POWERSHELL: Find time and initiating user of last system reboot
+Get-EventLog -log system –newest 1000 | where-object {$_.eventid –eq '1074'} | format-table machinename, username, timegenerated –autosize
+
+# POWERSHELL: Find all MP3s and sort by ascending size:
+Get-ChildItem 'C:\search\directory\' -recurse -include *.mp3 | select-object fullname,length | sort length
+
+# POWERSHELL: List all installed Microsoft hotfixes/patches
+Get-HotFix | select-object hotfixid,installedon | sort installedon
 
 
 :eof
