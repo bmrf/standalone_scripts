@@ -10,7 +10,8 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
+:: Version:       1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
+::                1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
 ::                      * IMPROVEMENT: Import logging function used in Tron and convert all double "echo" statements to log calls
 ::                      * COMMENTS:    Minor comment cleanup
 ::                1.7.2 * IMPROVEMENT: Add section to remove leftover symlinks in PATH folder to JRE exes. Thanks to /u/turnerf
@@ -76,9 +77,9 @@ set JAVA_ARGUMENTS_x86=/s
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-@echo off
-set SCRIPT_VERSION=1.8.0
-set SCRIPT_UPDATED=2015-12-03
+@echo off && cls
+set SCRIPT_VERSION=1.8.1
+set SCRIPT_UPDATED=2016-01-22
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -193,9 +194,9 @@ if %FORCE_CLOSE_PROCESSES%==no (
 :: Thanks to /u/GoogleDrummer for this section
 regedit /e "%TEMP%\dump.txt" HKEY_CLASSES_ROOT\Installer\Products
 find "HKEY_CLASSES_ROOT\Installer\Products\4EA42A62" "%TEMP%\dump.txt" > "%TEMP%\keys_to_delete.txt"
-for /f "delims=[]" %%i in (%TEMP%\keys_to_delete.txt) do reg delete "%%i" /f
-del "%TEMP%\dump.txt"
-del "%TEMP%\keys_to_delete.txt"
+for /f "delims=[]" %%i in (%TEMP%\keys_to_delete.txt) do reg delete "%%i" /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
+del "%TEMP%\dump.txt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+del "%TEMP%\keys_to_delete.txt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 
 
@@ -381,14 +382,14 @@ msiexec.exe /x {4A03706F-666A-4037-7777-5F2748764D10} /qn /norestart
 
 :: Nuke 32-bit Java installation directories
 if exist "%ProgramFiles(x86)%" (
-	call :log "%CUR_DATE% %TIME%   Removing "%ProgramFiles(x86)%\Java\jre*" directories..."
+	call :log "%CUR_DATE% %TIME%   Removing '%ProgramFiles(x86)%\Java\jre*' directories..."
 	for /D /R "%ProgramFiles(x86)%\Java\" %%x in (j2re*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 	for /D /R "%ProgramFiles(x86)%\Java\" %%x in (jre*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 	if exist "%ProgramFiles(x86)%\JavaSoft\JRE" rmdir /S /Q "%ProgramFiles(x86)%\JavaSoft\JRE" >> "%LOGPATH%\%LOGFILE%"
 	)
 
 :: Nuke 64-bit Java installation directories
-call :log "%CUR_DATE% %TIME%   Removing "%ProgramFiles%\Java\jre*" directories..."
+call :log "%CUR_DATE% %TIME%   Removing '%ProgramFiles%\Java\jre*' directories..."
 for /D /R "%ProgramFiles%\Java\" %%x in (j2re*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 for /D /R "%ProgramFiles%\Java\" %%x in (jre*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 if exist "%ProgramFiles%\JavaSoft\JRE" rmdir /S /Q "%ProgramFiles%\JavaSoft\JRE" >> "%LOGPATH%\%LOGFILE%"
@@ -404,18 +405,18 @@ if %OS_VERSION%==XP (
     :: Dump list of users to a file, then iterate through the list of profiles deleting the respective AU folder
     dir "%SystemDrive%\Documents and Settings\" /B > %TEMP%\userlist.txt
     for /f "tokens=* delims= " %%a in (%TEMP%\userlist.txt) do (
-		if exist "%SystemDrive%\Documents and Settings\%%a\AppData\LocalLow\Sun\Java\AU" rmdir /S /Q "%SystemDrive%\Documents and Settings\%%a\AppData\LocalLow\Sun\Java\AU" 2>NUL
+		if exist "%SystemDrive%\Documents and Settings\%%a\AppData\LocalLow\Sun\Java\AU" rmdir /S /Q "%SystemDrive%\Documents and Settings\%%a\AppData\LocalLow\Sun\Java\AU">> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
-    for /D /R "%SystemDrive%\Documents and Settings\" %%b in (jre*) do if exist "%%x" rmdir /S /Q "%%b" 2>NUL
+    for /D /R "%SystemDrive%\Documents and Settings\" %%b in (jre*) do if exist "%%x" rmdir /S /Q "%%b">> "%LOGPATH%\%LOGFILE%" 2>NUL
 ) else (
 	:: ALL OTHER VERSIONS OF WINDOWS
     :: Dump list of users to a file, then iterate through the list of profiles deleting the respective AU folder
     dir %SystemDrive%\Users /B > %TEMP%\userlist.txt
     for /f "tokens=* delims= " %%a in (%TEMP%\userlist.txt) do (
-		if exist "%SystemDrive%\Users\%%a\AppData\LocalLow\Sun\Java\AU" rmdir /S /Q "%SystemDrive%\Users\%%a\AppData\LocalLow\Sun\Java\AU" 2>NUL
+		if exist "%SystemDrive%\Users\%%a\AppData\LocalLow\Sun\Java\AU" rmdir /S /Q "%SystemDrive%\Users\%%a\AppData\LocalLow\Sun\Java\AU">> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
-    :: Get the other JRE directories
-    for /D /R "%SystemDrive%\Users" %%b in (jre*) do rmdir /S /Q "%%b" 2>NUL
+    REM Get the other JRE directories
+    for /D /R "%SystemDrive%\Users" %%b in (jre*) do rmdir /S /Q "%%b">> "%LOGPATH%\%LOGFILE%" 2>NUL
     )
 
 :: Miscellaneous stuff, sometimes left over by the installers
@@ -454,7 +455,7 @@ if %REINSTALL_JAVA_x86%==yes (
 :: Done.
 call :log "%CUR_DATE% %TIME%   Registry hive backups: %TEMP%\java_purge_registry_backup\"
 call :log "%CUR_DATE% %TIME%   Log file: "%LOGPATH%\%LOGFILE%""
-call :log "%CUR_DATE% %TIME%   JAVA NUKER COMPLETE. Recommend rebooting and washing your hands."
+call :log "%CUR_DATE% %TIME%   COMPLETE. Recommend rebooting and washing your hands."
 
 :: Return exit code to SCCM/PDQ Deploy/PSexec/etc
 exit /B %EXIT_CODE%
