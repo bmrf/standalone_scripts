@@ -5,11 +5,11 @@ Requirements:  1. Expects Master Copy directory to look like this:
 					tron.bat
 					changelog-vX.Y.X-updated-yyyy-mm-dd.txt
 					Instructions -- YES ACTUALLY READ THEM.txt
-               
+
                2. Expects master copy tron.bat to have accurate "set SCRIPT_DATE=yyyy-mm-dd" and "set SCRIPT_VERSION=x.y.z" strings because these are parsed and used to name everything correctly
-               
+
                3. Expects seed server directory structure to look like this:
-                  
+
 					\btsync\tron
 						\tron
 							- changelog-vX.Y.Z-updated-YYYY-MM-DD.txt
@@ -19,7 +19,7 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- checksums.txt
 							- checksums.txt.asc
 							- vocatus-public-key.asc
-					
+
 					\syncthing\tron
 						\tron
 							- changelog-vX.Y.Z-updated-YYYY-MM-DD.txt
@@ -31,7 +31,8 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.2 ! Re-order FTP upload commands to remove .UPLOADING from the new binary name PRIOR to uploading new sha256sums.txt
+Version:       1.3.3 + Add dev shares to list of Syncthing and BT Sync shares to wipe and upload to
+               1.3.2 ! Re-order FTP upload commands to remove .UPLOADING from the new binary name PRIOR to uploading new sha256sums.txt
                1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
                      + Add note at beginning of script telling us which version we're replacing and with what version it's being replaced
 					 * Minor formatting and log cleanup
@@ -56,7 +57,7 @@ Behavior/steps:
 1. Deletes content from seed server
 2. Calculates sha256 hashes of all files in \tron
 3. PGP-signs checksums.txt
-4. Creates binary pack 
+4. Creates binary pack
 5. PGP-signs the binary pack
 6. Background uploads the binary pack to the seed server
 7. Fetches sha256sums.txt from repo and updates it with sha256sum of the new binary pack
@@ -99,10 +100,14 @@ param (
 	# Server holding the Tron seed directories
 	[string]$SeedServer = "\\thebrain",                                         # e.g. "\\thebrain"
 
-	# Seeding subdirectories containing \tron and \integrity_verification directories
-	# No leading or trailing slashes
-	[string]$SeedFolderBTS = "downloads\seeders\btsync\tron",                   # e.g. "downloads\seeders\tron\btsync"
-	[string]$SeedFolderST = "downloads\seeders\syncthing\tron",                 # e.g. "downloads\seeders\tron\syncthing"
+	# Seeding subdirectories containing \tron and \integrity_verification directories. No leading or trailing slashes
+	# Release seeds
+	[string]$SeedFolderBTS = "downloads\seeders\btsync\tron",                   # e.g. "downloads\seeders\btsync\tron"
+	[string]$SeedFolderST = "downloads\seeders\syncthing\tron",                 # e.g. "downloads\seeders\syncthing\tron"
+
+	# Dev seeds
+	[string]$SeedFolderBTS_dev = "downloads\seeders\btsync\tron_dev",           # e.g. "downloads\seeders\btsync\tron_dev"
+	[string]$SeedFolderST_dev = "downloads\seeders\syncthing\tron_dev",         # e.g. "downloads\seeders\syncthing\tron_dev"
 
 	# Static pack storage location. RELATIVE path from root on the
 	# local deployment server. Where we stash the compiled .exe
@@ -114,14 +119,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "xxx",                                             # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "xxx",
-	[string]$Repo_FTP_Password = "xxx",
+	[string]$Repo_FTP_Host = "site.com",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "xxxx",
+	[string]$Repo_FTP_Password = "xxxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "xxx",
-	[string]$gpgUsername = "xxx"
+	[string]$gpgPassphrase = "xxxx",
+	[string]$gpgUsername = "xxxx"
 )
 
 
@@ -139,8 +144,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.3.2"
-$SCRIPT_UPDATED = "2016-01-18"
+$SCRIPT_VERSION = "1.3.3"
+$SCRIPT_UPDATED = "2016-02-11"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
@@ -480,11 +485,17 @@ log " Replacing v$OldVersion ($OldDate) with v$NewVersion ($CUR_DATE)" green
 
 
 # JOB: Clear target area
-log " Clearing target areas on local seed server..." green
+log " Clearing Release targets on local seed server..." green
 	remove-item $SeedServer\$SeedFolderBTS\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderBTS\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
+log " Done" darkgreen
+log " Clearing Dev targets on local seed server..." green	
+	remove-item $SeedServer\$SeedFolderBTS_dev\tron\* -force -recurse -ea SilentlyContinue | out-null
+	remove-item $SeedServer\$SeedFolderBTS_dev\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
+	remove-item $SeedServer\$SeedFolderST_dev\tron\* -force -recurse -ea SilentlyContinue | out-null
+	remove-item $SeedServer\$SeedFolderST_dev\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 log " Done" darkgreen
 
 
@@ -527,12 +538,18 @@ if ($? -eq "True") {
 
 # JOB: Upload from master copy to seed server directories
 log "   Master copy is gold. Copying from master to local seed directories..." green
-log "   Loading BT Sync seed..." green
-	cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
-log "   Done" darkgreen
-log "   Loading Syncthing seed..." green
-	cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
-log "   Done" darkgreen
+	log "   Loading BT Sync Release seed..." green
+		cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
+	log "   Done" darkgreen
+	log "   Loading BT Sync Dev seed..." green
+		cp $MasterCopy\* $SeedServer\$SeedFolderBTS_dev\ -recurse -force
+	log "   Done" darkgreen
+	log "   Loading Syncthing Release seed..." green
+		cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
+	log "   Done" darkgreen
+	log "   Loading Syncthing Dev seed..." green
+		cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
+	log "   Done" darkgreen
 log "   Done, seed server loaded." darkgreen
 
 
@@ -540,8 +557,8 @@ log "   Done, seed server loaded." darkgreen
 log "   Updating master repo (remote)..." green
 
 
-# JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory. 
-# Create the file name using the new version number extracted from tron.bat and exclude any 
+# JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory.
+# Create the file name using the new version number extracted from tron.bat and exclude any
 # files with "sync" in the title (these are BT Sync hidden files, we don't need to pack them
 log "   Building binary pack, please wait..." green
 	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
@@ -553,7 +570,7 @@ log "   Starting background upload of $NewBinary to $SeedServer\$StaticPackStora
 start-job -name tron_copy_pack_to_seed_server -scriptblock {cp "$env:temp\$($args[0])" "$($args[1])\$($args[2])" -force} -ArgumentList $NewBinary, $SeedServer, $StaticPackStorageLocation
 ""
 
-	
+
 # JOB: Fetch sha256sums.txt from the repo for updating
 log "   Fetching repo copy of sha256sums.txt to update..." green
 	Invoke-WebRequest $Repo_URL/sha256sums.txt -outfile $env:temp\sha256sums.txt
@@ -598,7 +615,7 @@ while (1 -eq 1) {
 # JOB: Verify PGP signature of sha256sums.txt
 log "   Verifying PGP signature of sha256sums.txt..." green
 & $gpg --batch --yes --verbose --verify $env:temp\sha256sums.txt.asc $env:temp\sha256sums.txt
-if ($? -eq "True") { 
+if ($? -eq "True") {
 	log "   Done" darkgreen
 } else {
 	log " ! There was a problem verifying the signature!" red
@@ -654,8 +671,11 @@ log "   Done " green
 log "                    Version deployed:                  v$NewVersion ($CUR_DATE)"
 log "                    Version replaced:                  v$OldVersion ($OldDate)"
 log "                    Local seed server:                 $SeedServer"
-log "                    Local seed directory (BT Sync):    $SeedFolderBTS"
-log "                    Local seed directory (SyncThing):  $SeedFolderST"
+log "                    Local seed directories:"
+log "                              BT Sync (Release):       $SeedFolderBTS"
+log "                              BT Sync (Dev):           $SeedFolderBTS_dev"
+log "                              SyncThing (Release):     $SeedFolderST"
+log "                              SyncThing (Dev):         $SeedFolderST_dev"
 log "                    Local static pack storage:         $StaticPackStorageLocation"
 log "                    Remote repo host:                  $Repo_FTP_Host"
 log "                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
