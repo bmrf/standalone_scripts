@@ -120,7 +120,7 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "xxx",                                             # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "xxxx.org",                                        # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "xxx",
 	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
@@ -497,17 +497,17 @@ function main() {
 ""
 log " Tron deployment script v$SCRIPT_VERSION" blue
 ""
-log " Replacing v$OldVersion ($OldDate) with v$NewVersion ($CUR_DATE)" green
+log "   Replacing v$OldVersion ($OldDate) with v$NewVersion ($CUR_DATE)" green
 
 
 # JOB: Clear target area
-log " Clearing Release targets on local seed server..." green
+log "   Clearing Release targets on local seed server..." green
 	remove-item $SeedServer\$SeedFolderBTS\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderBTS\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
-log " Done" darkgreen
-log " Clearing Dev targets on local seed server..." green	
+log "   Done" darkgreen
+log "   Clearing Dev targets on local seed server..." green	
 	remove-item $SeedServer\$SeedFolderBTS_dev\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderBTS_dev\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST_dev\tron\* -force -recurse -ea SilentlyContinue | out-null
@@ -516,23 +516,23 @@ log " Done" darkgreen
 
 
 # JOB: Calculate hashes of every single file included in the \tron directory
-log " Calculating individual hashes of all included files, please wait..." green
+log "   Calculating individual hashes of all included files, please wait..." green
 	pushd $MasterCopy
 	del $env:temp\checksum* -force -recurse | out-null
 	& $HashDeep64 -s -e -c sha256 -l -r .\ | Out-File $env:temp\checksums.txt -encoding ascii
 	mv $env:temp\checksums.txt $MasterCopy\integrity_verification\checksums.txt -force
-log " Done" darkgreen
+log "   Done" darkgreen
 
 
 # JOB: PGP sign the resulting checksums.txt then upload master directory to seed locations
-log " PGP signing checksums.txt..." green
+log "   PGP signing checksums.txt..." green
 ""
 remove-item $MasterCopy\integrity_verification\checksums.txt.asc -force -recurse -ea SilentlyContinue | out-null
 & $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $MasterCopy\integrity_verification\checksums.txt
 while (1 -eq 1) {
 	if (test-path $MasterCopy\integrity_verification\checksums.txt.asc) {
 		""
-		log " Done" darkgreen
+		log "   Done" darkgreen
 		break
 	}
 	# sleep before looking again
