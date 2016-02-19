@@ -31,7 +31,8 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.3 + Add dev shares to list of Syncthing and BT Sync shares to wipe and upload to
+Version:       1.3.4 + Add check for existence of hashdeep prior to running
+               1.3.3 + Add dev shares to list of Syncthing and BT Sync shares to wipe and upload to
                1.3.2 ! Re-order FTP upload commands to remove .UPLOADING from the new binary name PRIOR to uploading new sha256sums.txt
                1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
                      + Add note at beginning of script telling us which version we're replacing and with what version it's being replaced
@@ -89,7 +90,7 @@ param (
 	[string]$WinSCP = "R:\applications\WinSCP\WinSCP.com",
 
 	# Path to hashdeep64.exe
-	[string]$HashDeep64 = "$env:SystemRoot\syswow64\hashdeep64.exe",            # e.g. "$env:SystemRoot\syswow64\hashdeep64.exe"
+	[string]$HashDeep64 = "$env:SystemRoot\system32\hashdeep64.exe",            # e.g. "$env:SystemRoot\syswow64\hashdeep64.exe"
 
 	# Path to gpg.exe (for signing)
 	[string]$gpg = "${env:ProgramFiles(x86)}\GNU\GnuPG\pub\gpg.exe",            # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
@@ -119,14 +120,14 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "site.com",                                        # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "xxxx",
-	[string]$Repo_FTP_Password = "xxxx",
+	[string]$Repo_FTP_Host = "xxx",                                             # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "xxx",
+	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "xxxx",
-	[string]$gpgUsername = "xxxx"
+	[string]$gpgPassphrase = "xxx",
+	[string]$gpgUsername = "xxx"
 )
 
 
@@ -144,16 +145,16 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.3.3"
-$SCRIPT_UPDATED = "2016-02-11"
+$SCRIPT_VERSION = "1.3.4"
+$SCRIPT_UPDATED = "2016-02-19"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
-# Extract current release version number from seed server copy of tron.bat and stash it in $OldVersion
+# Extract version number of current version from the seed server copy of tron.bat and stash it in $OldVersion
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
 $OldVersion = gc $SeedServer\$SeedFolderBTS\tron\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
 $OldVersion = "$OldVersion".Split("=")[1]
 
-# Extract release date of current version from seed server copy of tron.bat and stash it in $OldDate
+# Extract release date of current version from th seed server copy of tron.bat and stash it in $OldDate
 $OldDate = gc $SeedServer\$SeedFolderBTS\tron\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_DATE"
 $OldDate = "$OldDate".Split("=")[1]
 
@@ -192,6 +193,21 @@ if (!(test-path -literalpath $WinSCP)) {
 	write-host "         $WinSCP"
 	""
 	write-host "         Edit this script and change the `$WinSCP variable to point"
+	write-host "         to the correct location."
+	""
+	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+	break
+}
+
+# Local machine: Test for existence of hashdeep
+if (!(test-path -literalpath $HashDeep64)) {
+	""
+	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+	write-host " Couldn't find hashdeep at:"
+	""
+	write-host "         $HashDeep64"
+	""
+	write-host "         Edit this script and change the `$HashDeep64 variable to point"
 	write-host "         to the correct location."
 	""
 	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
