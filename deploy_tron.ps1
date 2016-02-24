@@ -89,8 +89,8 @@ param (
 	# Path to WinSCP.com
 	[string]$WinSCP = "R:\applications\WinSCP\WinSCP.com",
 
-	# Path to hashdeep64.exe
-	[string]$HashDeep64 = "$env:SystemRoot\system32\hashdeep64.exe",            # e.g. "$env:SystemRoot\syswow64\hashdeep64.exe"
+	# Path to hashdeep.exe
+	[string]$HashDeep = "$env:SystemRoot\system32\hashdeep.exe",                # e.g. "$env:SystemRoot\system32\hashdeep.exe"
 
 	# Path to gpg.exe (for signing)
 	[string]$gpg = "${env:ProgramFiles(x86)}\GNU\GnuPG\pub\gpg.exe",            # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
@@ -120,7 +120,7 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "xxxx.org",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "xxxxxxxx",                                        # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "xxx",
 	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
@@ -200,14 +200,14 @@ if (!(test-path -literalpath $WinSCP)) {
 }
 
 # Local machine: Test for existence of hashdeep
-if (!(test-path -literalpath $HashDeep64)) {
+if (!(test-path -literalpath $HashDeep)) {
 	""
 	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
 	write-host " Couldn't find hashdeep at:"
 	""
-	write-host "         $HashDeep64"
+	write-host "         $HashDeep"
 	""
-	write-host "         Edit this script and change the `$HashDeep64 variable to point"
+	write-host "         Edit this script and change the `$HashDeep variable to point"
 	write-host "         to the correct location."
 	""
 	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
@@ -519,7 +519,7 @@ log " Done" darkgreen
 log "   Calculating individual hashes of all included files, please wait..." green
 	pushd $MasterCopy
 	del $env:temp\checksum* -force -recurse | out-null
-	& $HashDeep64 -s -e -c sha256 -l -r .\ | Out-File $env:temp\checksums.txt -encoding ascii
+	& $HashDeep -s -e -c sha256 -l -r .\ | Out-File $env:temp\checksums.txt -encoding ascii
 	mv $env:temp\checksums.txt $MasterCopy\integrity_verification\checksums.txt -force
 log "   Done" darkgreen
 
@@ -564,7 +564,7 @@ log "   Master copy is gold. Copying from master to local seed directories..." g
 		cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
 	log "   Done" darkgreen
 	log "   Loading Syncthing Dev seed..." green
-		cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
+		cp $MasterCopy\* $SeedServer\$SeedFolderST_dev\ -recurse -force
 	log "   Done" darkgreen
 log "   Done, seed server loaded." darkgreen
 
@@ -597,7 +597,7 @@ log "   Done" darkgreen
 log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.txt..." green
 	pushd $env:temp
 	# First hash the file
-	& $HashDeep64 -s -e -l -c sha256 "Tron v$NewVersion ($CUR_DATE).exe" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
+	& $HashDeep -s -e -l -c sha256 "Tron v$NewVersion ($CUR_DATE).exe" | Out-File .\sha256sums_TEMP.txt -Encoding utf8
 	# Strip out the annoying hashdeep header
 	gc .\sha256sums_TEMP.txt | Where-Object {$_ -notmatch '#'} | where-object {$_ -notmatch '%'} | sc .\sha256sums_TEMP2.txt
 	# Strip out blank lines and trailing spaces (not needed?)
