@@ -116,6 +116,10 @@ wmic path win32_physicalmedia get SerialNumber
 wmic diskdrive get serialnumber,name,description
 wmic /node:REMOTE-COMPUTER-NAME bios get serialnumber
 
+:: BATCH: Create a single folder for every day in the year
+for %%m in (01,02,03,04,05,06,07,08,09,10,11,12) do for %%d in (01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31) do mkdir "2016-%%m-%%d"
+for %%m in (04,06,09,11) do rmdir /s /q "2016-%%m-31"
+for %%d in (29,30,31) do rmdir /s /q "2016-02-%%d"
 
 :: BATCH: List all installed Microsoft hotfixes/patches
 wmic qfe
