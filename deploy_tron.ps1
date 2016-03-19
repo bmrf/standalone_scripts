@@ -684,19 +684,19 @@ log "   Done" darkgreen
 # Finished #
 ############
 log "   Done " green
-log "                    Version deployed:                  v$NewVersion ($CUR_DATE)"
-log "                    Version replaced:                  v$OldVersion ($OldDate)"
-log "                    Local seed server:                 $SeedServer"
+log "                    Version deployed:                v$NewVersion ($CUR_DATE)"
+log "                    Version replaced:                v$OldVersion ($OldDate)"
+log "                    Local seed server:               $SeedServer"
 log "                    Local seed directories:"
-log "                              BT Sync (Release):       $SeedFolderBTS"
-log "                              BT Sync (Dev):           $SeedFolderBTS_dev"
-log "                              SyncThing (Release):     $SeedFolderST"
-log "                              SyncThing (Dev):         $SeedFolderST_dev"
-log "                    Local static pack storage:         $StaticPackStorageLocation"
-log "                    Remote repo host:                  $Repo_FTP_Host"
-log "                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
-log "                    Log file:                          $LOGPATH\$LOGFILE"
-log "                                                       Notify mirror ops and post release to Reddit" blue
+log "                              BT Sync (Release):     $SeedFolderBTS"
+log "                              BT Sync (Dev):         $SeedFolderBTS_dev"
+log "                              SyncThing (Release):   $SeedFolderST"
+log "                              SyncThing (Dev):       $SeedFolderST_dev"
+log "                    Local static pack storage:       $StaticPackStorageLocation"
+log "                    Remote repo host:                $Repo_FTP_Host"
+log "                    Remote repo upload path:         $Repo_FTP_Host/$Repo_FTP_DepositPath"
+log "                    Log file:                        $LOGPATH\$LOGFILE"
+log "                                                     Notify mirror ops and post release to Reddit" blue
 
 write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 
