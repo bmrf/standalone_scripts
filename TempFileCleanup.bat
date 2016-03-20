@@ -221,7 +221,9 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	rmdir /S /Q %WINDIR%\Help\Tours 2>NUL
 	)
 
-
+:: JOB: Disable Windows Tour bubble popup (Windows XP only; new user accounts only)
+if /i "%WIN_VER:~0,9%"=="Microsoft" reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Applets\Tour" /v RunCount /t REG_DWORD /d 00000000 /f
+	
 :: JOB: Windows Server: remove built-in media files (all Server versions)
 echo %WIN_VER%  | findstr /i /%SystemDrive%"server" >NUL
 if %ERRORLEVEL%==0 (
