@@ -1,17 +1,13 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.8 ! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
+:: Version:       3.5.9 + Add removal of "%WINDIR%\System32\tourstart.exe" on Windows XP. Thanks to /u/Perma_dude
+::                3.5.8 ! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
 ::                3.5.7 * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
 ::                3.5.6 * Merge nemchik's pull request to delete .blf and.regtrans-ms files (ported from Tron project)
 ::                      * Merge nemchik's pull request to purge Flash and Java temp locations (ported from Tron project)
 ::                3.5.5 + Add purging of additional old Windows version locations (left in place from Upgrade installations)
 ::                3.5.4 + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
-::                3.5.3 * Add removal of C:\HP folder
-::                3.5.2 * Improve XP/2k3 detection by removing redundant code
-::                3.5.1 ! Fix stall error on C:\Windows.old cleanup; was missing /D Y flag to answer "yes" to prompts. Thanks to /u/Roquemore92
-::                3.5.0 + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
-::                3.4.5 * Add cleaning of Internet Explorer using Windows built-in method. Thanks to /u/cuddlychops06
 ::                <-- outdated changelog comments removed -->
 ::                1.0.0   Initial write
 SETLOCAL
@@ -39,9 +35,9 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.8
-set SCRIPT_UPDATED=2015-09-22
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
+set SCRIPT_VERSION=3.5.9
+set SCRIPT_UPDATED=2016-03-20
+:: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
@@ -219,8 +215,9 @@ rmdir /S /Q "%APPDATA%\Macromedia\Flash Player\macromedia.com\support\flashplaye
 ::::::::::::::::::::::
 :: JOB: Windows XP/2k3: "guided tour" annoyance
 if /i "%WIN_VER:~0,9%"=="Microsoft" (
-	del %WINDIR%\system32\dllcache\tourstrt.exe 2>NUL
-	del %WINDIR%\system32\dllcache\tourW.exe 2>NUL
+	del /f /q %WINDIR%\system32\dllcache\tourstrt.exe 2>NUL
+	del /f /q %WINDIR%\system32\dllcache\tourW.exe 2>NUL
+	del /f /q "%WINDIR%\System32\tourstart.exe"
 	rmdir /S /Q %WINDIR%\Help\Tours 2>NUL
 	)
 
