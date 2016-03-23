@@ -130,17 +130,28 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	)
 ) else (
 	for /D %%x in ("%SystemDrive%\Users\*") do (
-		del /F /Q "%%x\AppData\Local\Temp\*" 2>NUL
-		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
-		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
-		del /F /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
-		del /F /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
-		del /F /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
-		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.blf" 2>NUL
-		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.regtrans-ms" 2>NUL
-		del /F /Q "%%x\*.blf" 2>NUL
-		del /F /Q "%%x\*.regtrans-ms" 2>NUL
+		del /F /S /Q "%%x\*.blf" 2>NUL
+		del /F /S /Q "%%x\*.regtrans-ms" 2>NUL
+		del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Internet Explorer\Recovery\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Terminal Server Client\Cache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Caches\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Explorer\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\History\low\*" /AH 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WebCache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Temp\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
+		del /F /S /Q "%%x\Recent\*" 2>NUL
+		del /F /Q "%%x\Documents\*.tmp" 2>NUL
 		:: Internet Explorer cleanup
 		rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 	)
