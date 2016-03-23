@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.5.9 + Add removal of "%WINDIR%\System32\tourstart.exe" on Windows XP. Thanks to /u/Perma_dude
+:: Version:       3.6.0 + Add additional cleaning procedures to Vista+ block from tron edition of TempFileCleanup. Thanks to github:bknickelbine
+::                3.5.9 + Add removal of "%WINDIR%\System32\tourstart.exe" on Windows XP. Thanks to /u/Perma_dude
 ::                3.5.8 ! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
 ::                3.5.7 * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
 ::                3.5.6 * Merge nemchik's pull request to delete .blf and.regtrans-ms files (ported from Tron project)
@@ -35,8 +36,8 @@ set LOG_MAX_SIZE=104857600
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.5.9
-set SCRIPT_UPDATED=2016-03-20
+set SCRIPT_VERSION=3.6.0
+set SCRIPT_UPDATED=2016-03-23
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
