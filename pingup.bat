@@ -42,12 +42,13 @@ echo                          Monitoring:       %HOST% (%DISPLAY_NAME%)>> %LOGFI
 echo                          Pings per check:  %PINGS_PER_CHECK%>> %LOGFILE%
 echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY%>> %LOGFILE%
 
-
-:start
 echo.
 echo %CUR_DATE% %TIME%   Performing initial test...
 echo %CUR_DATE% %TIME%   Performing initial test...>> %LOGFILE%
 echo.
+
+
+:start
 ping %HOST% -n %PINGS_PER_CHECK% | find /i "TTL" > nul
 
 
