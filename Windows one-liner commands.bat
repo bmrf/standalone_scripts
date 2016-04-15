@@ -1,8 +1,10 @@
 :: One liner commands for windows – cheat sheet
-:: v1.0.9
-:: 2016-01-20
+:: v1.1.0
+:: 2016-04-15
 :: Batch commands first, Powershell commands below
-:: This line just in case someone accidentally runs the file
+
+:: This line just in case someone accidentally double-clicks this file
+start "" "%ProgramFiles(x86)%\Notepad++\notepad++.exe" "%CD%\Windows one-liners.bat"
 goto :eof
 
 
@@ -18,7 +20,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :: Thanks to UJSTech for this ( http://community.spiceworks.com/topic/post/2898378 )
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 
-:: Possible return values of above command (OS name // returned string):
+:: Possible return values of above command (OS name & returned string):
    Windows XP Professional SP3:     Microsoft Windows XP
    Windows Server 2003 Enterprise:  Microsoft Windows Server 2003
    Windows Vista Home Premium:      Windows Vista (TM) Home Premium
