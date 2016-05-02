@@ -715,10 +715,10 @@ function log($message, $color)
 {
 	if ($color -eq $null) {$color = "gray"}
 	#console
-	write-host (get-date -f "yyyy-mm-dd hh:mm:ss") -n -f darkgray; write-host "$message" -f $color
+	write-host (get-date -f "yyyy-MM-dd hh:mm:ss") -n -f darkgray; write-host "$message" -f $color
 	#log
 	#(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath "$logpath\$logfile" -append
-	(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath "C:\logs\tron_deployment_script.log" -append
+	(get-date -f "yyyy-MM-dd hh:mm:ss") +"$message" | out-file -Filepath "C:\logs\tron_deployment_script.log" -append
 }
 
 
