@@ -137,7 +137,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\http*." 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Internet Explorer\Recovery\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Terminal Server Client\Cache\*" 2>NUL
