@@ -1,7 +1,8 @@
-:: Purpose:      Check if a host is online and turn the window green (up) or red (down) based on the result. Can also log the result to a file
+:: Purpose:      Simple script to check if a host is online and turn the window green (up) or red (down) based on the result. Also logs the result to a file
 :: Requirements: Windows XP and up
 :: Author:       reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:      1.2.0 * Rework CUR_DATE to use function we call instead of static conversion
+:: Version:      1.2.1 ! Fix date not correctly updating at start of each check
+::               1.2.0 * Rework CUR_DATE to use function we call instead of static conversion
 ::               1.1.0 * Reworked CUR_DATE variable to handle more than one Date/Time format
 ::                       Can now handle all Windows date formats
 ::               1.0.0   Initial write
@@ -11,8 +12,8 @@
 :: Prep :: -- Don't change anything in this section
 ::::::::::
 @echo off
-set SCRIPT_VERSION=1.2.0
-set SCRIPT_UPDATED=2016-04-08
+set SCRIPT_VERSION=1.2.1
+set SCRIPT_UPDATED=2016-05-10
 cls
 call :set_cur_date
 
@@ -20,10 +21,10 @@ call :set_cur_date
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Set host to check here
-set HOST=127.0.0.15
-set DISPLAY_NAME=My fancy server
-set LOGFILE=J:\infotech\scripts\Logs\pingup_%HOST%.log
-set PINGS_PER_CHECK=10
+set HOST=DNS_OR_IP_TO_CHECK_HERE
+set DISPLAY_NAME="FRIENDLY DISPLAY NAME HERE (DOESN'T AFFECT SCRIPT FUNCTION)"
+set LOGFILE=C:\Logs\pingup_%DISPLAY_NAME%.log
+set PINGS_PER_CHECK=5
 set RECHECK_COOLDOWN_DELAY=60
 
 
@@ -49,6 +50,7 @@ echo.
 
 
 :start
+call :set_cur_date
 ping %HOST% -n %PINGS_PER_CHECK% | find /i "TTL" > nul
 
 
