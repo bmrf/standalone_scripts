@@ -44,14 +44,14 @@ SETLOCAL
 ::  * Network paths are okay           (okay:  \\server\share name      )
 ::                                     (       \\172.16.1.5\share name  )
 :: Specify the folder you want to back up here.
-set SOURCE=%userprofile%\root\scripts\sysadmin
+set SOURCE=R:\
 
 :: Work area where everything is stored while compressing. Should be a fast drive or something that can handle a lot of writes
 :: Recommend not using a network share unless it's Gigabit or faster.
-set STAGING=%TEMP%\backup_staging
+set STAGING=P:\backup_staging\local
 
 :: This is the final, long-term destination for your backup after it is compressed.
-set DESTINATION=%userprofile%\desktop\backups
+set DESTINATION=\\thebrain\backup_stephandzur\Everything else\personal\root
 
 :: If you want to customize the prefix of the backup files, do so here. Don't use any special characters (like underscores)
 :: The script automatically suffixes an underscore to this name. Recommend not changing this unless you really need to.
@@ -62,7 +62,7 @@ set BACKUP_PREFIX=backup
 :: files or folders (wildcards in the form of * are allowed and recommended) to exclude.
 :: If you specify a file here and the script can't find it, it will abort.
 :: If you leave this blank, the script won't ignore any files.
-set EXCLUSIONS_FILE=
+set EXCLUSIONS_FILE=R:\Scripts\sysadmin\backup_differential_excludes.txt
 
 :: Log settings. Max size is how big (in bytes) the log can be before it is archived. 1048576 bytes is one megabyte
 set LOGPATH=%SystemDrive%\Logs
