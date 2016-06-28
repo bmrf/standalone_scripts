@@ -6,7 +6,7 @@ Requirements:  1. Expects Master Copy directory to look like this:
 					changelog-vX.Y.X-updated-yyyy-mm-dd.txt
 					Instructions -- YES ACTUALLY READ THEM.txt
 
-               2. Expects master copy tron.bat to have accurate "set SCRIPT_DATE=yyyy-mm-dd" and "set SCRIPT_VERSION=x.y.z" strings because these are parsed and used to name everything correctly
+               2. Expects master copy of tron.bat to have accurate "set SCRIPT_DATE=yyyy-mm-dd" and "set SCRIPT_VERSION=x.y.z" strings because these are parsed and used to name everything correctly
 
                3. Expects seed server directory structure to look like this:
 
