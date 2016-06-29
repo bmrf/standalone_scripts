@@ -31,7 +31,9 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.4 + Add check for existence of hashdeep prior to running
+Version:       1.3.5 + Add the following 7-Zip switches to the compression command to enable better compression of the final archive: -m0=lzma2 -mx=9 -mfb=256 -md=768m -mmt4
+                       Note! Requires a machine with at least 8 GB of RAM
+               1.3.4 + Add check for existence of hashdeep prior to running
                1.3.3 + Add dev shares to list of Syncthing and BT Sync shares to wipe and upload to
                1.3.2 ! Re-order FTP upload commands to remove .UPLOADING from the new binary name PRIOR to uploading new sha256sums.txt
                1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
@@ -145,8 +147,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.3.4"
-$SCRIPT_UPDATED = "2016-02-19"
+$SCRIPT_VERSION = "1.3.5"
+$SCRIPT_UPDATED = "2016-06-29"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server copy of tron.bat and stash it in $OldVersion
@@ -576,8 +578,10 @@ log "   Updating master repo (remote)..." green
 # JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory.
 # Create the file name using the new version number extracted from tron.bat and exclude any
 # files with "sync" in the title (these are BT Sync hidden files, we don't need to pack them
+# NOTE: -mmt4 switch specifies to use 4 CPU threads for compression. In this specific instance it doesn't help because 7-Zip (as of v16.02) only uses 2 threads for LZMA2 compression. But, since it doesn't hurt anything, I'm leaving it in the command in case future versions enable use of more than 2 threads.
+# NOTE2: -mfb=256 and -md=768m require 8GB or more of RAM, so if the packing machine has less than that, you'll want to reduce (or omit) these values
 log "   Building binary pack, please wait..." green
-	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
+	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* -m0=lzma2 -mx=9 -mfb=256 -md=768m -mmt4 >> $LOGPATH\$LOGFILE
 log "   Done" darkgreen
 
 
