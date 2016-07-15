@@ -2,11 +2,11 @@
 Purpose:       Deploys Tron
 Requirements:  1. Expects Master Copy directory to look like this:
 					\resources
-					tron.bat
 					changelog-vX.Y.X-updated-yyyy-mm-dd.txt
 					Instructions -- YES ACTUALLY READ THEM.txt
+					tron.bat
 
-               2. Expects master copy of tron.bat to have accurate "set SCRIPT_DATE=yyyy-mm-dd" and "set SCRIPT_VERSION=x.y.z" strings because these are parsed and used to name everything correctly
+               2. Expects master copy tron.bat to have accurate "set SCRIPT_DATE=yyyy-mm-dd" and "set SCRIPT_VERSION=x.y.z" strings because these are parsed and used to name everything correctly
 
                3. Expects seed server directory structure to look like this:
 
@@ -31,14 +31,13 @@ Requirements:  1. Expects Master Copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.5 + Add the following 7-Zip switches to the compression command to enable better compression of the final archive: -m0=lzma2 -mx=9 -mfb=256 -md=768m -mmt4
-                       Note! Requires a machine with at least 8 GB of RAM
+Version:       1.3.5 * Cleanup sanity check section and loopify the entire thing. Thanks to jrace
                1.3.4 + Add check for existence of hashdeep prior to running
                1.3.3 + Add dev shares to list of Syncthing and BT Sync shares to wipe and upload to
                1.3.2 ! Re-order FTP upload commands to remove .UPLOADING from the new binary name PRIOR to uploading new sha256sums.txt
                1.3.1 / Move "Are you sure?" dialog to after sanity checks; this way when we see the dialog we know all sanity checks passed
                      + Add note at beginning of script telling us which version we're replacing and with what version it's being replaced
-					 * Minor formatting and log cleanup
+                     * Minor formatting and log cleanup
                1.3.0 ! Fix bug where we appended .UPLOADING to the new binary pack too soon
                      + Add automatic PGP signature verification of new Tron binary pack
                1.2.9 + Add additional checks to look for Tron's stage-specific sub-scripts (Tron modularization project)
@@ -57,7 +56,7 @@ Version:       1.3.5 + Add the following 7-Zip switches to the compression comma
                1.0.0 . Initial write
 
 Behavior/steps:
-1. Deletes content from seed server
+1. Delete content from seed server
 2. Calculates sha256 hashes of all files in \tron
 3. PGP-signs checksums.txt
 4. Creates binary pack
@@ -122,7 +121,7 @@ param (
 	[string]$Repo_URL = "http://bmrf.org/repos/tron",                           # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "xxxxxxxx",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "mysite.org",                                      # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "xxx",
 	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
@@ -148,7 +147,7 @@ param (
 # PREP AND CHECKS #
 ###################
 $SCRIPT_VERSION = "1.3.5"
-$SCRIPT_UPDATED = "2016-06-29"
+$SCRIPT_UPDATED = "2016-07-15"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server copy of tron.bat and stash it in $OldVersion
@@ -171,306 +170,82 @@ $NewBinary = "Tron v$NewVersion ($CUR_DATE).exe"
 #################
 # SANITY CHECKS #
 #################
-# Local machine: Test for existence of 7-Zip
-if (!(test-path -literalpath $SevenZip)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find 7z.exe at:"
-	""
-	write-host "         $SevenZip"
-	""
-	write-host "         Edit this script and change the `$SevenZip variable to"
-	write-host "         the correct location."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
+# List of items to make sure they exist before running the script
+$pathsToCheck = @(
 
-# Local machine: Test for existence of WinSCP.com
-if (!(test-path -literalpath $WinSCP)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find WinSCP.com at:"
-	""
-	write-host "         $WinSCP"
-	""
-	write-host "         Edit this script and change the `$WinSCP variable to point"
-	write-host "         to the correct location."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
+    # Local machine: 7z.exe
+    "$SevenZip",
+    
+    # Local machine: WinSCP.com
+    "$WinSCP",
+    
+    # Local machine: hashdeep
+    "$HashDeep",
+    
+    # Master copy: Tron's \resources subfolder
+    "$MasterCopy\tron\resources",
+    
+    # Master copy: tron.bat inside the tron subfolder
+    "$MasterCopy\tron\tron.bat",
+    
+    # Master copy: stage_0_prep.bat inside the resources subfolder
+    "$MasterCopy\tron\resources\stage_0_prep\stage_0_prep.bat",
+    
+    # Master copy: stage_1_tempclean.bat inside the resources subfolder
+    "$MasterCopy\tron\resources\stage_1_tempclean\stage_1_tempclean.bat",
+    
+    # Master copy: stage_2_de-bloat.bat inside the resources subfolder
+    "$MasterCopy\tron\resources\stage_2_de-bloat\stage_2_de-bloat.bat",
+    
+    # Master copy: stage_3_disinfect.bat inside the resources subfolder
+    "$MasterCopy\tron\resources\stage_3_disinfect\stage_3_disinfect.bat",
+    
+    # Master copy: stage_4_repair.bat inside the resources subfolder
+    "$MasterCopy\tron\resources\stage_4_repair\stage_4_repair.bat",
+    
+    # Master copy: stage_5_patch.bat inside the resources subfolder
+    "$MasterCopy\tron\resources\stage_5_patch\stage_5_patch.bat",
+    
+    # Master copy: stage_6_optimize.bat inside the resources subfolder
+    "$MasterCopy\tron\resources\stage_6_optimize\stage_6_optimize.bat",
+    
+    # Master copy: the changelog
+    "$MasterCopy\tron\changelog-v$NewVersion-updated-$CUR_DATE.txt",
+    
+    # Master copy: the Instructions file
+    "$MasterCopy\tron\Instructions*.txt",
+    
+    # Seed server: top level Tron folder (BT Sync)
+    "$SeedServer\$SeedFolderBTS",
+    
+    # Seed server: top level Tron folder (SyncThing)
+    "$SeedServer\$SeedFolderST",
+    
+    # Seed server: \tron\integrity_verification sub-folder (BT Sync)
+    "$SeedServer\$SeedFolderBTS\integrity_verification",
+    
+    # Seed server: \tron\integrity_verification sub-folder (SyncThing)
+    "$SeedServer\$SeedFolderST\integrity_verification",
+    
+    # Seed server: the public key (BT Sync)
+    "$SeedServer\$SeedFolderBTS\integrity_verification\vocatus-public-key.asc",
+    
+    # Seed server: the public key (SyncThing)
+    "$SeedServer\$SeedFolderST\integrity_verification\vocatus-public-key.asc"
+)
 
-# Local machine: Test for existence of hashdeep
-if (!(test-path -literalpath $HashDeep)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find hashdeep at:"
-	""
-	write-host "         $HashDeep"
-	""
-	write-host "         Edit this script and change the `$HashDeep variable to point"
-	write-host "         to the correct location."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of Tron's \resources subfolder
-if (!(test-path -literalpath $MasterCopy\tron\resources)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find Tron's \resources subfolder at:"
-	""
-	write-host "         $MasterCopy\resources"
-	""
-	write-host "         Check your paths."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of tron.bat inside the tron subfolder
-if (!(test-path -literalpath $MasterCopy\tron\tron.bat)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find tron.bat at:"
-	""
-	write-host "         $MasterCopy\tron.bat"
-	""
-	write-host "         Check your paths and make sure all the required files"
-	write-host "         exist in the appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of stage_0_prep.bat inside the resources subfolder
-if (!(test-path -literalpath $MasterCopy\tron\resources\stage_0_prep\stage_0_prep.bat)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find stage_0_prep.bat at:"
-	""
-	write-host "         $MasterCopy\resources\stage_0_prep\stage_0_prep.bat"
-	""
-	write-host "         Check your paths and make sure all the required files"
-	write-host "         exist in the appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of stage_1_tempclean.bat inside the resources subfolder
-if (!(test-path -literalpath $MasterCopy\tron\resources\stage_1_tempclean\stage_1_tempclean.bat)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find stage_1_tempclean.bat at:"
-	""
-	write-host "         $MasterCopy\resources\stage_1_tempclean\stage_1_tempclean.bat"
-	""
-	write-host "         Check your paths and make sure all the required files"
-	write-host "         exist in the appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of stage_2_de-bloat.bat inside the resources subfolder
-if (!(test-path -literalpath $MasterCopy\tron\resources\stage_2_de-bloat\stage_2_de-bloat.bat)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find stage_2_de-bloat.bat at:"
-	""
-	write-host "         $MasterCopy\resources\stage_2_de-bloat\stage_2_de-bloat.bat"
-	""
-	write-host "         Check your paths and make sure all the required files"
-	write-host "         exist in the appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of stage_3_disinfect.bat inside the resources subfolder
-if (!(test-path -literalpath $MasterCopy\tron\resources\stage_3_disinfect\stage_3_disinfect.bat)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find stage_3_disinfect.bat at:"
-	""
-	write-host "         $MasterCopy\resources\stage_3_disinfect\stage_3_disinfect.bat"
-	""
-	write-host "         Check your paths and make sure all the required files"
-	write-host "         exist in the appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of stage_4_repair.bat inside the resources subfolder
-if (!(test-path -literalpath $MasterCopy\tron\resources\stage_4_repair\stage_4_repair.bat)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find stage_4_repair.bat at:"
-	""
-	write-host "         $MasterCopy\resources\stage_4_repair\stage_4_repair.bat"
-	""
-	write-host "         Check your paths and make sure all the required files"
-	write-host "         exist in the appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of stage_5_patch.bat inside the resources subfolder
-if (!(test-path -literalpath $MasterCopy\tron\resources\stage_5_patch\stage_5_patch.bat)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find stage_5_patch.bat at:"
-	""
-	write-host "         $MasterCopy\resources\stage_5_patch\stage_5_patch.bat"
-	""
-	write-host "         Check your paths and make sure all the required files"
-	write-host "         exist in the appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of stage_6_optimize.bat inside the resources subfolder
-if (!(test-path -literalpath $MasterCopy\tron\resources\stage_6_optimize\stage_6_optimize.bat)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find stage_6_optimize.bat at:"
-	""
-	write-host "         $MasterCopy\resources\stage_6_optimize\stage_6_optimize.bat"
-	""
-	write-host "         Check your paths and make sure all the required files"
-	write-host "         exist in the appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of the changelog
-if (!(test-path -literalpath $MasterCopy\tron\changelog-v$NewVersion-updated-$CUR_DATE.txt)) {
-	""
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the changelog at:"
-	""
-	write-host "         $MasterCopy\changelog-v$NewVersion-updated-$CUR_DATE.txt"
-	""
-	write-host "         Check your paths and make sure all the required files exist in the"
-	write-host "         appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Master copy: Test for existence of the Instructions file
-if (!(test-path $MasterCopy\tron\Instructions*.txt)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the Instructions file at:"
-	""
-	write-host "         $MasterCopy\Instructions*.txt"
-	""
-	write-host "         Check your paths and make sure all the required files exist in the"
-	write-host "         appropriate locations."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Seed server: Test for existence of top level Tron folder (BT Sync)
-if (!(test-path -literalpath $SeedServer\$SeedFolderBTS)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the Tron BT Sync seed folder at:"
-	""
-	write-host "         $SeedServer\$SeedFolderBTS"
-	""
-	write-host "         Check your paths and make sure the deployment server is"
-	write-host "         accessible and that you have write-access to the Tron seed folder."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Seed server: Test for existence of top level Tron folder (SyncThing)
-if (!(test-path -literalpath $SeedServer\$SeedFolderST)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the Tron SyncThing seed folder at:"
-	""
-	write-host "         $SeedServer\$SeedFolderST"
-	""
-	write-host "         Check your paths and make sure the deployment server is"
-	write-host "         accessible and that you have write-access to the Tron seed folder."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Seed server: Test for existence of \tron\integrity_verification sub-folder (BT Sync)
-if (!(test-path -literalpath $SeedServer\$SeedFolderBTS\integrity_verification)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the BT Sync integrity_verification folder at:"
-	""
-	write-host "         $SeedServer\$SeedFolderBTS\integrity_verification\"
-	""
-	write-host "         Check your paths and make sure you can reach the deployment server,"
-	write-host "         you have write-access to the Tron seed folder, and that the"
-	write-host "         \integrity_verification sub-folder exists. "
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Seed server: Test for existence of \tron\integrity_verification sub-folder (SyncThing)
-if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the SyncThing integrity_verification folder at:"
-	""
-	write-host "         $SeedServer\$SeedFolderST\integrity_verification\"
-	""
-	write-host "         Check your paths and make sure you can reach the deployment server,"
-	write-host "         you have write-access to the Tron seed folder, and that the"
-	write-host "         \integrity_verification sub-folder exists. "
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Seed server: Test for existence of the public key (BT Sync)
-if (!(test-path -literalpath $SeedServer\$SeedFolderBTS\integrity_verification\vocatus-public-key.asc)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the public key at:"
-	""
-	write-host "         $SeedServer\$SeedFolderBTS\integrity_verification\vocatus-public-key.asc"
-	""
-	write-host "         Check your paths and make sure you can reach the deployment server"
-	write-host "         and that you have write-access to the Tron seed folder."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
-}
-
-# Seed server: Test for existence of the public key (SyncThing)
-if (!(test-path -literalpath $SeedServer\$SeedFolderST\integrity_verification\vocatus-public-key.asc)) {
-	""
-	write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
-	write-host " Couldn't find the public key at:"
-	""
-	write-host "         $SeedServer\$SeedFolderST\integrity_verification\vocatus-public-key.asc"
-	""
-	write-host "         Check your paths and make sure you can reach the deployment server"
-	write-host "         and that you have write-access to the Tron seed folder."
-	""
-	write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
-	break
+# Run the check
+foreach ($i in $pathstoCheck) {
+    if ( -not (test-path -LiteralPath $i)) {
+        ""
+        write-host -n " ["; write-host -n "ERROR" -f red; write-host -n "]";
+        write-host " Couldn't find the following required item:"
+        ""
+        write-host "            $i"
+        ""
+        write-host "         Check paths and permissions and make sure it exists"
+        break
+    }
 }
 
 
@@ -494,7 +269,7 @@ clear
 ###########
 # EXECUTE #
 ###########
-# The rest of the script is wrapped in the "main" function. This is just so we can put the logging function at the bottom of the script instead of at the top
+# The rest of the script is wrapped in the "main" function. This is literally just so we can put the logging function at the bottom of the script instead of at the top
 function main() {
 ""
 log " Tron deployment script v$SCRIPT_VERSION" blue
@@ -578,10 +353,8 @@ log "   Updating master repo (remote)..." green
 # JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory.
 # Create the file name using the new version number extracted from tron.bat and exclude any
 # files with "sync" in the title (these are BT Sync hidden files, we don't need to pack them
-# NOTE: -mmt4 switch specifies to use 4 CPU threads for compression. In this specific instance it doesn't help because 7-Zip (as of v16.02) only uses 2 threads for LZMA2 compression. But, since it doesn't hurt anything, I'm leaving it in the command in case future versions enable use of more than 2 threads.
-# NOTE2: -mfb=256 and -md=768m require 8GB or more of RAM, so if the packing machine has less than that, you'll want to reduce (or omit) these values
 log "   Building binary pack, please wait..." green
-	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* -m0=lzma2 -mx=9 -mfb=256 -md=768m -mmt4 >> $LOGPATH\$LOGFILE
+	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
 log "   Done" darkgreen
 
 
@@ -706,8 +479,6 @@ write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,Incl
 
 # Close the main() function. End of the script
 }
-
-
 
 
 
