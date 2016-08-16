@@ -54,7 +54,7 @@ if not exist %LOGPATH% mkdir %LOGPATH%
 if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 
 :: Check log size. If it's less than our max, then jump to the cleanup section
-for %%R in (%LOGPATH%\%LOGFILE%) do IF %%~zR LSS %LOG_MAX_SIZE% goto os_version_detection
+for %%R in (%LOGPATH%\%LOGFILE%) do IF %%R LSS %LOG_MAX_SIZE% goto os_version_detection
 
 :: If the log was too big, go ahead and rotate it.
 pushd %LOGPATH%
