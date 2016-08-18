@@ -22,7 +22,7 @@ SETLOCAL
 set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=%COMPUTERNAME%_TempFileCleanup.log
 :: Max log file size allowed in bytes before rotation and archive. 1048576 bytes is one megabyte
-set LOG_MAX_SIZE=104857600
+set LOG_MAX_SIZE=2097152
 
 
 
