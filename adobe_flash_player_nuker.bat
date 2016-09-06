@@ -68,21 +68,17 @@ if %FORCE_CLOSE_PROCESSES%==yes (
 	if %OS_VERSION%==XP (
 		REM XP version of the task killer
 		REM this loop contains the processes we should kill
-		echo.
 		for %%i in (battle,chrome,firefox,flash,iexplore,iexplorer,opera,palemoon,plugin-container,skype,steam,yahoo) do (
 			echo     Searching for %%i.exe...
 			%WINDIR%\system32\tskill.exe /a /v %%i* >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
-		echo.
 	) else (
 		REM 7/8/2008/2008R2/2012/etc version of the task killer
 		REM this loop contains the processes we should kill
-		echo.
 		FOR %%i in (battle.net,chrome,firefox,flash,iexplore,iexplorer,opera,palemoon,plugin-container,skype,steam,yahoo) do (
 			echo     Searching for %%i.exe...
 			%WINDIR%\system32\taskkill.exe /f /fi "IMAGENAME eq %%i*" /T >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		)
-		echo.
 	)
 )
 
