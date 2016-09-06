@@ -37,7 +37,7 @@ set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-@echo off
+@echo off && cls
 set SCRIPT_VERSION=2.0.0
 set SCRIPT_UPDATED=2016-09-06
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
