@@ -685,7 +685,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 
-call :log "%CUR_DATE% %TIME%   Done."
+call :log "%CUR_DATE% %TIME%   Removal complete. Recommend rebooting immediately."
 
 REM Return exit code to SCCM/PDQ Deploy/etc
 exit /B %EXIT_CODE%
