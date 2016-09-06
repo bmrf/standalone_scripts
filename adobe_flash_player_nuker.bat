@@ -56,7 +56,7 @@ set OS_VERSION=OTHER
 ver | find /i "XP" >NUL
 IF %ERRORLEVEL%==0 set OS_VERSION=XP
 
-title Flash Player Nuker v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
+title Adobe Flash Player Nuker v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
 
 
 :::::::::::::::::::::::::::
