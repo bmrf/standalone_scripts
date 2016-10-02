@@ -460,6 +460,7 @@ log "   Building FTP deployment script..." green
 	"cd $Repo_FTP_DepositPath" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	"rm *.exe" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	"rm sha256sums*" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$TorrentSaveLocation\Tron v$NewVersion ($CUR_DATE).torrent`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"$NewBinary.UPLOADING`" `"$NewBinary`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
