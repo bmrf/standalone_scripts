@@ -497,22 +497,22 @@ log "   Done" darkgreen
 # Finished #
 ############
 log "   Done " green
-log "                    Version deployed:                  v$NewVersion ($CUR_DATE)"
-log "                    Version replaced:                  v$OldVersion ($OldDate)"
-log "                    Local seed server:                 $SeedServer"
-log "                    Local seed directories:"           
-log "                              BT Sync (RELEASE):       $SeedFolderBTS"
-log "                              BT Sync (DEV):           $SeedFolderBTS_dev"
-log "                              Syncthing (RELEASE):     $SeedFolderST"
-log "                              Syncthing (DEV):         $SeedFolderST_dev"
-log "                    Local torrent autoloader location: $Torrent"
-log "                    Local torrent save location:       $TorrentSaveLocation"
-log "                    Local static pack storage:         $StaticPackStorageLocation"
-log "                    Remote repo host:                  $Repo_FTP_Host"
-log "                    Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
-log "                    Log file:                          $LOGPATH\$LOGFILE"
-log "                                                       Notify mirror ops, post release to Reddit" blue
-log "                                                       and start the .torrent file" blue
+log "   Version deployed:                  v$NewVersion ($CUR_DATE)"
+log "   Version replaced:                  v$OldVersion ($OldDate)"
+log "   Local seed server:                 $SeedServer"
+log "   Local seed directories:"
+log "             BT Sync (RELEASE):       $SeedFolderBTS"
+log "             BT Sync (DEV):           $SeedFolderBTS_dev"
+log "             Syncthing (RELEASE):     $SeedFolderST"
+log "             Syncthing (DEV):         $SeedFolderST_dev"
+log "   Local torrent autoloader location: $Torrent"
+log "   Local torrent save location:       $TorrentSaveLocation"
+log "   Local static pack storage:         $StaticPackStorageLocation"
+log "   Remote repo host:                  $Repo_FTP_Host"
+log "   Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
+log "   Log file:                          $LOGPATH\$LOGFILE"
+log "                                      Notify mirror ops, post release to Reddit" blue
+log "                                      and start the .torrent file" blue
 
 write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 
