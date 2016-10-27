@@ -496,7 +496,7 @@ log "   Done" darkgreen
 ############
 # Finished #
 ############
-log "   Done " green
+log "   Deployment done " green
 log "   Version deployed:                  v$NewVersion ($CUR_DATE)"
 log "   Version replaced:                  v$OldVersion ($OldDate)"
 log "   Local seed server:                 $SeedServer"
