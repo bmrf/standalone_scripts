@@ -31,7 +31,8 @@ Requirements:  1. Expects master copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.0 + Add automatic creation of .torrent file for the release. We save it locally and upload to the autoloader folder on the seed server
+Version:       1.4.1 + Add job near start of script to wipe any temp files left in the \resources directory (tron_stage.txt, etc), usually leftover from testing
+               1.4.0 + Add automatic creation of .torrent file for the release. We save it locally and upload to the autoloader folder on the seed server
                1.3.5 * Cleanup sanity check section and loopify the entire thing. Thanks to jrace (AQ)
                1.3.4 + Add check for existence of hashdeep prior to running
                1.3.3 + Add dev shares to list of Syncthing and BT Sync shares to wipe and upload to
@@ -93,7 +94,7 @@ param (
 	[string]$WinSCP = "R:\applications\WinSCP\WinSCP.com",
 
 	# Path to hashdeep.exe
-	[string]$HashDeep = "$env:SystemRoot\system32\hashdeep.exe",                # e.g. "$env:SystemRoot\system32\hashdeep.exe"
+	[string]$HashDeep = "R:\utilities\cli_utils\hashdeep.exe",                  # e.g. "$env:SystemRoot\system32\hashdeep.exe"
 
 	# Path to gpg.exe (for signing)
 	[string]$gpg = "${env:ProgramFiles(x86)}\GNU\GnuPG\pub\gpg.exe",            # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
@@ -110,7 +111,7 @@ param (
 	[string]$TorrentTracker6 = "http://tracker.ipv6tracker.org:80/announce",
 	[string]$TorrentTracker7 = "http://9.rarbg.com:2710/announce",
 
-	# Master copy of Tron. Directory path, not file path. This directory 
+	# Master copy of Tron. Directory path, not file path. This directory
 	# should contain \resources and \integrity_verification subfolders
 	# Cygwin format version is required for mktorrent.exe
 	[string]$MasterCopy = "r:\utilities\security\cleanup-repair\tron",          # e.g. "r:\utilities\security\cleanup-repair\tron"
@@ -123,7 +124,7 @@ param (
 
 	# Server holding the Tron seed directories
 	[string]$SeedServer = "\\thebrain",                                         # e.g. "\\thebrain"
-	
+
 	# Torrent upload directory. e.g. where to copy the .torrent file so it can be loaded by the Bittorrent software
 	# Relative path to $SeedServer
 	[string]$TorrentAutoloaderLocation = "downloads\torrent_files\autoloader",  # e.g. "downloads\torrent_files\autoloader"
@@ -147,14 +148,15 @@ param (
 	[string]$Repo_URL = "https://bmrf.org/repos/tron",                          # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "host.com",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "site.com",                                        # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "username",
 	[string]$Repo_FTP_Password = "password",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgPassphrase = "passphrase",
-	[string]$gpgUsername = "username"
+	[string]$gpgUsername = "username",
+	[string]$gpgPassphrase = "password"
+	
 )
 
 
@@ -172,8 +174,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.4.0"
-$SCRIPT_UPDATED = "2016-09-12"
+$SCRIPT_VERSION = "1.4.1"
+$SCRIPT_UPDATED = "2016-11-02"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server copy of tron.bat and stash it in $OldVersion
@@ -302,6 +304,10 @@ log " Tron deployment script v$SCRIPT_VERSION" blue
 ""
 log "   Replacing v$OldVersion ($OldDate) with v$NewVersion ($CUR_DATE)" green
 
+# JOB: Make sure no testing files are sitting in the Tron directory
+log "   Wiping any existing test files from resources directory..." green
+	remove-item $MasterCopy\tron\resources\*.txt -force -ea SilentlyContinue | out-null
+log "   Done" darkgreen
 
 # JOB: Clear target area
 log "   Clearing RELEASE targets on local seed server..." green
@@ -315,7 +321,7 @@ log "   Clearing DEV targets on local seed server..." green
 	remove-item $SeedServer\$SeedFolderBTS_dev\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST_dev\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST_dev\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
-log " Done" darkgreen
+log "   Done" darkgreen
 
 
 # JOB: Calculate hashes of every single file in the \tron directory structure
@@ -361,8 +367,12 @@ log "   Generating .torrent file and saving to $TorrentSaveLocationCygwinFormat.
 	& $mktorrent -n "Tron v$NewVersion ($CUR_DATE)" -c "Instructions and support at https://www.reddit.com/r/TronScript" -a $TorrentTracker1,$TorrentTracker2,$TorrentTracker3,$TorrentTracker4,$TorrentTracker5,$TorrentTracker6,$TorrentTracker7 -o "$TorrentSaveLocationCygwinFormat/Tron v$NewVersion ($CUR_DATE).torrent" $MasterCopyCygwinFormat
 if ($? -eq "True") { log "   Done" darkgreen } else { log " ! There was a problem creating the .torrent" red }
 log "   Uploading .torrent to $TorrentAutoloaderLocation..." green
-	cp "$TorrentSaveLocation\Tron v$NewVersion ($CUR_DATE).torrent" $SeedServer\$TorrentAutoloaderLocation
-if ($? -eq "True") { log "   Done" darkgreen } else { log " ! There was a problem copying the .torrent to the autoloader folder" red }
+cp "$TorrentSaveLocation\Tron v$NewVersion ($CUR_DATE).torrent" $SeedServer\$TorrentAutoloaderLocation
+if ($? -eq "True") { 
+	log "   Done" darkgreen 
+} else {
+	log " ! There was a problem copying the .torrent to the autoloader folder" red 
+}
 
 
 # JOB: Upload from master copy to seed server directories
