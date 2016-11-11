@@ -31,7 +31,8 @@ Requirements:  1. Expects master copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.1 + Add job near start of script to wipe any temp files left in the \resources directory (tron_stage.txt, etc), usually leftover from testing
+Version:       1.4.2 + Add creation of torrent seed directory
+               1.4.1 + Add job near start of script to wipe any temp files left in the \resources directory (tron_stage.txt, etc), usually leftover from testing
                1.4.0 + Add automatic creation of .torrent file for the release. We save it locally and upload to the autoloader folder on the seed server
                1.3.5 * Cleanup sanity check section and loopify the entire thing. Thanks to jrace (AQ)
                1.3.4 + Add check for existence of hashdeep prior to running
@@ -133,6 +134,7 @@ param (
 	# RELEASE seeds
 	[string]$SeedFolderBTS = "downloads\seeders\btsync\tron",                   # e.g. "downloads\seeders\btsync\tron"
 	[string]$SeedFolderST = "downloads\seeders\syncthing\tron",                 # e.g. "downloads\seeders\syncthing\tron"
+	[string]$SeedFolderTorrent = "downloads\seeders\torrent",                   # e.g. "downloads\seeders\torrent"
 
 	# DEV seeds
 	[string]$SeedFolderBTS_dev = "downloads\seeders\btsync\tron_dev",           # e.g. "downloads\seeders\btsync\tron_dev"
@@ -148,15 +150,14 @@ param (
 	[string]$Repo_URL = "https://bmrf.org/repos/tron",                          # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "site.com",                                        # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "username",
-	[string]$Repo_FTP_Password = "password",
+	[string]$Repo_FTP_Host = "aaa",                                             # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "aaa",
+	[string]$Repo_FTP_Password = "aaa",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgUsername = "username",
-	[string]$gpgPassphrase = "password"
-	
+	[string]$gpgUsername = "aaa",
+	[string]$gpgPassphrase = "aaa"
 )
 
 
@@ -174,8 +175,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.4.1"
-$SCRIPT_UPDATED = "2016-11-02"
+$SCRIPT_VERSION = "1.4.2"
+$SCRIPT_UPDATED = "2016-11-10"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server copy of tron.bat and stash it in $OldVersion
@@ -388,6 +389,10 @@ log "   Master copy is gold. Copying from master to local seed directories..." g
 	log "   Done" darkgreen
 	log "   Loading Syncthing DEV seed..." green
 		cp $MasterCopy\* $SeedServer\$SeedFolderST_dev\ -recurse -force
+	log "   Done" darkgreen
+	log "   Loading .torrent seed..." green
+		mkdir "$SeedServer\$SeedFolderTorrent\Tron v$NewVersion ($CUR_DATE)" -ea silentlycontinue | out-null
+		cp $MasterCopy\tron\* $SeedServer\$SeedFolderTorrent\ -recurse -force
 	log "   Done" darkgreen
 log "   Done, seed server loaded." darkgreen
 
