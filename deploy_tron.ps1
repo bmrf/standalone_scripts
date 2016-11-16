@@ -150,14 +150,14 @@ param (
 	[string]$Repo_URL = "https://bmrf.org/repos/tron",                          # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "aaa",                                             # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "aaa",
-	[string]$Repo_FTP_Password = "aaa",
+	[string]$Repo_FTP_Host = "xxx",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Username = "xxx",
+	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgUsername = "aaa",
-	[string]$gpgPassphrase = "aaa"
+	[string]$gpgUsername = "xxxx",
+	[string]$gpgPassphrase = "xxx"
 )
 
 
@@ -273,7 +273,8 @@ foreach ($i in $pathstoCheck) {
         write-host "            $i"
         ""
         write-host "         Check paths and permissions and make sure it exists"
-        break
+		$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+		return
     }
 }
 
@@ -367,13 +368,6 @@ if ($? -eq "True") {
 log "   Generating .torrent file and saving to $TorrentSaveLocationCygwinFormat..." green
 	& $mktorrent -n "Tron v$NewVersion ($CUR_DATE)" -c "Instructions and support at https://www.reddit.com/r/TronScript" -a $TorrentTracker1,$TorrentTracker2,$TorrentTracker3,$TorrentTracker4,$TorrentTracker5,$TorrentTracker6,$TorrentTracker7 -o "$TorrentSaveLocationCygwinFormat/Tron v$NewVersion ($CUR_DATE).torrent" $MasterCopyCygwinFormat
 if ($? -eq "True") { log "   Done" darkgreen } else { log " ! There was a problem creating the .torrent" red }
-log "   Uploading .torrent to $TorrentAutoloaderLocation..." green
-cp "$TorrentSaveLocation\Tron v$NewVersion ($CUR_DATE).torrent" $SeedServer\$TorrentAutoloaderLocation
-if ($? -eq "True") { 
-	log "   Done" darkgreen 
-} else {
-	log " ! There was a problem copying the .torrent to the autoloader folder" red 
-}
 
 
 # JOB: Upload from master copy to seed server directories
@@ -392,8 +386,16 @@ log "   Master copy is gold. Copying from master to local seed directories..." g
 	log "   Done" darkgreen
 	log "   Loading .torrent seed..." green
 		mkdir "$SeedServer\$SeedFolderTorrent\Tron v$NewVersion ($CUR_DATE)" -ea silentlycontinue | out-null
-		cp $MasterCopy\tron\* $SeedServer\$SeedFolderTorrent\ -recurse -force
+		cp $MasterCopy\tron\* "$SeedServer\$SeedFolderTorrent\Tron v$NewVersion ($CUR_DATE)" -recurse -force
 	log "   Done" darkgreen
+	log "   Uploading .torrent to $TorrentAutoloaderLocation..." green
+		cp "$TorrentSaveLocation\Tron v$NewVersion ($CUR_DATE).torrent" $SeedServer\$TorrentAutoloaderLocation
+	if ($? -eq "True") {
+		log "   Done" darkgreen
+	} else {
+		log " ! There was a problem copying the .torrent to the autoloader folder" red
+	}
+
 log "   Done, seed server loaded." darkgreen
 
 
@@ -528,7 +530,7 @@ log "   Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
 log "   Log file:                          $LOGPATH\$LOGFILE"
 log "                                      Notify mirror ops, post release to Reddit" blue
 log "                                      and start the .torrent file" blue
-
+pause
 write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 
 # Close the main() function. End of the script
