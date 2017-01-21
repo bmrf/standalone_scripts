@@ -198,6 +198,7 @@ for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
 :: JOB: Clear additional unneeded files from NVIDIA driver installs
 if exist "%ProgramFiles%\Nvidia Corporation\Installer2" rmdir /s /q "%ProgramFiles%\Nvidia Corporation\Installer2"
 if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService" del /f /q "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService\*.exe"
+if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\Downloader" rmdir /s /q "%ALLUSERSPROFILE%\NVIDIA Corporation\Downloader"
 
 :: JOB: Remove the Microsoft Office installation cache. Usually around ~1.5 GB
 if exist %SystemDrive%\MSOCache rmdir /S /Q %SystemDrive%\MSOCache >> "%LOGPATH%\%LOGFILE%"
