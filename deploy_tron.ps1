@@ -2,11 +2,13 @@
 Purpose:       Deploys Tron
 Requirements:  1. Expects master copy directory to look like this:
 					\resources
+					   \functions
+					      - initialize_environment.bat
 					changelog-vX.Y.X-updated-yyyy-mm-dd.txt
 					Instructions -- YES ACTUALLY READ THEM.txt
 					tron.bat
 
-               2. Expects master copy of tron.bat to have accurate "set SCRIPT_DATE=yyyy-mm-dd" and "set SCRIPT_VERSION=x.y.z" strings because these are parsed and used to name everything correctly
+               2. Expects initialize_environment.bat to have accurate "set TRON_DATE=yyyy-mm-dd" and "set TRON_VERSION=x.y.z" strings because these are parsed and used to name everything correctly
 
                3. Expects seed server directory structure to look like this:
 
@@ -31,7 +33,9 @@ Requirements:  1. Expects master copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.2 + Add creation of torrent seed directory
+Version:       1.4.4 * Update version parsing code to handle new v10+ versions of Tron
+               1.4.3 - Remove all DEV shares since they're not really used any more
+               1.4.2 + Add creation of torrent seed directory
                1.4.1 + Add job near start of script to wipe any temp files left in the \resources directory (tron_stage.txt, etc), usually leftover from testing
                1.4.0 + Add automatic creation of .torrent file for the release. We save it locally and upload to the autoloader folder on the seed server
                1.3.5 * Cleanup sanity check section and loopify the entire thing. Thanks to jrace (AQ)
@@ -86,7 +90,7 @@ Behavior/steps:
 param (
 	# Logging information
 	[string]$logpath = "$env:systemdrive\Logs",
-	[string]$logfile = "tron_deployment_script.log",
+	[string]$logfile = "deploy_tron.log",
 
 	# Path to 7z.exe
 	[string]$SevenZip = "C:\Program Files\7-Zip\7z.exe",
@@ -136,10 +140,6 @@ param (
 	[string]$SeedFolderST = "downloads\seeders\syncthing\tron",                 # e.g. "downloads\seeders\syncthing\tron"
 	[string]$SeedFolderTorrent = "downloads\seeders\torrent",                   # e.g. "downloads\seeders\torrent"
 
-	# DEV seeds
-	[string]$SeedFolderBTS_dev = "downloads\seeders\btsync\tron_dev",           # e.g. "downloads\seeders\btsync\tron_dev"
-	[string]$SeedFolderST_dev = "downloads\seeders\syncthing\tron_dev",         # e.g. "downloads\seeders\syncthing\tron_dev"
-
 	# Static pack storage location. RELATIVE path from root on the
 	# local deployment server. Where we stash the compiled .exe
 	# after uploading to the repo server.
@@ -150,13 +150,13 @@ param (
 	[string]$Repo_URL = "https://bmrf.org/repos/tron",                          # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "xxx",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "site.com",                                        # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "xxx",
 	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgUsername = "xxxx",
+	[string]$gpgUsername = "xxx",
 	[string]$gpgPassphrase = "xxx"
 )
 
@@ -175,22 +175,22 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.4.2"
-$SCRIPT_UPDATED = "2016-11-10"
+$SCRIPT_VERSION = "1.4.4"
+$SCRIPT_UPDATED = "2017-02-06"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
-# Extract version number of current version from the seed server copy of tron.bat and stash it in $OldVersion
+# Extract version number of current version from the seed server and stash it in $OldVersion
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
-$OldVersion = gc $SeedServer\$SeedFolderBTS\tron\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
+$OldVersion = gc $SeedServer\$SeedFolderBTS\tron\resources\functions\initialize_environment.bat -ea SilentlyContinue | Select-String -pattern "set TRON_VERSION"
 $OldVersion = "$OldVersion".Split("=")[1]
 
-# Extract release date of current version from th seed server copy of tron.bat and stash it in $OldDate
-$OldDate = gc $SeedServer\$SeedFolderBTS\tron\tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_DATE"
+# Extract release date of current version from the seed server and stash it in $OldDate
+$OldDate = gc $SeedServer\$SeedFolderBTS\tron\resources\functions\initialize_environment.bat -ea SilentlyContinue | Select-String -pattern "set TRON_DATE"
 $OldDate = "$OldDate".Split("=")[1]
 
-# Extract version number from master's tron.bat and stash it in $NewVersion, then calculate and store the full .exe name for the new binary we'll be building
+# Extract version number from the master copy and stash it in $NewVersion, then calculate and store the full .exe name for the new binary we'll be building
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
-$NewVersion = gc $MasterCopy\tron\Tron.bat -ea SilentlyContinue | Select-String -pattern "set SCRIPT_VERSION"
+$NewVersion = gc $MasterCopy\tron\resources\functions\initialize_environment.bat -ea SilentlyContinue | Select-String -pattern "set TRON_VERSION"
 $NewVersion = "$NewVersion".Split("=")[1]
 $NewBinary = "Tron v$NewVersion ($CUR_DATE).exe"
 
@@ -318,12 +318,6 @@ log "   Clearing RELEASE targets on local seed server..." green
 	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 log "   Done" darkgreen
-log "   Clearing DEV targets on local seed server..." green
-	remove-item $SeedServer\$SeedFolderBTS_dev\tron\* -force -recurse -ea SilentlyContinue | out-null
-	remove-item $SeedServer\$SeedFolderBTS_dev\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
-	remove-item $SeedServer\$SeedFolderST_dev\tron\* -force -recurse -ea SilentlyContinue | out-null
-	remove-item $SeedServer\$SeedFolderST_dev\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
-log "   Done" darkgreen
 
 
 # JOB: Calculate hashes of every single file in the \tron directory structure
@@ -375,14 +369,8 @@ log "   Master copy is gold. Copying from master to local seed directories..." g
 	log "   Loading BT Sync RELEASE seed..." green
 		cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
 	log "   Done" darkgreen
-	log "   Loading BT Sync DEV seed..." green
-		cp $MasterCopy\* $SeedServer\$SeedFolderBTS_dev\ -recurse -force
-	log "   Done" darkgreen
 	log "   Loading Syncthing RELEASE seed..." green
 		cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
-	log "   Done" darkgreen
-	log "   Loading Syncthing DEV seed..." green
-		cp $MasterCopy\* $SeedServer\$SeedFolderST_dev\ -recurse -force
 	log "   Done" darkgreen
 	log "   Loading .torrent seed..." green
 		mkdir "$SeedServer\$SeedFolderTorrent\Tron v$NewVersion ($CUR_DATE)" -ea silentlycontinue | out-null
@@ -519,9 +507,7 @@ log "   Version replaced:                  v$OldVersion ($OldDate)"
 log "   Local seed server:                 $SeedServer"
 log "   Local seed directories:"
 log "             BT Sync (RELEASE):       $SeedFolderBTS"
-log "             BT Sync (DEV):           $SeedFolderBTS_dev"
 log "             Syncthing (RELEASE):     $SeedFolderST"
-log "             Syncthing (DEV):         $SeedFolderST_dev"
 log "   Local torrent autoloader location: $TorrentAutoloaderLocation"
 log "   Local torrent save location:       $TorrentSaveLocation"
 log "   Local static pack storage:         $StaticPackStorageLocation"
@@ -530,7 +516,6 @@ log "   Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
 log "   Log file:                          $LOGPATH\$LOGFILE"
 log "                                      Notify mirror ops, post release to Reddit" blue
 log "                                      and start the .torrent file" blue
-pause
 write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
 
 # Close the main() function. End of the script
