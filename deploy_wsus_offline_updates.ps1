@@ -41,7 +41,8 @@
 param (
 	# Logging information
 	[string] $LOGPATH = $env:systemdrive + "\Logs",
-	[string] $LOGFILE = $env:computername + "_wsus_offline_update_deployer.log",
+	#[string] $LOGFILE = $env:computername + "_wsus_offline_update_deployer.log",
+	[string] $LOGFILE = "deploy_wsus_offline_updates.log",
 	
 	# WSUS Offline root directory (where UpdateGenerator.exe is)
 	[string] $WSUS_DIRECTORY = "p:\scripts\wsusoffline",                                                        # e.g. "c:\wsusoffline"
@@ -62,6 +63,7 @@ param (
 )
 
 # List of products to act against (array). Don't edit this unless you have a pressing need to
+# Basically each of these folders will be renamed according to the new name in the PRODUCTS_NEW_NAMES array
 $PRODUCTS_OLD_NAMES = "wsusoffline-ofc-enu","wsusoffline-w61-x64","wsusoffline-w63-x64","wsusoffline-w100-x64"
 $PRODUCTS_NEW_NAMES = "office_2k7-2k16","windows_7_and_server_2008-R2","windows_8.1_and_server_2012-R2","windows_10_and_server_2016"
 
