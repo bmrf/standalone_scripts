@@ -13,7 +13,7 @@ set /a "ITERATIONS=%ITERATIONS%+1"
 if %RANDOM% LSS 3 (
 	color 0a
 	set /a "HITS=%HITS%+1"
-	echo  %TIME%   TICK HIT ^(hits: !HITS! iterations: %ITERATIONS%^)
+	echo  %TIME%   TICK HIT ^(!HITS! hits, %ITERATIONS% iterations^)
 	)
 goto :s
 
