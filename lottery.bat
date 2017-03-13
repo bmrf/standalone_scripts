@@ -2,7 +2,7 @@
 :: At STOPTIME the script terminates and displays how many tick hits there were (how many times %RANDOM% was less than 3)
 
 :: VARIABLES
-set LOG=%userprofile%\root\unsorted\lottery.log
+set LOG=%userprofile%\desktop\lottery.log
 set STOPTIME=14:55
 
 
