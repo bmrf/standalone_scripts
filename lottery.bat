@@ -5,17 +5,21 @@
 set LAUNCH_TIME=%TIME%
 echo  %LAUNCH_TIME%   Contest start (%username%)
 setlocal EnableDelayedExpansion
+
+:: TICK LOOP
 :s
+if %time:~1,3% equ 2:5 goto :done
+set /a "ITERATIONS=%ITERATIONS%+1"
 if %RANDOM% LSS 3 (
 	color 0a
-	set /a "WINS=%WINS%+1"
-	echo  %TIME%   TICK HIT ^(hits: !WINS!^)
-	if %time:~1,3% equ 2:3 goto :done
+	set /a "HITS=%HITS%+1"
+	echo  %TIME%   TICK HIT ^(hits: !HITS! iterations: %ITERATIONS%^)
 	)
 goto :s
 
 
 :done
 echo  %TIME% ^! Time limit reached
-echo  %TIME%   TOTAL HITS: %WINS%
+echo           TOTAL ITERATIONS: %ITERATIONS%
+echo           TOTAL HITS:       %HITS%
 pause
