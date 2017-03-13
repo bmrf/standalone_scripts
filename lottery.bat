@@ -1,25 +1,34 @@
 :: Loops through a comparison of %RANDOM% and any time %RANDOM% is less than 3, adds a point to the "tick counter"
-:: At *2:30 the script terminates and displays how many tick hits there were (how many times %RANDOM% was less than 3)
+:: At STOPTIME the script terminates and displays how many tick hits there were (how many times %RANDOM% was less than 3)
 
+:: VARIABLES
+set LOG=%userprofile%\root\unsorted\lottery.log
+set STOPTIME=14:55
+
+
+:: PREP
 @echo off
 set LAUNCH_TIME=%TIME%
 echo  %LAUNCH_TIME%   Contest start (%username%)
 setlocal EnableDelayedExpansion
 
+
 :: TICK LOOP
-:s
-if %time:~1,3% equ 2:5 goto :done
+:loop
+if %time:0,5% equ %STOPTIME% goto :done
 set /a "ITERATIONS=%ITERATIONS%+1"
 if %RANDOM% LSS 3 (
 	color 0a
 	set /a "HITS=%HITS%+1"
 	echo  %TIME%   TICK HIT ^(!HITS! hits, %ITERATIONS% iterations^)
 	)
-goto :s
+goto :loop
 
 
+:: COMPLETION
 :done
 echo  %TIME% ^! Time limit reached
-echo           TOTAL ITERATIONS: %ITERATIONS%
-echo           TOTAL HITS:       %HITS%
+echo                TOTAL ITERATIONS: %ITERATIONS%
+echo                TOTAL HITS:       %HITS%
+echo LAUNCH: %LAUNCH_TIME%  FINISH: %TIME%  ITERATIONS: %ITERATIONS%  HITS: %HITS%>>%LOG%
 pause
