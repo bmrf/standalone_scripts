@@ -30,5 +30,5 @@ goto :loop
 echo  %TIME% ^! Time limit reached
 echo                TOTAL ITERATIONS: %ITERATIONS%
 echo                TOTAL HITS:       %HITS%
-echo LAUNCH: %LAUNCH_TIME%  FINISH: %TIME%  ITERATIONS: %ITERATIONS%  HITS: %HITS%>>%LOG%
+echo USER: %USERNAME%  LAUNCH: %LAUNCH_TIME%  FINISH: %TIME%  ITERATIONS: %ITERATIONS%  HITS: %HITS%>>%LOG%
 pause
