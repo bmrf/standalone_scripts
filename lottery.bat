@@ -7,6 +7,7 @@ set STOPTIME=14:55
 
 
 :: PREP
+cls
 @echo off
 set LAUNCH_TIME=%TIME%
 echo  %LAUNCH_TIME%   Contest start (%username%)
@@ -15,7 +16,7 @@ setlocal EnableDelayedExpansion
 
 :: TICK LOOP
 :loop
-if %time:0,5% equ %STOPTIME% goto :done
+if %time:~0,5% equ %STOPTIME% goto :done
 set /a "ITERATIONS=%ITERATIONS%+1"
 if %RANDOM% LSS 3 (
 	color 0a
