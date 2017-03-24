@@ -3,7 +3,7 @@ Purpose:       Pulls TASK numbers out of log files and adds them to the log file
 Requirements:  Specify your log file directory in the implementationLogs variable
                Script searches the change.log's in the directory, extracts the TASK number, and renames the before/change/after log set based on that. If no task #, then no rename occurs.
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.0.0 . Initial write
+Version:       1.0.1
 #>
 
 
@@ -44,8 +44,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.0.0"
-$SCRIPT_UPDATED = "2017-03-23"
+$SCRIPT_VERSION = "1.0.1"
+$SCRIPT_UPDATED = "2017-03-24"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 # Get in our directory. We'll be here for the rest of the script
 pushd $implementationLogs
@@ -102,7 +102,7 @@ log "Executing as $env:userdomain\$env:username" darkgray
 
 # Loop through the logs and rename them, using the Change log as the "anchor" since it' contains the TASK number
 foreach ($logfileChange in $logsChange) {
-	
+
 	# Extract the task number from the log and into a variable
 	$taskNumber = ""												# blank it out each loop
 	$step1 = gc $logfileChange | sls -pattern TASK\d\d\d\d\d\d\d	# extract whole line
@@ -123,78 +123,68 @@ foreach ($logfileChange in $logsChange) {
 			# Build our new file name then do the rename
 			$logfileChangeNewName = $logfileChange -replace "TASKxxxxxxx","$taskNumber"
 			Rename-Item $logfileChange $logfileChangeNewName -force
-		}
-	
 
-		# Rename the BEFORE log
-		# Loop through ALL Before logs and compare them to the working Change log to find a match
-		foreach ($logfileBefore in $logsBefore) {
-			# This is really ugly but here's the explanation:
-			# We're basically doing an AND comparison on the date/time stamp (down to the hour) and the IP address/hostname in the "before" log file names
-			# If BOTH match, then we assume we've found a matching log set and rename accordingly
-			# The use of the split function is to strip out the path and leave only the file name
-			# The use of the substring function is to extract the IP address/hostname for comparison
-			if ($logfileBefore.split("\\")[-1].substring(0,14) -eq $logfileChange.split("\\")[-1].substring(0,14) -and $logfileBefore.split("-")[-2] -eq $logfileChange.split("-")[-2]) {
+			# Rename the BEFORE log
+			# Loop through ALL Before logs and compare them to the working Change log to find a match
+			foreach ($logfileBefore in $logsBefore) {
+				# This is really ugly but here's the explanation:
+				# We're basically doing an AND comparison on the date/time stamp (down to the hour) and the IP address/hostname in the "before" log file names
+				# If BOTH match, then we assume we've found a matching log set and rename accordingly
+				# The use of the split function is to strip out the path and leave only the file name
+				# The use of the substring function is to extract the IP address/hostname for comparison
+				if ($logfileBefore.split("\\")[-1].substring(0,14) -eq $logfileChange.split("\\")[-1].substring(0,14) -and $logfileBefore.split("-")[-2] -eq $logfileChange.split("-")[-2]) {
 
-				# Rename the Before log
-				if ($logfileBefore -match "$taskNumber") {
-					log "SKIP $taskNumber before.log (already tagged)"
-				} else {
-					log "TAG  $taskNumber before.log" green
+					# Rename the Before log
+					if ($logfileBefore -match "$taskNumber") {
+						log "SKIP $taskNumber before.log (already tagged)"
+					} else {
+						log "TAG  $taskNumber before.log" green
 
-					# Make some variables to use in the log messages
-					$logfileChangeMatch = $logfileChange.split("\\")[-1]
-					$logfileBeforeMatch = $logfileBefore.split("\\")[-1]
+						# Make some variables to use in the log messages
+						$logfileChangeMatch = $logfileChange.split("\\")[-1]
+						$logfileBeforeMatch = $logfileBefore.split("\\")[-1]
 
-					# Log the match
-					logNoDateTimeStamp "$logfileChangeMatch"
-					logNoDateTimeStamp "$logfileBeforeMatch"
+						# Log the match
+						logNoDateTimeStamp "$logfileChangeMatch"
+						logNoDateTimeStamp "$logfileBeforeMatch"
 
-					# Build our new file name then do the rename
-					$logfileBeforeNewName = $logfileBefore -replace "TASKxxxxxxx","$taskNumber"
-					Rename-Item $logfileBefore $logfileBeforeNewName -force
+						# Build our new file name then do the rename
+						$logfileBeforeNewName = $logfileBefore -replace "TASKxxxxxxx","$taskNumber"
+						Rename-Item $logfileBefore $logfileBeforeNewName -force
+					}
+				}
+			}
+
+
+			# Rename the AFTER log
+			# Loop through ALL After logs and compare them to the working Change log to find a match
+			foreach ($logfileAfter in $logsAfter) {
+				if ($logfileAfter.split("\\")[-1].substring(0,14) -eq $logfileChange.split("\\")[-1].substring(0,14) -and $logfileAfter.split("-")[-2] -eq $logfileChange.split("-")[-2]) {
+
+					# Rename the After log
+					if ($logfileAfter -match "$taskNumber") {
+						log "SKIP $taskNumber after.log  (already tagged)"
+					} else {
+						log "TAG  $taskNumber after.log" green
+
+						# Make some variables to use in the log messages
+						$logfileChangeMatch = $logfileChange.split("\\")[-1]
+						$logfileAfterMatch = $logfileAfter.split("\\")[-1]
+
+						# Log the match
+						logNoDateTimeStamp "$logfileChangeMatch"
+						logNoDateTimeStamp "$logfileAfterMatch"
+
+						# Build our new file name then do the rename
+						$logfileAfterNewName = $logfileAfter -replace "TASKxxxxxxx","$taskNumber"
+						Rename-Item $logfileAfter $logfileAfterNewName -force
+					}
 				}
 			}
 		}
-		
-		
-		# Rename the AFTER log
-		# Loop through ALL After logs and compare them to the working Change log to find a match
-		foreach ($logfileAfter in $logsAfter) {
-			# This is really ugly but here's the explanation:
-			# We're basically doing an AND comparison on the date/time stamp (down to the hour) and the IP address/hostname in the "After" log file names
-			# If BOTH match, then we assume we've found a matching log set and rename accordingly
-			# The use of the split function is to strip out the path and leave only the file name
-			# The use of the substring function is to extract the IP address/hostname for comparison
-			if ($logfileAfter.split("\\")[-1].substring(0,14) -eq $logfileChange.split("\\")[-1].substring(0,14) -and $logfileAfter.split("-")[-2] -eq $logfileChange.split("-")[-2]) {
-
-				# Rename the After log
-				if ($logfileAfter -match "$taskNumber") {
-					log "SKIP $taskNumber after.log  (already tagged)"
-				} else {
-					log "TAG  $taskNumber after.log" green
-
-					# Make some variables to use in the log messages
-					$logfileChangeMatch = $logfileChange.split("\\")[-1]
-					$logfileAfterMatch = $logfileAfter.split("\\")[-1]
-
-					# Log the match
-					logNoDateTimeStamp "$logfileChangeMatch"
-					logNoDateTimeStamp "$logfileAfterMatch"
-
-					# Build our new file name then do the rename
-					$logfileAfterNewName = $logfileAfter -replace "TASKxxxxxxx","$taskNumber"
-					Rename-Item $logfileAfter $logfileAfterNewName -force
-				}
-			}
-		}
-
-
-		
-		
 	} else {
 		$x = $logfileChange.split("\\")[-1] #hacky workaround so the log function doesn't blow up
-		log "PASS (no task #): $x" 
+		log "PASS (no task #) $x" darkyellow
 	}
 
 } # End rename loop
