@@ -112,10 +112,10 @@ foreach ($logfileChange in $logsChange) {
 
 	# If we were able to get a task number go ahead and perform the rename operations
 	# If we weren't able to extract a TASK number then all the following is skipped and we go on to the next file
-	# (length being greater than 5 is a somewhat arbitrary check but whatever)
-	if ($taskNumber.Length -gt 5) {
+	# (length being greater than 7 is a somewhat arbitrary check but whatever)
+	if ($taskNumber.Length -gt 7) {
 
-		# Rename the CHANGE log
+		# Parse the CHANGE log
 		if ($logfileChange -match "$taskNumber") {
 			log "SKIP $taskNumber change.log (already tagged)"
 		} else {
