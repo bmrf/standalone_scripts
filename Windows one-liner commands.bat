@@ -1,6 +1,6 @@
 :: One liner commands for windows – cheat sheet
 :: v1.1.0
-:: 2016-04-15
+:: 2017-03-29
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -28,6 +28,7 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
    Windows 7 Home Premium:          Windows 7 Home Premium
    Windows 7 Professional:          Windows 7 Professional
    Windows 7 Enterprise:            Windows 7 Enterprise
+   Windows 7 Starter:               Windows 7 Starter
    Windows 8.1 Professional:        Windows 8.1 Pro
    Windows Server 2008 R2 Standard: Windows Server 2008 R2 Standard
    Windows Server 2012 R2 Standard: Windows Server 2012 R2 Standard
@@ -238,7 +239,7 @@ Syntax
 
 This can include negative numbers:
 
-      %variable:~num_chars_to_skip, -num_chars_to_keep%
+      %variable:~num_chars_to_skip,-num_chars_to_keep%
       %variable:~-num_chars_to_skip,num_chars_to_keep%
       %variable:~-num_chars_to_skip,-num_chars_to_keep%
 
@@ -308,6 +309,8 @@ Get-WMIobject win32_networkadapterconfiguration | where {$_.IPEnabled -eq "True"
 
 # POWERSHELL: Measure how long a command takes to finish
 Measure-Command {.\mybatchfile.bat}|%{$_.TotalMilliseconds}
+# Hacky batch version of the same thing
+powershell.exe "Measure-Command {cmd.exe /c wmic product get identifyingnumber,name,version /all}|%{$_.TotalMilliseconds}"
 
 # POWERSHELL: Find time and initiating user of last system reboot
 Get-EventLog -log system –newest 1000 | where-object {$_.eventid –eq '1074'} | format-table machinename, username, timegenerated –autosize
