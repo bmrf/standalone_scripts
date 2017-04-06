@@ -1,0 +1,14 @@
+Windows Registry Editor Version 5.00
+
+; Disable Popup Balloon Notifications in the Windows Vista/7 system tray (by the clock)
+; Windows Guides mintywhite.com
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"EnableBalloonTips"=dword:00000000
+"StartButtonBalloonTip"=dword:00000000
+"FolderContentsInfoTip"=dword:00000000
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"EnableBalloonTips"=dword:00000000
+"StartButtonBalloonTip"=dword:00000000
+"FolderContentsInfoTip"=dword:00000000

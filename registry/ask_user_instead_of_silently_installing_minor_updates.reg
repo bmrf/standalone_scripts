@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00
+
+; Ask the user instead of silently installing "minor" updates.
+; https://technet.microsoft.com/en-us/library/cc708449%28v=ws.10%29.aspx
+[HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU]
+"AutoInstallMinorUpdates"=dword:00000000

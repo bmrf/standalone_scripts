@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\exefile\shell\runas\command]
+@="runas /user:domain\username "%1""
+"IsolatedCommand"="runas /user:domain\username "%1""
+
+;alternate method, we run both just to be sure
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\System]
+"ConsentPromptbehaviorAdmin"=dword:00000001

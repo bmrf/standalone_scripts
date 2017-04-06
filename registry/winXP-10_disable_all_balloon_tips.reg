@@ -1,0 +1,14 @@
+Windows Registry Editor Version 5.00
+
+; Disable all balloon tips (XP through Win10).
+; These include Security/Action Center, device found, desktop cleanup, "faster USB" notifications, and the tour.
+; Note: this does not effect metro push notifications (for that use NoToastApplicationNotification)
+; current user
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"EnableBalloonTips"=dword:00000000
+; all users
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"EnableBalloonTips"=dword:00000000
+; (and/or with the Group Policy)
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer]
+"TaskbarNoNotification"=dword:00000001

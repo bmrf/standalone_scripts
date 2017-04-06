@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+; Apply system-wide
+[HKEY_LOCAL_MACHINE\Software\Classes\Folder\shell\pintostartscreen]
+"AppliesTo"="NOT System.ParsingName:=\"::{645FF040-5081-101B-9F08-00AA002F954E}\""
+
+; Apply only to current user
+;[HKEY_CURRENT_USER\Software\Classes\Folder\shell\pintostartscreen]
+;"AppliesTo"="NOT System.ParsingName:=\"::{645FF040-5081-101B-9F08-00AA002F954E}\""

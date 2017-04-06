@@ -1,0 +1,5 @@
+Windows Registry Editor Version 5.00
+
+;Display the Build Number on the desktop
+[HKEY_CURRENT_USER\Control Panel\Desktop]
+"PaintDesktopVersion"=dword:00000001

@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00
+
+; Disable useless "touch optimized" lock screen that makes you hit Enter before logging in.
+; This has no effect on Win+L locking, auto lock timer, etc.
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Personalization]
+"NoLockScreen"=dword:00000001

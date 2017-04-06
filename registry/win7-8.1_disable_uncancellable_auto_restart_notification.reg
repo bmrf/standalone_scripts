@@ -1,0 +1,5 @@
+Windows Registry Editor Version 5.00
+
+; Disable uncancellable auto restart notifications (XP through 8.1, ignored on 10)
+[HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU]
+"NoAutoRebootWithLoggedOnUsers"=dword:00000001

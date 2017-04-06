@@ -1,0 +1,5 @@
+Windows Registry Editor Version 5.00
+
+; Disable useless "Use the Web Service to find the correct program" dialog.
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer]
+"NoInternetOpenWith"=dword:00000001
