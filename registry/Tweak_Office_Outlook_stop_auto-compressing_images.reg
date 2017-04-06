@@ -1,0 +1,18 @@
+Windows Registry Editor Version 5.00
+
+
+; Prevent Outlook 2007 from auto-compressing images inserted in email body's via the "Image --> Insert" command
+[HKEY_CURRENT_USER\Software\Microsoft\Office\12.0\Word\Data]
+"SettingsWordMail"=-
+
+; Prevent Outlook 2010 from auto-compressing images inserted in email body's via the "Image --> Insert" command
+[HKEY_CURRENT_USER\Software\Microsoft\Office\14.0\Word\Data]
+"SettingsWordMail"=-
+
+; Prevent Outlook 2013 from auto-compressing images inserted in email body's via the "Image --> Insert" command
+[HKEY_CURRENT_USER\Software\Microsoft\Office\15.0\Word\Data]
+"SettingsWordMail"=-
+
+; Prevent Outlook 2016 from auto-compressing images inserted in email body's via the "Image --> Insert" command
+[HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Word\Data]
+"SettingsWordMail"=-
