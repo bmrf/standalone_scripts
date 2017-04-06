@@ -1,6 +1,6 @@
 :: One liner commands for windows – cheat sheet
 :: v1.1.0
-:: 2017-03-29
+:: 2016-04-15
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -28,7 +28,6 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
    Windows 7 Home Premium:          Windows 7 Home Premium
    Windows 7 Professional:          Windows 7 Professional
    Windows 7 Enterprise:            Windows 7 Enterprise
-   Windows 7 Starter:               Windows 7 Starter
    Windows 8.1 Professional:        Windows 8.1 Pro
    Windows Server 2008 R2 Standard: Windows Server 2008 R2 Standard
    Windows Server 2012 R2 Standard: Windows Server 2012 R2 Standard
@@ -341,6 +340,8 @@ Invoke-Command -session $InteractiveSession {Get-Process}
 
 # POWERSHELL: Run the remote command on the session, but report only certain objects:
 invoke-command -session $InteractiveSession {Get-Process | select-object name,VM,CPU }
+
+
 
 
 :eof
