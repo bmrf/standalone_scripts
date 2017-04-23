@@ -73,7 +73,9 @@ popd
 :os_version_detection
 :: Detect the version of Windows we're on. This determines a few things later in the script
 set WIN_VER=undetected
-for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
+set WIN_VER_NUM=undetected
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| find "ProductName"') DO set WIN_VER=%%i %%j
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
 
 
@@ -124,25 +126,43 @@ if exist %SystemDrive%\$Windows.~WS (
 :: First block handles XP/2k3, second block handles Vista and up
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3.
-if /i "%WIN_VER:~0,9%"=="Microsoft" (
+if %WIN_VER_NUM% lss 6.0 (
 	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do (
-		del /F /Q "%%x\Local Settings\Temp\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		del /F /Q "%%x\Recent\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		del /F /Q "%%x\Application Data\Sun\Java\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /Q "%%x\Application Data\Adobe\Flash Player\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /Q "%%x\Application Data\Macromedia\Flash Player\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /Q "%%x\Application Data\Sun\Java\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /Q "%%x\Local Settings\Temp\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /Q "%%x\My Documents\*.tmp" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /Q "%%x\Recent\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Dr Watson\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportArchive\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportQueue\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Application Data\Sun\Java\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIcons\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIconsOld\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\http*.*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Media Cache\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Dr Watson\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Internet Explorer\Recovery\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Terminal Server Client\Cache\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Temp\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\Recent\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 ) else (
 	for /D %%x in ("%SystemDrive%\Users\*") do (
+		del /F /Q "%%x\Documents\*.tmp" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\*.blf" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\*.regtrans-ms" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIconsOld\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIcons\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIconsOld\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\http*.*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Media Cache\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Internet Explorer\Recovery\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -153,15 +173,17 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WebCache\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportQueue\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Temp\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		del /F /S /Q "%%x\Recent\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		del /F /Q "%%x\Documents\*.tmp" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		:: Internet Explorer cleanup
-		rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 	)
+	:: Internet Explorer cleanup
+	rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 )
 
 
@@ -181,6 +203,7 @@ echo   Cleaning SYSTEM temp files... >> "%LOGPATH%\%LOGFILE%" && echo.>> %LOGPAT
 ::::::::::::::::::::::
 :: Version-agnostic :: (these jobs run regardless of OS version)
 ::::::::::::::::::::::
+
 :: JOB: System temp files
 del /F /S /Q "%WINDIR%\TEMP\*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
@@ -210,6 +233,9 @@ if exist %SystemDrive%\i386 rmdir /S /Q %SystemDrive%\i386 >> "%LOGPATH%\%LOGFIL
 if exist %SystemDrive%\RECYCLER rmdir /s /q %SystemDrive%\RECYCLER
 if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
 
+:: JOB: Clear MUI cache
+reg delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
+
 :: JOB: Clear queued and archived Windows Error Reporting (WER) reports
 echo. >> "%LOGPATH%\%LOGFILE%"
 if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive"
@@ -224,6 +250,21 @@ del /F /Q %WINDIR%\*.bmp >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q %WINDIR%\*.tmp >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q %WINDIR%\Web\Wallpaper\*.* >> "%LOGPATH%\%LOGFILE%" 2>NUL
 rmdir /S /Q %WINDIR%\Web\Wallpaper\Dell >> "%LOGPATH%\%LOGFILE%" 2>NUL
+
+:: JOB: Clear Windows Defender Scan Results
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Quick" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Quick"
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Resource" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Resource"
+
+:: JOB: Clear Windows Search Temp Data
+if exist "%ALLUSERSPROFILE%\Microsoft\Search\Data\Temp" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Search\Data\Temp"
+
+:: JOB: Windows update logs & built-in backgrounds (space waste)
+del /F /Q %WINDIR%\*.log 2>NUL
+del /F /Q %WINDIR%\*.txt 2>NUL
+del /F /Q %WINDIR%\*.bmp 2>NUL
+del /F /Q %WINDIR%\*.tmp 2>NUL
+del /F /Q %WINDIR%\Web\Wallpaper\*.* 2>NUL
+rmdir /S /Q %WINDIR%\Web\Wallpaper\Dell 2>NUL
 
 :: JOB: Flash cookies (both locations)
 rmdir /S /Q "%APPDATA%\Macromedia\Flash Player\#SharedObjects" >> "%LOGPATH%\%LOGFILE%" 2>NUL
