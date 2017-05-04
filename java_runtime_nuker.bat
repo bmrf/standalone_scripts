@@ -10,7 +10,8 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
+:: Version:       1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 100 (3-digit identifier vs. 2). Thanks to /u/flash44007
+::                1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
 ::                1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
 ::                      * IMPROVEMENT: Import logging function used in Tron and convert all double "echo" statements to log calls
 ::                      * COMMENTS:    Minor comment cleanup
@@ -78,8 +79,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.8.1
-set SCRIPT_UPDATED=2016-01-22
+set SCRIPT_VERSION=1.8.2
+set SCRIPT_UPDATED=2017-05-04
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -201,20 +202,26 @@ del "%TEMP%\keys_to_delete.txt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 
 :::::::::::::::::::::::::
-:: UNINSTALLER SECTION :: -- Basically here we just brute-force every "normal" method for
-:::::::::::::::::::::::::    removing Java, then resort to more painstaking methods later
+:: UNINSTALLER SECTION :: -- Here we brute-force every "normal" method for removing
+:::::::::::::::::::::::::    Java, then resort to more painstaking methods later
 call :log "%CUR_DATE% %TIME%   Targeting individual JRE versions..."
 call :log "%CUR_DATE% %TIME%   This might take a few minutes. Don't close this window."
 
 :: EXPOSITION DUMP: OK, so all JRE runtimes (series 4-8) use certain GUIDs that increment with each new update (e.g. Update 66)
-:: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
+:: This makes it easy to catch them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
 :: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
+:: Beginning with JRE versions over 100 (I think JRE8 was the first major version to have subversions go over 100), the GUID string "2F8__", which identified architecture, switched to "2F__", presumably to make room for the new 3rd digit in the version identifying section. You can see this in the JRE8 portion below.
 
 :: JRE 8
 call :log "%CUR_DATE% %TIME%   JRE 8..."
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+:: These two lines catch any version above 100 since it's three characters instead of two. Oracle also dropped the "8"
+:: from the last part of the GUID, so instead of "2F8__" it's now "2F__", presumably to make room for the 3rd digit on the right
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+
 
 :: JRE 7
 call :log "%CUR_DATE% %TIME%   JRE 7..."
