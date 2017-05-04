@@ -211,14 +211,13 @@ call :log "%CUR_DATE% %TIME%   This might take a few minutes. Don't close this w
 :: This makes it easy to catch them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
 :: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
-:: Beginning with JRE versions over 100 (I think JRE8 was the first major version to have subversions go over 100), the GUID string "2F8__", which identified architecture, switched to "2F__", presumably to make room for the new 3rd digit in the version identifying section. You can see this in the JRE8 portion below.
+:: Beginning with JRE versions over 99 (JRE8 was first major version to have subversions go over 99), the GUID string "2F8__", which identified architecture, switched to "2F__", presumably to make room for the new 3rd digit in the version identifying section. You can see this in the JRE8 portion below.
 
 :: JRE 8
 call :log "%CUR_DATE% %TIME%   JRE 8..."
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
-:: This line catches any version above 100 since it's three characters instead of two. Oracle also dropped the "8" from
+:: This line catches any version above 99 since it's three characters instead of two. Oracle also dropped the "8" from
 :: the last part of the GUID, so instead of "2F8__" it's now "2F__", presumably to make room for the 3rd digit on the right
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 
