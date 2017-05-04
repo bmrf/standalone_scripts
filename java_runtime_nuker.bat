@@ -10,7 +10,7 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 100 (3-digit identifier vs. 2). Thanks to /u/flash44007
+:: Version:       1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
 ::                1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
 ::                1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
 ::                      * IMPROVEMENT: Import logging function used in Tron and convert all double "echo" statements to log calls
@@ -215,12 +215,11 @@ call :log "%CUR_DATE% %TIME%   This might take a few minutes. Don't close this w
 
 :: JRE 8
 call :log "%CUR_DATE% %TIME%   JRE 8..."
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
-:: These two lines catch any version above 100 since it's three characters instead of two. Oracle also dropped the "8"
-:: from the last part of the GUID, so instead of "2F8__" it's now "2F__", presumably to make room for the 3rd digit on the right
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+:: This line catches any version above 100 since it's three characters instead of two. Oracle also dropped the "8" from
+:: the last part of the GUID, so instead of "2F8__" it's now "2F__", presumably to make room for the 3rd digit on the right
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 
 :: JRE 7
