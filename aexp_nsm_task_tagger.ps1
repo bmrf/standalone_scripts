@@ -19,7 +19,7 @@ param (
 	# Logging information
 	#[string]$logpath = "$env:userprofile\root\documents\misc\logs",
 	[string]$logpath = "c:\logs",
-	[string]$logfile = "add_task_number_to_log_names.log",
+	[string]$logfile = "aexp_task_tagger.log",
 
 	# Path to 7z.exe
 	[string]$SevenZip = "C:\Program Files\7-Zip\7z.exe",
@@ -37,7 +37,7 @@ param (
 # ----------------------------- Don't edit anything below this line ----------------------------- #
 
 
-
+if (test-path "$env:userprofile\desktop\PeerReviewErros.log") {ri "$env:userprofile\desktop\PeerReviewErros.log"}
 
 
 
