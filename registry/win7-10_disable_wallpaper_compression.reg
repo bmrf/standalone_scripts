@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00
+
+; Disable Windows stupid automatic compression of wallpaper images. Thanks to /u/Neqsis
+; original thread: https://www.reddit.com/r/pcgaming/comments/6kry64/protip_windows_automatically_compresses_wallpaper/
+[HKEY_CURRENT_USER\Control Panel\Desktop]
+"JPEGImportQuality"=dword:00000064
