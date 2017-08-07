@@ -10,7 +10,8 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
+:: Version:       1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries in the Windows system folders. Thanks to /u/Mikkehy
+::                1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
 ::                1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
 ::                1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
 ::                      * IMPROVEMENT: Import logging function used in Tron and convert all double "echo" statements to log calls
@@ -79,8 +80,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.8.2
-set SCRIPT_UPDATED=2017-05-04
+set SCRIPT_VERSION=1.8.3
+set SCRIPT_UPDATED=2017-08-07
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -260,6 +261,7 @@ wmic product where "name like 'Java Auto Updater'" call uninstall /nointeractive
 call :log "%CUR_DATE% %TIME%   Specific targeting done. Now running WMIC wildcard catchall uninstallation..."
 %WMIC% product where "name like '%%J2SE Runtime%%'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "name like 'Java%%Runtime%%'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "name like 'Java%%Update%%'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "name like 'JavaFX%%'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 call :log "%CUR_DATE% %TIME%   Done."
 
@@ -357,6 +359,11 @@ if exist %WINDIR%\tasks\Java*.job del /F /Q %WINDIR%\tasks\Java*.job >> "%LOGPAT
 if exist %WINDIR%\System32\tasks\Java*.job del /F /Q %WINDIR%\System32\tasks\Java*.job >> "%LOGPATH%\%LOGFILE%"
 if exist %WINDIR%\SysWOW64\tasks\Java*.job del /F /Q %WINDIR%\SysWOW64\tasks\Java*.job >> "%LOGPATH%\%LOGFILE%"
 echo.
+
+:: Kill any leftover binaries in the Windows system folders
+if exist %WINDIR%\System32\java.exe del /F /Q %WINDIR%\System32\java.exe >> "%LOGPATH%\%LOGFILE%"
+if exist %WINDIR%\System32\javaw.exe del /F /Q %WINDIR%\System32\javaw.exe >> "%LOGPATH%\%LOGFILE%"
+if exist %WINDIR%\System32\javaws.exe del /F /Q %WINDIR%\System32\javaws.exe >> "%LOGPATH%\%LOGFILE%"
 
 :: Kill the accursed Java Quickstarter service
 sc query JavaQuickStarterService >NUL
