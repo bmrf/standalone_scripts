@@ -81,7 +81,7 @@ set JAVA_ARGUMENTS_x86=/s
 :::::::::::::::::::::
 @echo off && cls
 set SCRIPT_VERSION=1.8.3
-set SCRIPT_UPDATED=2017-08-07
+set SCRIPT_UPDATED=2017-08-08
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -353,19 +353,14 @@ echo.
 :file_cleanup
 call :log "%CUR_DATE% %TIME%   Commencing file and directory cleanup..."
 
-:: Kill the accursed Java tasks in Task Scheduler
+:: Kill the Java tasks in Task Scheduler
 call :log "%CUR_DATE% %TIME%   Removing Java tasks from the Windows Task Scheduler..."
 if exist %WINDIR%\tasks\Java*.job del /F /Q %WINDIR%\tasks\Java*.job >> "%LOGPATH%\%LOGFILE%"
 if exist %WINDIR%\System32\tasks\Java*.job del /F /Q %WINDIR%\System32\tasks\Java*.job >> "%LOGPATH%\%LOGFILE%"
 if exist %WINDIR%\SysWOW64\tasks\Java*.job del /F /Q %WINDIR%\SysWOW64\tasks\Java*.job >> "%LOGPATH%\%LOGFILE%"
 echo.
 
-:: Kill any leftover binaries in the Windows system folders
-if exist %WINDIR%\System32\java.exe del /F /Q %WINDIR%\System32\java.exe >> "%LOGPATH%\%LOGFILE%"
-if exist %WINDIR%\System32\javaw.exe del /F /Q %WINDIR%\System32\javaw.exe >> "%LOGPATH%\%LOGFILE%"
-if exist %WINDIR%\System32\javaws.exe del /F /Q %WINDIR%\System32\javaws.exe >> "%LOGPATH%\%LOGFILE%"
-
-:: Kill the accursed Java Quickstarter service
+:: Kill the hellspawn known as the Java Quickstarter service
 sc query JavaQuickStarterService >NUL
 if not %ERRORLEVEL%==1060 (
 	call :log "%CUR_DATE% %TIME%   De-registering and removing Java Quickstarter service..."
@@ -373,13 +368,21 @@ if not %ERRORLEVEL%==1060 (
 	sc delete JavaQuickStarterService >> "%LOGPATH%\%LOGFILE%" 2>NUL
 )
 
-:: Kill the accursed Java Update Scheduler service
+:: Kill the Java Update Scheduler service
 sc query jusched >NUL
 if not %ERRORLEVEL%==1060 (
 	call :log "%CUR_DATE% %TIME%   De-registering and removing Java Update Scheduler service..."
 	net stop jusched >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	sc delete jusched >> "%LOGPATH%\%LOGFILE%" 2>NUL
 )
+
+:: Kill any leftover binaries in the Windows system folders
+if exist %WINDIR%\System32\java.exe del /F /Q %WINDIR%\System32\java.exe >> "%LOGPATH%\%LOGFILE%"
+if exist %WINDIR%\System32\javaw.exe del /F /Q %WINDIR%\System32\javaw.exe >> "%LOGPATH%\%LOGFILE%"
+if exist %WINDIR%\System32\javaws.exe del /F /Q %WINDIR%\System32\javaws.exe >> "%LOGPATH%\%LOGFILE%"
+if exist %WINDIR%\SysWOW64\java.exe del /F /Q %WINDIR%\SysWOW64\java.exe >> "%LOGPATH%\%LOGFILE%"
+if exist %WINDIR%\SysWOW64\javaw.exe del /F /Q %WINDIR%\SysWOW64\javaw.exe >> "%LOGPATH%\%LOGFILE%"
+if exist %WINDIR%\SysWOW64\javaws.exe del /F /Q %WINDIR%\SysWOW64\javaws.exe >> "%LOGPATH%\%LOGFILE%" 
 
 :: This is the Oracle method of disabling the Java services. 99% of the time these commands aren't required and will just throw an error message.
 if exist "%ProgramFiles(x86)%\Java\jre6\bin\jqs.exe" "%ProgramFiles(x86)%\Java\jre6\bin\jqs.exe" -disable>> "%LOGPATH%\%LOGFILE%" 2>NUL
