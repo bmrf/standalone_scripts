@@ -10,7 +10,7 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries in the Windows system folders. Thanks to /u/Mikkehy
+:: Version:       1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries from the Windows system folders. Thanks to /u/Mikkehy
 ::                1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
 ::                1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
 ::                1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
