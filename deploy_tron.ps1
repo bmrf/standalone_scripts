@@ -12,7 +12,7 @@ Requirements:  1. Expects master copy directory to look like this:
 
                3. Expects seed server directory structure to look like this:
 
-					\btsync\tron
+					\resiliosync\tron
 						\tron
 							- changelog-vX.Y.Z-updated-YYYY-MM-DD.txt
 							- Instructions -- YES ACTUALLY READ THEM.txt
@@ -33,7 +33,11 @@ Requirements:  1. Expects master copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.4 * Update version parsing code to handle new v10+ versions of Tron
+Version:       1.4.7 + Add -speed=149 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
+               1.4.6 / Rename $SeedFolderBTS to $SeedFolderRS to reflect name change from BT Sync to Resilio Sync
+                     / Rename all instances of btsync directory to resiliosync
+               1.4.5 * Change renaming of .exe pack during FTP upload to UPLOADING_$NewBinary instead of $NewBinary.UPLOADING to be more readily visible in the browser
+               1.4.4 * Update version parsing code to handle new v10+ versions of Tron
                1.4.3 - Remove all DEV shares since they're not really used any more
                1.4.2 + Add creation of torrent seed directory
                1.4.1 + Add job near start of script to wipe any temp files left in the \resources directory (tron_stage.txt, etc), usually leftover from testing
@@ -136,7 +140,7 @@ param (
 
 	# Seeding subdirectories containing \tron and \integrity_verification directories (relative paths). No leading or trailing slashes
 	# RELEASE seeds
-	[string]$SeedFolderBTS = "downloads\seeders\btsync\tron",                   # e.g. "downloads\seeders\btsync\tron"
+	[string]$SeedFolderRS = "downloads\seeders\resiliosync\tron",               # e.g. "downloads\seeders\resiliosync\tron"
 	[string]$SeedFolderST = "downloads\seeders\syncthing\tron",                 # e.g. "downloads\seeders\syncthing\tron"
 	[string]$SeedFolderTorrent = "downloads\seeders\torrent",                   # e.g. "downloads\seeders\torrent"
 
@@ -150,7 +154,7 @@ param (
 	[string]$Repo_URL = "https://bmrf.org/repos/tron",                          # e.g. "http://bmrf.org/repos/tron"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "site.com",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "bmrf.org",                                        # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "xxx",
 	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
@@ -175,17 +179,17 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.4.4"
-$SCRIPT_UPDATED = "2017-02-06"
+$SCRIPT_VERSION = "1.4.7"
+$SCRIPT_UPDATED = "2017-08-28"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server and stash it in $OldVersion
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
-$OldVersion = gc $SeedServer\$SeedFolderBTS\tron\resources\functions\initialize_environment.bat -ea SilentlyContinue | Select-String -pattern "set TRON_VERSION"
+$OldVersion = gc $SeedServer\$SeedFolderRS\tron\resources\functions\initialize_environment.bat -ea SilentlyContinue | Select-String -pattern "set TRON_VERSION"
 $OldVersion = "$OldVersion".Split("=")[1]
 
 # Extract release date of current version from the seed server and stash it in $OldDate
-$OldDate = gc $SeedServer\$SeedFolderBTS\tron\resources\functions\initialize_environment.bat -ea SilentlyContinue | Select-String -pattern "set TRON_DATE"
+$OldDate = gc $SeedServer\$SeedFolderRS\tron\resources\functions\initialize_environment.bat -ea SilentlyContinue | Select-String -pattern "set TRON_DATE"
 $OldDate = "$OldDate".Split("=")[1]
 
 # Extract version number from the master copy and stash it in $NewVersion, then calculate and store the full .exe name for the new binary we'll be building
@@ -245,19 +249,19 @@ $pathsToCheck = @(
     "$MasterCopy\tron\Instructions -- YES ACTUALLY READ THEM.txt",
 
     # Seed server: top level Tron folder (BT Sync)
-    "$SeedServer\$SeedFolderBTS",
+    "$SeedServer\$SeedFolderRS",
 
     # Seed server: top level Tron folder (Syncthing)
     "$SeedServer\$SeedFolderST",
 
     # Seed server: \tron\integrity_verification sub-folder (BT Sync)
-    "$SeedServer\$SeedFolderBTS\integrity_verification",
+    "$SeedServer\$SeedFolderRS\integrity_verification",
 
     # Seed server: \tron\integrity_verification sub-folder (Syncthing)
     "$SeedServer\$SeedFolderST\integrity_verification",
 
     # Seed server: the public key (BT Sync)
-    "$SeedServer\$SeedFolderBTS\integrity_verification\vocatus-public-key.asc",
+    "$SeedServer\$SeedFolderRS\integrity_verification\vocatus-public-key.asc",
 
     # Seed server: the public key (Syncthing)
     "$SeedServer\$SeedFolderST\integrity_verification\vocatus-public-key.asc"
@@ -313,8 +317,8 @@ log "   Done" darkgreen
 
 # JOB: Clear target area
 log "   Clearing RELEASE targets on local seed server..." green
-	remove-item $SeedServer\$SeedFolderBTS\tron\* -force -recurse -ea SilentlyContinue | out-null
-	remove-item $SeedServer\$SeedFolderBTS\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
+	remove-item $SeedServer\$SeedFolderRS\tron\* -force -recurse -ea SilentlyContinue | out-null
+	remove-item $SeedServer\$SeedFolderRS\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 log "   Done" darkgreen
@@ -367,7 +371,7 @@ if ($? -eq "True") { log "   Done" darkgreen } else { log " ! There was a proble
 # JOB: Upload from master copy to seed server directories
 log "   Master copy is gold. Copying from master to local seed directories..." green
 	log "   Loading BT Sync RELEASE seed..." green
-		cp $MasterCopy\* $SeedServer\$SeedFolderBTS\ -recurse -force
+		cp $MasterCopy\* $SeedServer\$SeedFolderRS\ -recurse -force
 	log "   Done" darkgreen
 	log "   Loading Syncthing RELEASE seed..." green
 		cp $MasterCopy\* $SeedServer\$SeedFolderST\ -recurse -force
@@ -425,7 +429,7 @@ log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.t
 	# Sleep for a few seconds to make sure the pack has had time to finish uploading to the local seed server static pack location
 	start-sleep -s 10
 	# Rename the file to prepare it for uploading
-	ren "$env:temp\$NewBinary" "$env:temp\$NewBinary.UPLOADING"
+	ren "$env:temp\$NewBinary" "$env:temp\UPLOADING_$NewBinary"
 	popd
 log "   Done" darkgreen
 
@@ -467,11 +471,11 @@ log "   Building FTP deployment script..." green
 	"rm *.torrent" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	"rm sha256sums*" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$TorrentSaveLocation\Tron v$NewVersion ($CUR_DATE).torrent`""
-	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
-	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"$NewBinary.UPLOADING`" `"$NewBinary`""
+	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary -speed=149 `"$env:temp\UPLOADING_$NewBinary`""
+	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"UPLOADING_$NewBinary`" `"$NewBinary`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-	#write-output "mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
+	#write-output "mv "UPLOADING_$NewBinary" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	"exit" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 log "   Done" darkgreen
 
@@ -506,7 +510,7 @@ log "   Version deployed:                  v$NewVersion ($CUR_DATE)"
 log "   Version replaced:                  v$OldVersion ($OldDate)"
 log "   Local seed server:                 $SeedServer"
 log "   Local seed directories:"
-log "             BT Sync (RELEASE):       $SeedFolderBTS"
+log "             BT Sync (RELEASE):       $SeedFolderRS"
 log "             Syncthing (RELEASE):     $SeedFolderST"
 log "   Local torrent autoloader location: $TorrentAutoloaderLocation"
 log "   Local torrent save location:       $TorrentSaveLocation"
@@ -534,7 +538,7 @@ function log($message, $color)
 	write-host (get-date -f "yyyy-MM-dd hh:mm:ss") -n -f darkgray; write-host "$message" -f $color
 	#log
 	#(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath "$logpath\$logfile" -append
-	(get-date -f "yyyy-MM-dd hh:mm:ss") +"$message" | out-file -Filepath "C:\logs\tron_deployment_script.log" -append
+	(get-date -f "yyyy-MM-dd hh:mm:ss") +"$message" | out-file -Filepath "C:\logs\deploy_tron.log" -append
 }
 
 
