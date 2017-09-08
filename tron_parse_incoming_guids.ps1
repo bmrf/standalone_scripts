@@ -3,7 +3,8 @@
                Removes all lines that are already in the master list, then outputs new unique lines to a new file
  Requirements: Specify path to master GUID file, incoming file to check against, and output file
  Author:       reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
- History:      1.0.0 * Initial write
+ History:      1.0.1 * Add auto compilation and cleanup of incoming GUID lists
+               1.0.0   Initial write
  Usage:        Make sure paths are specified correctly (variables below) then run the script
 #>
 
