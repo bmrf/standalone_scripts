@@ -84,12 +84,12 @@ log "   Compiled new candidate list. Now processing, please wait..."
 gc "$env:temp\tron_parse_incoming_guids_temp1.txt" | Where-Object {$_ -notmatch 'IdentifyingNumber'} | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
 
 # Condense whitespace (replace multiple spaces with one)
-(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
-(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
-(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
-(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
-(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
-(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
 
 # Sort remaining contents and remove duplicates
 gc "$env:temp\tron_parse_incoming_guids_temp2.txt" | sort | get-unique > $candidateListFile
