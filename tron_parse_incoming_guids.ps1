@@ -128,7 +128,7 @@ $raw = $(gc "$candidateListFile" -total -1).count
 $parsed = $(gc "$env:temp\tron_parse_incoming_guids_working_file_1_duplicates_removed.txt" -total -1).count
 $byGUIDRemoved = $raw - $parsed
 if ( $byGUIDRemoved -gt 0 ) {
-    log "   Matched $byGUIDRemoved entries from master list"
+    log "   Matched $byGUIDRemoved lines from master list"
 } else {
     log "   No matches against master list" darkgray
 }
@@ -156,7 +156,7 @@ $raw = $(gc "$env:temp\tron_parse_incoming_guids_working_file_1_duplicates_remov
 $parsed = $(gc "$env:temp\parse_incoming_guids_working_file_2_toolbar_bho_removed.txt" -total -1).count
 $toolbarBHORemoved = $raw - $parsed
 if ( $toolbarBHORemoved -gt 0 ) {
-    log "   Matched $toolbarBHORemoved entries from toolbar/BHO list"
+    log "   Matched $toolbarBHORemoved lines from toolbar/BHO list"
 } else {
     log "   No matches against toolbar/BHO list" darkgray
 }
@@ -184,7 +184,7 @@ $raw = $(gc "$env:temp\parse_incoming_guids_working_file_2_toolbar_bho_removed.t
 $parsed = $(gc "$outputFile" -total -1).count
 $whitelistedRemoved = $raw - $parsed
 if ( $whitelistedRemoved -gt 0 ) {
-    log "   Matched $whitelistedRemoved entries from white list"
+    log "   Matched $whitelistedRemoved lines from white list"
 } else {
     log "   No matches against whitelist" darkgray
 }
@@ -203,8 +203,9 @@ ri "$env:temp\tron_parse_incoming_guids_temp2.txt" -ea silentlycontinue
 $tally = $duplicatesRemoved + $byGUIDRemoved + $whitelistedRemoved + $toolbarBHORemoved
 $remaining = (gc $outputFile -total -1).count
 if ( $tally -gt 0 ) {
-    log "   Removed $tally duplicate or pre-existing entries"
-    log "   Extracted $remaining new lines for review" green
+    log "   ------------------------------------------------------"
+    log "   $tally duplicate or pre-existing lines removed"
+    log "   $remaining lines remain for manual review" green
 } else {
     log "   No candidate list entry matches" white
 }
