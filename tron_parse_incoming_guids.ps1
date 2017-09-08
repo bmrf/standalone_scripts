@@ -82,6 +82,15 @@ log "   Compiled new candidate list. Now processing, please wait..."
 
 # Strip out lines containing "IdentifyingNumber"
 gc "$env:temp\tron_parse_incoming_guids_temp1.txt" | Where-Object {$_ -notmatch 'IdentifyingNumber'} | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+
+# Condense whitespace (replace multiple spaces with one)
+(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
+(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
+(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
+(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
+(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
+(gc "$outputFile").replace('  ', ' ') | sc "$outputFile"
+
 # Sort remaining contents and remove duplicates
 gc "$env:temp\tron_parse_incoming_guids_temp2.txt" | sort | get-unique > $candidateListFile
 
@@ -180,9 +189,6 @@ if ( $whitelistedRemoved -gt 0 ) {
 }
 
 
-# STAGE 4/4: Condense whitespace (replace three spaces with one)
-(gc "$outputFile").replace('   ', ' ') | sc "$outputFile"
-(gc "$outputFile").replace('   ', ' ') | sc "$outputFile"
 
 
 
