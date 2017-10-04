@@ -33,7 +33,8 @@ Requirements:  1. Expects master copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.7 + Add -speed=149 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
+Version:       1.4.8 + Add -resume command to WinSCP FTP upload script for the new binary exe only
+               1.4.7 + Add -speed=149 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
                1.4.6 / Rename $SeedFolderBTS to $SeedFolderRS to reflect name change from BT Sync to Resilio Sync
                      / Rename all instances of btsync directory to resiliosync
                1.4.5 * Change renaming of .exe pack during FTP upload to UPLOADING_$NewBinary instead of $NewBinary.UPLOADING to be more readily visible in the browser
@@ -179,8 +180,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.4.7"
-$SCRIPT_UPDATED = "2017-08-28"
+$SCRIPT_VERSION = "1.4.8"
+$SCRIPT_UPDATED = "2017-10-04"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server and stash it in $OldVersion
@@ -471,7 +472,7 @@ log "   Building FTP deployment script..." green
 	"rm *.torrent" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	"rm sha256sums*" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$TorrentSaveLocation\Tron v$NewVersion ($CUR_DATE).torrent`""
-	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary -speed=149 `"$env:temp\UPLOADING_$NewBinary`""
+	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary -speed=149 -resume`"$env:temp\UPLOADING_$NewBinary`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"UPLOADING_$NewBinary`" `"$NewBinary`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
