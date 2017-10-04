@@ -10,7 +10,8 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries from the Windows system folders. Thanks to /u/Mikkehy
+:: Version:       1.8.4 + ADDITIONS:   Add support for removal of JRE series 9
+::                1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries from the Windows system folders. Thanks to /u/Mikkehy
 ::                1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
 ::                1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
 ::                1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
@@ -58,12 +59,12 @@ set REINSTALL_JAVA_x86=no
 :: The JRE installer must be in a place the script can find it (e.g. network path, same directory, etc)
 :: JRE 64-bit reinstaller
 set JAVA_LOCATION_x64=%~dp0
-set JAVA_BINARY_x64=jre-8u31-windows-x64.exe
+set JAVA_BINARY_x64=jre-8u144-windows-x64.exe
 set JAVA_ARGUMENTS_x64=/s
 
 :: JRE 32-bit reinstaller
 set JAVA_LOCATION_x86=%~dp0
-set JAVA_BINARY_x86=jre-8u31-windows-x86.exe
+set JAVA_BINARY_x86=jre-8u144-windows-x86.exe
 set JAVA_ARGUMENTS_x86=/s
 
 
@@ -80,8 +81,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.8.3
-set SCRIPT_UPDATED=2017-08-08
+set SCRIPT_VERSION=1.8.4
+set SCRIPT_UPDATED=2017-10-04
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -114,7 +115,7 @@ echo.
 call :log "%CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX..."
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
-wmic timezone >NUL
+%WMIC% timezone >NUL
 if not %ERRORLEVEL%==0 (
     call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient..."
     net stop winmgmt
@@ -208,11 +209,18 @@ del "%TEMP%\keys_to_delete.txt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 call :log "%CUR_DATE% %TIME%   Targeting individual JRE versions..."
 call :log "%CUR_DATE% %TIME%   This might take a few minutes. Don't close this window."
 
-:: EXPOSITION DUMP: OK, so all JRE runtimes (series 4-8) use certain GUIDs that increment with each new update (e.g. Update 66)
+:: EXPOSITION DUMP: OK, so all JRE runtimes (series 4-9) use certain GUIDs that increment with each new update (e.g. Update 66)
 :: This makes it easy to catch them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
 :: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 :: Beginning with JRE versions over 99 (JRE8 was first major version to have subversions go over 99), the GUID string "2F8__", which identified architecture, switched to "2F__", presumably to make room for the new 3rd digit in the version identifying section. You can see this in the JRE8 portion below.
+
+:: JRE 9
+call :log "%CUR_DATE% %TIME%   JRE 9..."
+:: Wildcards aren't used here (yet) because we don't know which portion of the GUID will change with the first "Update xx" release.
+:: Script will be updated when the first Update to series 9 is released by Oracle
+%WMIC% product where "IdentifyingNumber like '{DA69628A-2608-5BA9-8749-1EE90CB29D95}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "name like 'Java 9%%'" uninstall /nointeractive
 
 :: JRE 8
 call :log "%CUR_DATE% %TIME%   JRE 8..."
@@ -220,7 +228,6 @@ call :log "%CUR_DATE% %TIME%   JRE 8..."
 :: This line catches any version above 99 since it's three characters instead of two. Oracle also dropped the "8" from
 :: the last part of the GUID, so instead of "2F8__" it's now "2F__", presumably to make room for the 3rd digit on the right
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
-
 
 :: JRE 7
 call :log "%CUR_DATE% %TIME%   JRE 7..."
@@ -255,7 +262,7 @@ FOR %%i IN (01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23
 
 :: Java Update Service
 call :log "%CUR_DATE% %TIME%   Java Update Service..."
-wmic product where "name like 'Java Auto Updater'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "name like 'Java Auto Updater'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: Wildcard uninstallers
 call :log "%CUR_DATE% %TIME%   Specific targeting done. Now running WMIC wildcard catchall uninstallation..."
