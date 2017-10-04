@@ -11,7 +11,7 @@ Requirements:  1. Expects master copy directory to look like this:
 
                3. Expects seed server directory structure to look like this:
 
-					\btsync\pdq_pack
+					\resiliosync\pdq_pack
 						
 						\pdq_pack
 							\job_files
@@ -27,7 +27,9 @@ Requirements:  1. Expects master copy directory to look like this:
 
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.0.0 . Initial write, fork of deploy_tron.ps1
+Version:       1.0.1 + Add -speed=149 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
+                     + add -resume command to WinSCP FTP upload script for the new binary exe only
+               1.0.0 . Initial write, fork of deploy_tron.ps1
 
 Behavior/steps:
 1. Delete content from seed server
@@ -102,7 +104,7 @@ param (
 
 	# Seeding subdirectories containing \repository and \job_files directories (relative paths). No leading or trailing slashes
 	# RELEASE seeds
-	[string]$SeedFolderRS = "downloads\seeders\btsync\pdq_pack",                # e.g. "downloads\seeders\btsync\pdq_pack"
+	[string]$SeedFolderRS = "downloads\seeders\resiliosync\pdq_pack",           # e.g. "downloads\seeders\resiliosync\pdq_pack"
 	[string]$SeedFolderTorrent = "downloads\seeders\torrent",                   # e.g. "downloads\seeders\torrent"
 
 	# Static pack storage location. RELATIVE path from root on the
@@ -115,7 +117,7 @@ param (
 	[string]$Repo_URL = "https://bmrf.org/repos/pdq_packs",                      # e.g. "http://bmrf.org/repos/pdq_packs"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "PDQ Pack vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "site.com",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "bmrf.org",                                        # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "xxx",
 	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/pdq_packs/",            # e.g. "/public_html/repos/pdq_packs/"
@@ -140,8 +142,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.0.0"
-$SCRIPT_UPDATED = "2017-01-30"
+$SCRIPT_VERSION = "1.0.1"
+$SCRIPT_UPDATED = "2017-10-04"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
@@ -357,7 +359,7 @@ log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.t
 	# Sleep for a few seconds to make sure the pack has had time to finish uploading to the local seed server static pack location
 	start-sleep -s 10
 	# Rename the file to prepare it for uploading
-	ren "$env:temp\$NewBinary" "$env:temp\$NewBinary.UPLOADING"
+	ren "$env:temp\$NewBinary" "$env:temp\UPLOADING_$NewBinary"
 	popd
 log "   Done" darkgreen
 
@@ -399,11 +401,11 @@ log "   Building FTP deployment script..." green
 	"rm *.torrent" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
 	"rm sha256sums*" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary `"$TorrentSaveLocation\PDQ Pack v$NewVersion ($CUR_DATE).torrent`""
-	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary `"$env:temp\$NewBinary.UPLOADING`""
-	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "mv `"$NewBinary.UPLOADING`" `"$NewBinary`""
+	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary -speed=149 -resume`"$env:temp\UPLOADING_$NewBinary`""
+	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "mv `"UPLOADING_$NewBinary`" `"$NewBinary`""
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
-	#write-output "mv "$NewBinary.UPLOADING" "$NewBinary"" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
+	#write-output "mv "UPLOADING_$NewBinary" "$NewBinary"" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
 	"exit" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
 log "   Done" darkgreen
 
@@ -464,7 +466,7 @@ function log($message, $color)
 	write-host (get-date -f "yyyy-MM-dd hh:mm:ss") -n -f darkgray; write-host "$message" -f $color
 	#log
 	#(get-date -f "yyyy-mm-dd hh:mm:ss") +"$message" | out-file -Filepath "$logpath\$logfile" -append
-	(get-date -f "yyyy-MM-dd hh:mm:ss") +"$message" | out-file -Filepath "C:\logs\pdq_pack_deployment_script.log" -append
+	(get-date -f "yyyy-MM-dd hh:mm:ss") +"$message" | out-file -Filepath "C:\logs\deploy_pdq_packs.log" -append
 }
 
 
