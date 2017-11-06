@@ -29,13 +29,13 @@ param (
     [string] $whitelistGUIDPath = "R:\documents\misc\tron_guid_whitelist.txt",
 
     # Path to candidate (new) file
-    [string] $candidateListFile = "$env:temp\tron_prase_incoming_guids_candidateListFile.txt",
+    [string] $candidateListFile = "$env:temp\tron_parse_incoming_guids_candidateListFile.txt",
 
 	# Path to directory containing incoming GUID dump files
     [string] $incomingGUIDDirectory = "r:\unsorted",
 
     # Path to output directory
-    [string] $outputFile = "r:\unsorted\guid_dump_parsed.txt"
+    [string] $outputFile = "r:\unsorted\guid_parsed_dump.txt"
 
 )
 
@@ -198,6 +198,8 @@ ri "$env:temp\tron_parse_incoming_guids_working_file_1_duplicates_removed.txt" -
 ri "$env:temp\parse_incoming_guids_working_file_2_toolbar_bho_removed.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp1.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp2.txt" -ea silentlycontinue
+ri "GUID_dump_*.txt" -ea silentlycontinue
+ri "tron*.log" -ea silentlycontinue
 
 # Tally up and report
 $tally = $duplicatesRemoved + $byGUIDRemoved + $whitelistedRemoved + $toolbarBHORemoved
