@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.7.0 * Improve logging significantly. Wrap all references to %LOGPATH% and %LOGFILE% in quotes (to protect against paths or file names with spaces or special characters), and add logging to many commands that were previously dumping to NUL. Thanks to github:kezxo for the suggestion
+:: Version:       3.7.1 ! Fix syntax bug that was preventing CBS log cleanup. Thanks to github:jonasjovaisas
+::                3.7.0 * Improve logging significantly. Wrap all references to %LOGPATH% and %LOGFILE% in quotes (to protect against paths or file names with spaces or special characters), and add logging to many commands that were previously dumping to NUL. Thanks to github:kezxo for the suggestion
 ::                3.6.0 + Add additional cleaning procedures to Vista+ block from tron edition of TempFileCleanup. Thanks to github:bknickelbine
 ::                3.5.9 + Add removal of "%WINDIR%\System32\tourstart.exe" on Windows XP. Thanks to /u/Perma_dude
 ::                3.5.8 ! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
@@ -37,8 +38,8 @@ set LOG_MAX_SIZE=2097152
 :::::::::::::::::::::
 @echo off
 %SystemDrive% && cls
-set SCRIPT_VERSION=3.7.0
-set SCRIPT_UPDATED=2016-05-10
+set SCRIPT_VERSION=3.7.1
+set SCRIPT_UPDATED=2017-12-18
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -198,7 +199,6 @@ for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
 :: JOB: Clear additional unneeded files from NVIDIA driver installs
 if exist "%ProgramFiles%\Nvidia Corporation\Installer2" rmdir /s /q "%ProgramFiles%\Nvidia Corporation\Installer2"
 if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService" del /f /q "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService\*.exe"
-if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\Downloader" rmdir /s /q "%ALLUSERSPROFILE%\NVIDIA Corporation\Downloader"
 
 :: JOB: Remove the Microsoft Office installation cache. Usually around ~1.5 GB
 if exist %SystemDrive%\MSOCache rmdir /S /Q %SystemDrive%\MSOCache >> "%LOGPATH%\%LOGFILE%"
@@ -269,8 +269,7 @@ if %ERRORLEVEL%==0 (
 
 :: JOB: Windows CBS logs
 ::      these only exist on Vista and up, so we look for "Microsoft", and assuming we don't find it, clear out the folder
-echo %WIN_VER%  | findstr /i /%SystemDrive%"server" >NUL
-if not %ERRORLEVEL%==0 del /F /Q %WINDIR%\Logs\CBS\* >> "%LOGPATH%\%LOGFILE%" 2>NUL
+echo %WIN_VER% | findstr /v /i /c:"Microsoft" >NUL && del /F /Q %WINDIR%\Logs\CBS\* 2>NUL
 
 :: JOB: Windows XP/2003: Cleanup hotfix uninstallers. They use a lot of space so removing them is beneficial.
 :: Really we should use a tool that deletes their corresponding registry entries, but oh well.
