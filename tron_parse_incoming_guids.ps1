@@ -3,7 +3,8 @@
                Removes all lines that are already in the master list, then outputs new unique lines to a new file
  Requirements: Specify path to master GUID file, incoming file to check against, and output file
  Author:       reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
- History:      1.0.1 * Add auto compilation and cleanup of incoming GUID lists
+ History:      1.0.2 + Add extraction of common entries ("CCC", "Microsoft" etc) into separate files for easy review
+               1.0.1 + Add auto compilation and cleanup of incoming GUID lists
                1.0.0   Initial write
  Usage:        Make sure paths are specified correctly (variables below) then run the script
 #>
@@ -51,8 +52,8 @@ param (
 ########
 # PREP #
 ########
-$SCRIPT_VERSION = "1.0.1"
-$SCRIPT_UPDATED = "2017-09-08"
+$SCRIPT_VERSION = "1.0.2"
+$SCRIPT_UPDATED = "2017-12-28"
 
 
 #############
@@ -63,6 +64,7 @@ function main() {
 # pre-run cleanup in case there are leftovers from another run
 ri "$outputFile" -ea SilentlyContinue
 ri "$env:temp\tron_parse_incoming_guids_working_file_1_duplicates_removed.txt" -ea silentlycontinue
+ri "$env:temp\tron_parse_incoming_guids_candidateListFile.txt.txt" -ea silentlycontinue
 ri "$env:temp\parse_incoming_guids_working_file_2_toolbar_bho_removed.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp1.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp2.txt" -ea silentlycontinue
@@ -85,6 +87,11 @@ log "   Compiled new candidate list. Now processing, please wait..."
 gc "$env:temp\tron_parse_incoming_guids_temp1.txt" | Where-Object {$_ -notmatch 'IdentifyingNumber'} | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
 
 # Condense whitespace (replace multiple spaces with one)
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
 (gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
 (gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
 (gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
@@ -164,7 +171,7 @@ if ( $toolbarBHORemoved -gt 0 ) {
 
 
 
-# STAGE 3/4: Compare against white list
+# STAGE 3/4: Compare against whitelist
 $candidateListContents = gc $env:temp\parse_incoming_guids_working_file_2_toolbar_bho_removed.txt
 $whitelistGUIDContents = gc $whitelistGUIDPath
 foreach ( $row in $candidateListContents ) {
@@ -184,12 +191,30 @@ $raw = $(gc "$env:temp\parse_incoming_guids_working_file_2_toolbar_bho_removed.t
 $parsed = $(gc "$outputFile" -total -1).count
 $whitelistedRemoved = $raw - $parsed
 if ( $whitelistedRemoved -gt 0 ) {
-    log "   Matched $whitelistedRemoved lines from white list"
+    log "   Matched $whitelistedRemoved lines from whitelist"
 } else {
     log "   No matches against whitelist" darkgray
 }
 
 
+
+# STAGE 4/4: Extract common items that show up every run (CCC, "Microsoft" anything, etc)
+type $outputFile | find /i `"CCC `" > $incomingGUIDDirectory\guid_parsed_dump_ccc.txt
+type $outputFile | find /v /i `"CCC `" > $incomingGUIDDirectory\temp1111.txt
+type $incomingGUIDDirectory\temp1111.txt > $outputFile
+ri "$incomingGUIDDirectory\temp1111.txt" -ea silentlycontinue
+
+type $outputFile | find /i `"Microsoft`" > $incomingGUIDDirectory\guid_parsed_dump_microsoft.txt
+type $outputFile | find /v /i `"Microsoft`" > $incomingGUIDDirectory\temp1111.txt
+type $incomingGUIDDirectory\temp1111.txt > $outputFile
+ri "$incomingGUIDDirectory\temp1111.txt" -ea silentlycontinue
+
+type $outputFile | find /i `"Windows`" > $incomingGUIDDirectory\guid_parsed_dump_windows.txt
+type $outputFile | find /v /i `"Windows`" > $incomingGUIDDirectory\temp1111.txt
+type $incomingGUIDDirectory\temp1111.txt > $outputFile
+ri "$incomingGUIDDirectory\temp1111.txt" -ea silentlycontinue
+
+log "   Extracted common bulk items into separate files"
 
 
 
@@ -198,8 +223,13 @@ ri "$env:temp\tron_parse_incoming_guids_working_file_1_duplicates_removed.txt" -
 ri "$env:temp\parse_incoming_guids_working_file_2_toolbar_bho_removed.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp1.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp2.txt" -ea silentlycontinue
-ri "GUID_dump_*.txt" -ea silentlycontinue
-ri "tron*.log" -ea silentlycontinue
+ri "$incomingGUIDDirectory\GUID_dump_*.txt" -ea silentlycontinue
+ri "$incomingGUIDDirectory\tron*.log" -ea silentlycontinue
+
+# Currently I'm wiping screenshots since I don't care about them
+ri "$incomingGUIDDirectory\tron_*.png" -ea silentlycontinue
+
+
 
 # Tally up and report
 $tally = $duplicatesRemoved + $byGUIDRemoved + $whitelistedRemoved + $toolbarBHORemoved
