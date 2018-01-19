@@ -83,7 +83,7 @@ set JAVA_ARGUMENTS_x86=/s
 :::::::::::::::::::::
 @echo off && cls
 set SCRIPT_VERSION=1.8.5
-set SCRIPT_UPDATED=2017-01-19
+set SCRIPT_UPDATED=2018-01-19
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
