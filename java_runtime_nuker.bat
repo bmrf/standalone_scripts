@@ -1,4 +1,4 @@
-:: Purpose:       1. Nuke ALL versions of JavaFX and the Java Runtime, series 3 through 8, x86 and x64
+:: Purpose:       1. Nuke ALL versions of JavaFX and the Java Runtime, series 3 through 9, x86 and x64
 ::                2. Leaves Java Development Kit installations intact
 ::                3. Reinstalls the latest JRE (if you want it to)
 ::                4. Puts the lotion on its skin.
@@ -10,7 +10,8 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.4 + ADDITIONS:   Add support for removal of JRE series 9
+:: Version:       1.8.5 + ADDITION:    Add GUID for JRE 9.0.4
+::                1.8.4 + ADDITION:    Add support for removal of JRE series 9
 ::                1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries from the Windows system folders. Thanks to /u/Mikkehy
 ::                1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
 ::                1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
@@ -81,8 +82,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.8.4
-set SCRIPT_UPDATED=2017-10-04
+set SCRIPT_VERSION=1.8.5
+set SCRIPT_UPDATED=2017-01-19
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -217,9 +218,11 @@ call :log "%CUR_DATE% %TIME%   This might take a few minutes. Don't close this w
 
 :: JRE 9
 call :log "%CUR_DATE% %TIME%   JRE 9..."
-:: Wildcards aren't used here (yet) because we don't know which portion of the GUID will change with the first "Update xx" release.
+:: Wildcards aren't used here because Oracle is stupid and generates random GUIDs per release now instead of doing the old wildcard system
 :: Script will be updated when the first Update to series 9 is released by Oracle
 %WMIC% product where "IdentifyingNumber like '{DA69628A-2608-5BA9-8749-1EE90CB29D95}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{2590B9D6-4310-52BC-808E-1A585861A836}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{885A3911-0760-5252-92C2-001B92997DEA}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "name like 'Java 9%%'" uninstall /nointeractive
 
 :: JRE 8
