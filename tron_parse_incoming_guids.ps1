@@ -1,6 +1,6 @@
 <#
- Purpose:      Parses a list of user-submitted GUIDs against Tron's master list.
-               Removes all lines that are already in the master list, then outputs new unique lines to a new file
+ Purpose:      Parses a list of user-submitted GUIDs against Tron's by_GUID list.
+               Removes all lines that are already in the by_GUID list, then outputs new unique lines to a new file
  Requirements: Specify path to master GUID file, incoming file to check against, and output file
  Author:       reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
  History:      1.0.2 + Add extraction of common entries ("CCC", "Microsoft" etc) into separate files for easy review
@@ -27,7 +27,7 @@ param (
     [string] $toolbarBHOListFile = "R:\utilities\security\cleanup-repair\tron\tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt",
 
     # Path to GUID whitelist file
-    [string] $whitelistGUIDPath = "R:\documents\misc\tron_guid_whitelist.txt",
+    [string] $whitelistGUIDPath = "R:\scripts\blackmesa\tron_guid_whitelist.txt",
 
     # Path to candidate (new) file
     [string] $candidateListFile = "$env:temp\tron_parse_incoming_guids_candidateListFile.txt",
@@ -78,7 +78,7 @@ log "   whitelist:   $whitelistGUIDPath" darkgray
 log "   output:      $outputFile" darkgray
 
 
-# STAGE 0/4: Compile incoming GUID lists into a master list and clean it for parsing
+# STAGE 0/4: Compile incoming GUID lists into a by_GUID list and clean it for parsing
 dir $incomingGUIDDirectory\* -include GUID_dump*.txt -rec | gc | out-file $env:temp\tron_parse_incoming_guids_temp1.txt
 
 log "   Compiled new candidate list. Now processing, please wait..."
@@ -117,12 +117,12 @@ if ( $duplicatesRemoved -gt 0 ) {
 
 # STAGE 1/4: Compare against by_GUID list
 $candidateListContents = gc $candidateListFile
-$masterListContents = gc $byGUIDListFile
+$byGUIDListContents = gc $byGUIDListFile
 foreach ( $row in $candidateListContents ) {
     $found = $false
     # Do a regex match to find GUIDs, since they always follow this format. Note: will not work if the hyphens have been removed
 	if ( $row -match "........\-....\-....\-....\-............" ) { $firstGUID = $MATCHES[0]
-        foreach ( $line in $masterListContents ) {
+        foreach ( $line in $byGUIDListContents ) {
             if ( $line -match "........\-....\-....\-....\-............" ) { $newGUID = $MATCHES[0] }
             if ( $firstGUID -eq $newGUID ) { $found = $true }
         }
@@ -135,9 +135,9 @@ $raw = $(gc "$candidateListFile" -total -1).count
 $parsed = $(gc "$env:temp\tron_parse_incoming_guids_working_file_1_duplicates_removed.txt" -total -1).count
 $byGUIDRemoved = $raw - $parsed
 if ( $byGUIDRemoved -gt 0 ) {
-    log "   Matched $byGUIDRemoved lines from master list"
+    log "   Matched $byGUIDRemoved lines from by_GUID list"
 } else {
-    log "   No matches against master list" darkgray
+    log "   No matches against by_GUID list" darkgray
 }
 
 
