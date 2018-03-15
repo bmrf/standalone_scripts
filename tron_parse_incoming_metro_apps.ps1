@@ -88,20 +88,8 @@ gc "$env:temp\tron_parse_incoming_metro_apps_temp1.txt" | Where-Object {$_ -notm
 # Strip out lines containing "----"
 gc "$env:temp\tron_parse_incoming_metro_apps_temp2.txt" | Where-Object {$_ -notmatch '----'} | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
 
-# Condense whitespace (replace multiple spaces with one)
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
-(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
+# Remove all whitespace
+(gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt").replace(' ', '') | sc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt"
 
 # Sort remaining contents and remove duplicates
 gc "$env:temp\tron_parse_incoming_metro_apps_temp3.txt" | sort | get-unique > $candidateListFile
