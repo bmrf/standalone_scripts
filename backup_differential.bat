@@ -51,7 +51,7 @@ set SOURCE=R:\
 set STAGING=P:\backup_staging\local
 
 :: This is the final, long-term destination for your backup after it is compressed.
-set DESTINATION=\\thebrain\backup_stephandzur\Everything else\personal\root
+set DESTINATION=\\thebrain\backup\Everything else\personal\root
 
 :: If you want to customize the prefix of the backup files, do so here. Don't use any special characters (like underscores)
 :: The script automatically suffixes an underscore to this name. Recommend not changing this unless you really need to.
