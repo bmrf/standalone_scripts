@@ -3,7 +3,8 @@
                Removes all lines that are already in the master list, then outputs new unique lines to a new file
  Requirements: Specify path to master list files, incoming file to check against, and output file
  Author:       reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
- History:      1.0.1 ! Fix egregious bugs in search syntax
+ History:      1.0.2 * Finally get working parsing code
+               1.0.1 ! Fix egregious bugs in search syntax
                1.0.0   Initial port from GUID dump parsing script
  Usage:        Make sure paths are specified correctly (variables below) then run the script
 #>
@@ -51,8 +52,8 @@ param (
 ########
 # PREP #
 ########
-$SCRIPT_VERSION = "1.0.1"
-$SCRIPT_UPDATED = "2018-03-15"
+$SCRIPT_VERSION = "1.0.2"
+$SCRIPT_UPDATED = "2018-07-17"
 
 
 #############
@@ -111,14 +112,11 @@ if ( $duplicatesRemoved -gt 0 ) {
 $candidateListContents = gc $candidateListFile
 $metro3rdPartyListContents = gc $metro3rdPartyListFile
 foreach ( $row in $candidateListContents ) {
-	$found = $false
-	foreach ( $line in $metro3rdPartyListContents ) {
-		if ( $row -match $row ) { $firstApp = $MATCHES[0] }
-		if ( $line -match "^.*\n" ) { $newApp = $MATCHES[0] }
-		if ( $firstApp -eq $newApp ) { $found = $true }
+	foreach ( $line in $Metro3rdPartyListcontents ) {
+		$linefound = $false
+		if ( $line -match $row ) { $linefound = $true }
 	}
-
-	if ( -not $found ) { echo $row | out-file $env:temp\tron_parse_incoming_metro_apps_working_file_1_duplicates_removed.txt -append -encoding default }
+	if ( $linefound -match $false ) { echo $row | out-file "$env:temp\tron_parse_incoming_metro_apps_working_file_1_duplicates_removed.txt" -append -encoding default }
 }
 
 # Tell us how many items were removed
@@ -138,13 +136,11 @@ if ( $metro3rdPartyRemoved -gt 0 ) {
 $candidateListContents = gc $env:temp\tron_parse_incoming_metro_apps_working_file_1_duplicates_removed.txt
 $metroMicrosoftListContents = gc $metroMicrosoftListFile
 foreach ( $row in $candidateListContents ) {
-    $found = $false
 	foreach ( $line in $metroMicrosoftListContents ) {
-		if ( $row -match $row ) { $firstApp = $MATCHES[0] }
-		if ( $line -match "^.*\n" ) { $newApp = $MATCHES[0] }
-		if ( $firstApp -eq $newApp ) { $found = $true }
+		$linefound = $false
+		if ( $line -match $row ) { $linefound = $true }
 	}
-	if ( -not $found ) { echo $row | out-file $env:temp\parse_incoming_metro_apps_working_file_2_microsoft_removed.txt -append -encoding default }
+	if ( $linefound -match $false ) { echo $row | out-file "$env:temp\parse_incoming_metro_apps_working_file_2_microsoft_removed.txt" -append -encoding default }
 }
 
 # Tell us how many items were removed
@@ -164,13 +160,11 @@ if ( $metroMicrosoftRemoved -gt 0 ) {
 $candidateListContents = gc $env:temp\parse_incoming_metro_apps_working_file_2_microsoft_removed.txt
 $whitelistMetroContents = gc $metroWhitelistFile
 foreach ( $row in $candidateListContents ) {
-    $found = $false
 	foreach ( $line in $whitelistMetroContents ) {
-		if ( $row -match $row ) { $firstApp = $MATCHES[0] }
-		if ( $line -match "^.*\n" ) { $newApp = $MATCHES[0] }
-		if ( $firstApp -eq $newApp ) { $found = $true }
+		$linefound = $false
+		if ( $line -match $row ) { $linefound = $true }
 	}
-    if ( -not $found ) { echo $row | out-file $outputFile -append -encoding default }
+	if ( $linefound -match $false ) { echo $row | out-file "$outputFile" -append -encoding default }
 }
 
 # Tell us how many items were removed
