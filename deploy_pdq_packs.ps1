@@ -27,7 +27,7 @@ Requirements:  1. Expects master copy directory to look like this:
 
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.0.1 + Add -speed=149 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
+Version:       1.0.1 + Add -speed=350 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
                      + add -resume command to WinSCP FTP upload script for the new binary exe only
                1.0.0 . Initial write, fork of deploy_tron.ps1
 
@@ -71,7 +71,7 @@ param (
 	[string]$HashDeep = "R:\utilities\cli_utils\hashdeep.exe",                  # e.g. "$env:SystemRoot\system32\hashdeep.exe"
 
 	# Path to gpg.exe (for signing)
-	[string]$gpg = "${env:ProgramFiles(x86)}\GNU\GnuPG\pub\gpg.exe",            # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
+	[string]$gpg = "${env:ProgramFiles(x86)}\GnuPG\bin\gpg.exe",                # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
 
 	# Path to mktorrent.exe (for .torrent generation)
 	[string]$mktorrent = "R:\applications\mktorrent\mktorrent.exe",             # e.g. "R:\applications\mktorrent\mktorrent.exe"
@@ -117,7 +117,7 @@ param (
 	[string]$Repo_URL = "https://bmrf.org/repos/pdq_packs",                      # e.g. "http://bmrf.org/repos/pdq_packs"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "PDQ Pack vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "bmrf.org",                                        # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "xxx",                                             # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "xxx",
 	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/pdq_packs/",            # e.g. "/public_html/repos/pdq_packs/"
@@ -359,7 +359,7 @@ log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.t
 	# Sleep for a few seconds to make sure the pack has had time to finish uploading to the local seed server static pack location
 	start-sleep -s 10
 	# Rename the file to prepare it for uploading
-	ren "$env:temp\$NewBinary" "$env:temp\UPLOADING_$NewBinary"
+	ren "$env:temp\$NewBinary" "$env:temp\UPLOADING"
 	popd
 log "   Done" darkgreen
 
@@ -401,8 +401,8 @@ log "   Building FTP deployment script..." green
 	"rm *.torrent" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
 	"rm sha256sums*" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary `"$TorrentSaveLocation\PDQ Pack v$NewVersion ($CUR_DATE).torrent`""
-	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary -speed=149 -resume`"$env:temp\UPLOADING_$NewBinary`""
-	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "mv `"UPLOADING_$NewBinary`" `"$NewBinary`""
+	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary -speed=350 -resume `"$env:temp\UPLOADING`""
+	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "mv `"UPLOADING`" `"$NewBinary`""
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
 	#write-output "mv "UPLOADING_$NewBinary" "$NewBinary"" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
