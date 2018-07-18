@@ -111,12 +111,15 @@ if ( $duplicatesRemoved -gt 0 ) {
 # STAGE 1/3: Compare against 3rd party list
 $candidateListContents = gc $candidateListFile
 $metro3rdPartyListContents = gc $metro3rdPartyListFile
-foreach ( $row in $candidateListContents ) {
-	foreach ( $line in $Metro3rdPartyListcontents ) {
-		$linefound = $false
-		if ( $line -match $row ) { $linefound = $true }
+foreach ( $line in $candidateListContents ) {
+	$rowexists = $false
+	foreach ( $row in $Metro3rdPartyListcontents ) {
+		if ( $row -cmatch $line ) { $rowexists = $true }
 	}
-	if ( $linefound -match $false ) { echo $row | out-file "$env:temp\tron_parse_incoming_metro_apps_working_file_1_duplicates_removed.txt" -append -encoding default }
+	
+	if ( $rowexists -cmatch $false ) { 
+		echo $line | out-file "$env:temp\tron_parse_incoming_metro_apps_working_file_1_duplicates_removed.txt" -append -encoding default
+	}
 }
 
 # Tell us how many items were removed
@@ -135,12 +138,15 @@ if ( $metro3rdPartyRemoved -gt 0 ) {
 # STAGE 2/3: Compare against Microsoft list
 $candidateListContents = gc $env:temp\tron_parse_incoming_metro_apps_working_file_1_duplicates_removed.txt
 $metroMicrosoftListContents = gc $metroMicrosoftListFile
-foreach ( $row in $candidateListContents ) {
-	foreach ( $line in $metroMicrosoftListContents ) {
-		$linefound = $false
-		if ( $line -match $row ) { $linefound = $true }
+foreach ( $line in $candidateListContents ) {
+	$rowexists = $false
+	foreach ( $row in $metroMicrosoftListContents ) {
+		if ( $row -cmatch $line ) { $rowexists = $true }
 	}
-	if ( $linefound -match $false ) { echo $row | out-file "$env:temp\parse_incoming_metro_apps_working_file_2_microsoft_removed.txt" -append -encoding default }
+
+	if ( $rowexists -eq $false ) { 
+		echo $line | out-file "$env:temp\parse_incoming_metro_apps_working_file_2_microsoft_removed.txt" -append -encoding default
+	}
 }
 
 # Tell us how many items were removed
@@ -159,12 +165,12 @@ if ( $metroMicrosoftRemoved -gt 0 ) {
 # STAGE 3/3: Compare against whitelist
 $candidateListContents = gc $env:temp\parse_incoming_metro_apps_working_file_2_microsoft_removed.txt
 $whitelistMetroContents = gc $metroWhitelistFile
-foreach ( $row in $candidateListContents ) {
-	foreach ( $line in $whitelistMetroContents ) {
-		$linefound = $false
-		if ( $line -match $row ) { $linefound = $true }
+foreach ( $line in $candidateListContents ) {
+	$rowexists = $false
+	foreach ( $row in $whitelistMetroContents ) {
+		if ( $row -cmatch $line ) { $rowexists = $true }
 	}
-	if ( $linefound -match $false ) { echo $row | out-file "$outputFile" -append -encoding default }
+	if ( $rowexists -cmatch $false ) { echo $line | out-file "$outputFile" -append -encoding default }
 }
 
 # Tell us how many items were removed
