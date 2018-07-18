@@ -10,7 +10,8 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.5 + ADDITION:    Add GUID for JRE 9.0.4
+:: Version:       1.8.6 + ADDITION:    Add GUID for JRE 10.0.2
+::                1.8.5 + ADDITION:    Add GUID for JRE 9.0.4
 ::                1.8.4 + ADDITION:    Add support for removal of JRE series 9
 ::                1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries from the Windows system folders. Thanks to /u/Mikkehy
 ::                1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
@@ -82,8 +83,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.8.5
-set SCRIPT_UPDATED=2018-01-19
+set SCRIPT_VERSION=1.8.6
+set SCRIPT_UPDATED=2018-07-18
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -215,6 +216,10 @@ call :log "%CUR_DATE% %TIME%   This might take a few minutes. Don't close this w
 :: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 :: Beginning with JRE versions over 99 (JRE8 was first major version to have subversions go over 99), the GUID string "2F8__", which identified architecture, switched to "2F__", presumably to make room for the new 3rd digit in the version identifying section. You can see this in the JRE8 portion below.
+
+:: JRE 10
+call :log "%CUR_DATE% %TIME%   JRE 10..."
+%WMIC% product where "IdentifyingNumber like '{EECB2736-D013-5AC5-9917-7656712F6931}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 9
 call :log "%CUR_DATE% %TIME%   JRE 9..."
