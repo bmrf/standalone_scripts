@@ -1,6 +1,6 @@
-:: One liner commands for windows â€“ cheat sheet
+:: One liner commands for windows – cheat sheet
 :: v1.1.0
-:: 2016-04-15
+:: 2017-03-29
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -20,7 +20,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :: Thanks to UJSTech for this ( http://community.spiceworks.com/topic/post/2898378 )
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 
-:: Possible return values of above command (OS name & returned string):
+:: Possible return values of above command & returned string:
    Windows XP Professional SP3:     Microsoft Windows XP
    Windows Server 2003 Enterprise:  Microsoft Windows Server 2003
    Windows Vista Home Premium:      Windows Vista (TM) Home Premium
@@ -28,6 +28,7 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
    Windows 7 Home Premium:          Windows 7 Home Premium
    Windows 7 Professional:          Windows 7 Professional
    Windows 7 Enterprise:            Windows 7 Enterprise
+   Windows 7 Starter:               Windows 7 Starter
    Windows 8.1 Professional:        Windows 8.1 Pro
    Windows Server 2008 R2 Standard: Windows Server 2008 R2 Standard
    Windows Server 2012 R2 Standard: Windows Server 2012 R2 Standard
@@ -97,7 +98,7 @@ wmic process where name="cmd.exe" delete
 net share
 wmic share list brief
 
-:: BATCH: Remotely display machineâ€™s MAC address
+:: BATCH: Remotely display machine’s MAC address
 wmic /node:machinename nic get macaddress
 
 :: BATCH: Remotely list running processes every second
@@ -119,9 +120,9 @@ wmic diskdrive get serialnumber,name,description
 wmic /node:REMOTE-COMPUTER-NAME bios get serialnumber
 
 :: BATCH: Create a single folder for every day in the year
-for %%m in (01,02,03,04,05,06,07,08,09,10,11,12) do for %%d in (01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31) do mkdir "2016-%%m-%%d"
-for %%m in (04,06,09,11) do rmdir /s /q "2016-%%m-31"
-for %%d in (29,30,31) do rmdir /s /q "2016-02-%%d"
+for %%m in (01,02,03,04,05,06,07,08,09,10,11,12) do for %%d in (01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31) do mkdir "2018-%%m-%%d"
+for %%m in (04,06,09,11) do rmdir /s /q "2018-%%m-31"
+for %%d in (29,30,31) do rmdir /s /q "2018-02-%%d"
 
 :: BATCH: List all installed Microsoft hotfixes/patches
 wmic qfe
@@ -148,7 +149,7 @@ sc config example disabled
 wmic useraccount list brief
 
 :: BATCH: Enable RDP remotely
-wmic /node:"machinename 4" path Win32_TerminalServiceSetting where AllowTSConnections=â€œ0" call SetAllowTSConnections â€œ1"
+wmic /node:"machinename 4" path Win32_TerminalServiceSetting where AllowTSConnections=“0" call SetAllowTSConnections “1"
 
 :: BATCH: List number of times a user logged on
 wmic netlogin where (name like "%%Admin%%") get numberoflogons
@@ -165,7 +166,7 @@ reg query "\\computername\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinL
 :: BATCH: List all computers in domain "blah"; dump the output in "output.txt"
 dsquery computer "OU=example,DC=blah" -o rdn -limit 6000 &gt; output.txt
 
-:: BATCH: Reboot
+:: BATCH: Reboot immediately
 shutdown /r /t 0
 
 :: BATCH: Shutdown
@@ -177,7 +178,7 @@ shutdown /m \\192.168.1.1 /r /t 0 /f
 :: BATCH: Copy entire folder and its contents from a remote source to local machine
 xcopy /s \\remotecomputer\directory c:\local
 
-:: BATCH: Find location of file with string â€œblah" in file name
+:: BATCH: Find location of file with string “blah" in file name
 dir c:\ /s /b | find "blah"
 
 :: BATCH: Determine name of a machine with known IP
@@ -228,7 +229,7 @@ systeminformation
 :: BATCH: Startup applications
 wmic startup get caption,command
 
-:: BATCH: Recursively unzip all zip folders, youâ€™ll need unzip.exe for this
+:: BATCH: Recursively unzip all zip folders, you’ll need unzip.exe for this
 FOR /R %a (*.zip) do unzip -d unzipDir "%a"
 
 :: BATCH: Variable extraction
@@ -272,7 +273,7 @@ cmd /c dir /b /a:-d						# ugly hack
 powershell "Set-ExecutionPolicy Unrestricted -force"
 
 # POWERSHELL: Rename Active Directory computer
-Rename-computer â€“computername "computer" â€“newname "newcomputername" â€“domaincredential domain\AdminUsername â€“force â€“restart
+Rename-computer –computername "computer" –newname "newcomputername" –domaincredential domain\AdminUsername –force –restart
 
 # POWERSHELL: Function to get current AD site
 function Get-ADComputerSite($ComputerName)
@@ -312,7 +313,7 @@ Measure-Command {.\mybatchfile.bat}|%{$_.TotalMilliseconds}
 powershell.exe "Measure-Command {cmd.exe /c wmic product get identifyingnumber,name,version /all}|%{$_.TotalMilliseconds}"
 
 # POWERSHELL: Find time and initiating user of last system reboot
-Get-EventLog -log system â€“newest 1000 | where-object {$_.eventid â€“eq '1074'} | format-table machinename, username, timegenerated â€“autosize
+Get-EventLog -log system –newest 1000 | where-object {$_.eventid –eq '1074'} | format-table machinename, username, timegenerated –autosize
 
 # POWERSHELL: Find all MP3s and sort by ascending size:
 Get-ChildItem 'C:\search\directory\' -recurse -include *.mp3 | select-object fullname,length | sort length
@@ -341,7 +342,7 @@ Invoke-Command -session $InteractiveSession {Get-Process}
 # POWERSHELL: Run the remote command on the session, but report only certain objects:
 invoke-command -session $InteractiveSession {Get-Process | select-object name,VM,CPU }
 
-
-
+# POWERSHELL: Get installed version of Powershell:
+$PSVersionTable.PSVersion
 
 :eof
