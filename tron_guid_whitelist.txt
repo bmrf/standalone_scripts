@@ -1,6 +1,5 @@
 This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mostly used by the incoming list ingestion script.
 
-
 {00000000-0000-0100-0000-0CE90DA3512B} Microsoft Dynamics NAV 2017 RoleTailored Client 10.0.14199.0
 {00000000-0000-0100-A577-0000836BD2D2} Microsoft Dynamics NAV Setup 10.0.14199.0
 {00000000-0000-0100-A800-0CE90DA3512B} New Zealand Module for Microsoft Dynamics NAV 2017 Role Tailored Client 10.0.14199.0
@@ -614,6 +613,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {19AFD9A4-B584-41C8-91EA-38EB2FC1BD50} Windows Live Messenger 16.4.3505.0912
 {19BD2ABF-D48F-45A7-3DE9-858A91F18E2D} Windows SDK for Windows Store Apps DirectX x86 Remote 10.1.10586.212
 {19BFDA5D-1FE2-4F25-97F9-1A79DD04EE20} Microsoft XNA Framework Redistributable 3.1 3.1.10527.0
+{19CEA1FF-6D48-52A6-4D2B-13CC3D79C5D2} AMD Radeon Settings 2018.0711.1421.24002
 {19E3D3D7-6A3C-4B98-9433-38201260207F} Microsoft VC++ redistributables repacked. 12.0.0.0
 {19E8AE59-4D4A-3534-B567-6CC08FA4102E} Microsoft .NET Framework 4.5.2 Multi-Targeting Pack 4.5.51651
 {19F09425-3C20-4730-9E2A-FC2E17C9F362} Windows Live Remote Service Resources 15.4.5722.2
@@ -621,6 +621,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {1A6370BB-F59E-80A9-C508-EFED1C29BF1A} WinRT Intellisense PPI - Other Languages 10.1.10586.212
 {1A655D51-1423-48A3-B748-8F5A0BE294C8} Microsoft Visual J# .NET Redistributable Package 1.1 1.1.4322
 {1A72337E-D126-4BAF-AC89-E6122DB71866} Windows Liven valokuvavalikoima 15.4.3502.0922
+{1A72E39E-3561-4C55-A62A-CFB1D9A2748B} eDrawings 2014 14.4.105
 {1A82AE99-84D3-486D-BAD6-675982603E14} Windows Live Writer 15.4.3502.0922
 {1A9E9E77-B29B-47C6-ADEB-9E7D6F7A08CE} novaPDF 8 Printer Driver 8.6.942
 {1AA4C78F-7B24-8698-AB85-15C3E9103CC2} Windows SDK for Windows Store Apps Headers 10.1.15063.468
@@ -639,6 +640,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {1B905A9B-EB74-4C70-B81B-5F446C178566} Windows Live Essentials 16.4.3528.0331
 {1B947146-366B-42CD-86D5-219993CE3EE2} Windows Live MIME IFilter 16.4.3505.0912
 {1B9BBB23-65CB-3AEE-BFC6-633E7CA299FD} Microsoft Visual Studio Team Foundation Server 2012 Team Explorer Language Pack - ENU 11.0.50727
+{1BA1133B-1C7A-41A0-8CBF-9B993E63D296} osrss 1.0.0
 {1BA1DBDC-5431-46FD-A66F-A17EB1C439EE} Windows Live Messenger 15.4.3538.0513
 {1BA457D4-90F2-4D83-9543-9715849023C8} Microsoft SQL Server 2008 R2 RsFx Driver 10.52.4042.0
 {1BA5E256-E081-44E3-8E51-F10EF489ABD6} Fotogalleriet 16.4.3522.0110
@@ -734,8 +736,10 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {2082C038-9610-43A1-9E50-EC9BB4844463} Microsoft Visual Studio Emulator for Android Guest Autiomation API 1.0.60404.1
 {2085F34A-239C-4EBA-8039-02708516F641} Slingplayer for Web Installer 1.2.8.362
 {20888FA1-8127-42E3-969F-9BF93245AC83} Python 3.6.4 Tcl/Tk Support (32-bit) 3.6.4150.0
+{209AB671-6D2A-488E-BB33-4B8E9379602D} H&R Block Premium + Efile + State 2017 17.07.7601
 {209F7C2C-13B4-405E-82C7-86E9CCA0A97E} LINK230_260Setup 3.0.972.0
 {20A981DF-6170-422C-8A29-7DC5CFC904DC} Visual C++ 8.0 x64 Runtime Setup Package 1.0.0.0
+{20AB389B-8602-403C-B19B-F0A1D6C510A5} ANT Drivers Installer x64 2.3.4
 {20BB76A6-7AF6-48B9-9B75-6408EA5E2C6B} IBM Sametime Integration 4.0.11289.0
 {20C1086D-C843-36B1-B678-990089D1BD44} Microsoft Visual C++ 2013 x64 Additional Runtime - 12.0.40649 12.0.40649
 {20D46801-147B-30AD-7C5A-AC4560A79096} Catalyst Control Center Next Localization FI 2017.0424.2119.36535
@@ -1073,6 +1077,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {2AEAFC79-79E6-4784-9CF9-D9D82932BF88} Windows Live Family Safety 16.4.3505.0912
 {2AF69D74-1FD7-4871-89A8-B3998FA686D2} Windows Live Writer Resources 16.4.3528.0331
 {2AFFFDD7-ED85-4A90-8C52-5DA9EBDC9B8F} Microsoft SQL Server 2005 Express Edition (WESTLIVENOTE) 9.4.5000.00
+{2B054C3F-C753-47D8-A5CA-D92AC5D455EB} HP ENVY 4510 series Basic Device Software 40.11.1122.1796
 {2B0558EA-15B0-3F0F-9F3A-5BAB288CD8C1} Visual C++ IDE Base Resource Package 14.0.25123
 {2B0E1E07-2F3D-4E7D-AD0A-1C74A8881B9B} QuickBooks 26.0.4005.2607
 {2B1393A6-2F52-4501-9C3C-67BBF195CC2E} Blackboard Collaborate Launcher 1.6.1.0
@@ -1131,6 +1136,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {2DBE7E35-6529-357A-B01C-FBD7B4178C3F} Visual C++ Library CRT Appx Package 14.0.24210
 {2DD89092-1F64-F9A5-8350-DEF6B216D1BB} Windows App Certification Kit x64  10.1.15063.468
 {2DEE0FC0-72EE-4AC1-82DF-1E4AE8155B75} Microsoft Server Speech Platform Runtime (x64) 10.0.7135.0
+{2DF79A08-9BFB-3120-B62D-F7E489A984EE} Microsoft .NET Framework 4.5.1 (FIN) 4.5.50938
 {2DFD8316-9EF1-3210-908C-4CB61961C1AC} Microsoft Visual C++ 2008 Redistributable - x64 9.0.30729 9.0.30729
 {2E160818-A0AA-A092-97AF-93BF978F405E} Windows IP Over USB 10.1.14393.33
 {2E295B5B-1AD4-4D36-97C2-A316084722C0} Python 2.7.2 (64-bit) 2.7.2150
@@ -1354,6 +1360,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {38661DD1-576D-48CA-A188-F97819D5B5FB} SQL Server 2012 Data quality service 11.0.2100.60
 {3881DB80-EAA2-012B-ADAE-000000000000} TurboTax 2009 WinPerFedFormset 009.000.2513
 {38866F06-9F45-4731-B010-77C6378DCABB} HP Color LaserJet Pro MFP M476 Digital Filing 32.0.74.0
+{388CC13F-FAC4-4D3E-83BF-C849E5D4552A} H&R Block Premium + Efile + State 2015 15.07.8101
 {388D7468-1CCA-40C8-9F08-4C20E972E922} Microsoft Build Tools Language Resources 14.0 (amd64) 14.0.25123
 {388E4B09-3E71-4649-8921-F44A3A2954A7} Microsoft Visual Studio 2005 Tools for Office Runtime 8.0.60816.0
 {38975F50-EAA2-012B-ADB4-000000000000} TurboTax 2009 WinPerReleaseEngine 009.000.0328
@@ -1770,6 +1777,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {4FEDA3C1-5ADE-4E42-A643-FBAE26F3BF1A} Microsoft Merge Modules for DDMS 1.1.1
 {4FFA2088-8317-3B14-93CD-4C699DB37843} Microsoft Visual C++ 2008 Redistributable - x64 9.0.30729 9.0.30729
 {4FFF7ECC-CCF7-4530-B938-E7812BB91186} ConfigMgr 2012 Toolkit R2 5.00.7958.1151
+{5006E22D-5E4F-3B67-833E-9BEEF01DDEE0} Microsoft .NET Framework 4.5.1 (NOR) 4.5.50938
 {5009B7EE-8A15-4A23-B404-15E31D02DA67} Update for Windows 10 for x64-based Systems (KB4023057) 2.43.0.0
 {50120000-1105-0000-0000-0000000FF1CE} Microsoft Office 2007 Primary Interop Assemblies 12.0.4518.1014
 {501DB4F2-83E7-4C23-AA50-7A2485056183} Spotlight Enterprise  12.0.0.8542
@@ -2153,6 +2161,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {64A3A4F4-B792-11D6-A78A-00B0D0180162} Java SE Development Kit 8 Update 162 (64-bit) 8.0.1620.12
 {64A3A4F4-B792-11D6-A78A-00B0D0180171} Java SE Development Kit 8 Update 171 (64-bit) 8.0.1710.11
 {64A3A4F4-B792-11D6-A78A-00B0D0180172} Java SE Development Kit 8 Update 172 (64-bit) 8.0.1720.11
+{64A3A4F4-B792-11D6-A78A-00B0D0180181} Java SE Development Kit 8 Update 181 (64-bit) 8.0.1810.13 
 {64A3A4F4-B792-11D6-A78A-00B0D0180450} Java SE Development Kit 8 Update 45 (64-bit) 8.0.450.14
 {64A3A4F4-B792-11D6-A78A-00B0D0180600} Java SE Development Kit 8 Update 60 (64-bit) 8.0.600.27
 {64A3A4F4-B792-11D6-A78A-00B0D0180730} Java SE Development Kit 8 Update 73 (64-bit) 8.0.730.2
@@ -2263,6 +2272,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {6B4CFC6E-ECB0-47FE-95D3-65C680ED0687} Autodesk Material Library Base Resolution Image Library 2016 6.3.0.15
 {6B556C37-8919-4991-AC34-93D018B9EA49} Windows Live Photo Common 15.4.3502.0922
 {6B6923B9-8719-425B-916C-CD2908F31AAF} Windows Live SOXE 16.4.3508.0205
+{6B7C23FA-B391-34BF-8E9D-20BD87CE2EF1} Google Chrome 67.0.3396.99
 {6BAA03F9-B2E5-40EB-8871-703FF0046E9D} Microsoft Server Speech Recognition Language - TELE (zh-HK) 11.0.7400.345
 {6BBA09C8-6B20-4115-B917-C09D8337AE09} Autodeskr Storm and Sanitary Analysis 2014 8.1.48
 {6BC13537-D39F-5BF2-85F3-E073AE3ED446} Windows App Certification Kit SupportedApiList x86 10.1.16299.15
@@ -2686,6 +2696,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {8A665A38-9FFC-4220-B5C2-895F438EE5DF} SQL Server 2008 R2 SP2 Reporting Services 10.52.4000.0
 {8A74E887-8F0F-4017-AF53-CBA42211AAA5} Microsoft Sync Framework Runtime Native v1.0 (x86) 1.0.1215.0
 {8A8F7C2B-115E-44B2-86CE-ED4644628BFE} Microsoft Visual Studio 2015 Update 2 Diagnostic Tools - ENU 14.0.25123
+{8A99142D-5D6E-40B6-AF88-8BD46F0C5CB4} Classic Shell 4.3.1
 {8A9AA17A-EF34-331C-8FB0-134269533C1B} Microsoft Visual Studio 2015 Shell (Minimum) Interop Assemblies 14.0.25123
 {8AA0E56A-5F80-413C-863D-67ED1E0DAC55} Adobe Flash Player 21 NPAPI 21.0.0.213
 {8AAEB5A5-A397-46B6-8AF3-B6DC790C4E48} Windows Live Messenger 16.4.3505.0912
@@ -2750,6 +2761,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {8E14DDC8-EA60-4E18-B3E3-1937104D5BDA} MSVCRT110 16.4.1108.0727
 {8E16BB50-E49A-3647-BD4D-4D150DCCBFAE} Microsoft Visual Studio 2010 Tools for Office Runtime (x64) Language Pack - DEU 10.0.31007
 {8E241C05-52BF-4862-AD1F-AAE465C0075B} Windows Live Mail 16.4.3505.0912
+{8E2CA9DC-9975-468F-90CF-C740109DD2B8} Intel(R) Chipset Device Software 10.1.1.11
 {8E2FC500-2DF0-3E89-9F45-74B85CA2DA47} Microsoft .NET Framework 4.5.2 (FRA) 4.5.52213
 {8E34682C-8118-31F1-BC4C-98CD9675E1C2} Microsoft .NET Framework 4 Extended 4.0.30319
 {8E484670-06E5-401F-9D92-468ED5DB87A1} Microsoft Visual Studio 2015 Windows Diagnostic Tools 14.0.25123
@@ -3363,6 +3375,8 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {952FA3F4-FC7E-3164-B489-124ED8ECBEF9} Visual C++ Library CRT ARM Redist Package 14.0.24210
 {95457FAA-9C22-30A9-AFDF-BAEF6C6F6E6E} Visual C++ Compiler/Tools Premium X64 X86 Cross Package 14.0.23918
 {9547DE37-4A70-4194-97EA-ACC3E747254B} Microsoft Deployment Toolkit (6.3.8443.1000) 6.3.8443.1000
+{955524E7-79EB-4CA9-BA4D-FD2DF587651B} iTunes 12.4.3.1
+{955568EF-4BB1-4822-B2F4-931418CE2E46} H&R Block Premium + Efile + State 2016 16.07.6405
 {955F43D9-38C4-4C22-BEE3-1A6C63F968FA} Microsoft Server Speech Recognition Language - TELE (de-DE) 11.0.7400.345
 {958B7B82-801C-24CC-1BD9-2C499EFED309} Windows SDK for Windows Store Managed Apps Libs 10.1.15063.468
 {95986126-C713-3F28-B3E0-F77C5B94FAFB} Microsoft Portable Library Multi-Targeting Pack 15.0.26228.00
@@ -3408,8 +3422,10 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {98616875-CF30-4BE5-AAED-36EF4AC6EE27} Adobe Flash Player 11 ActiveX 11.3.300.268
 {98841A35-1CBE-4EA3-BFF5-F3E3AD894666} Intel(R) Chipset Device Software 10.0.20
 {988A337D-6490-DF02-1C47-0C75CAF4E21F} Windows Desktop Extension SDK Contracts 10.1.15063.468
+{989DC5D9-A776-430D-9E16-D36E5B81CD86} USB Enhanced Performance Keyboard 2.0.2.6
 {98A7870A-AC69-4531-A142-19EBB75B9996} Microsoft Azure Storage Emulator - v5.2 5.2.17193.1427
 {98A823BA-F3C6-4CD3-A166-DE5B8ACCCED2} Microsoft Security Client MUI Language Pack 2.1.1116.0
+{98BB5224-BC5D-4028-9D20-536C1C263AA9} Classic Shell 4.0.2
 {98C3BECF-DD5F-44D2-8EF3-48A997070123} Webroot SecureAnywhere 9.15.50
 {98EAF7E2-54CC-475A-81F3-ECACB880B39B} Veeam Explorer for Microsoft SQL Server 8.0.0.953
 {98EFF19A-30AB-4E4B-B943-F06B1C63EBF8} Visual Studio 2012 x86 Redistributables 14.0.0.1
@@ -3492,6 +3508,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {9E771D5B-C429-4CBC-8730-3EBD9EC99E4C} Windows Live Movie Maker 15.4.3502.0922
 {9E99CC49-D305-4D42-AC34-6C732062B142} Microsoft Visual Studio 2015 Preparation 14.0.23107
 {9E9C960F-7F47-46D5-A95D-950B354DE2B8} Windows Live Remote Service Resources 15.4.5722.2
+{9EA59C80-8DB7-4D85-9201-FED4CF6B81F5} Adobe Flash Player 27 NPAPI 27.0.0.183
 {9EABBFE1-7EED-47D9-8FB8-21D7E4808057} Test Tools for Microsoft Visual Studio 2015 14.0.23107
 {9EBE5CEF-E60E-33C2-8A29-E29FF4F23968} Visual C++ Library CRT Source Package 14.0.24210
 {9EE4213F-C30A-316A-9DF0-9781D6695837} Visual C++ Library PGO X64 Package 14.0.23918
@@ -3682,6 +3699,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {ABA4FAF1-6389-45F9-92CE-3914A4E5C471} PaperPort Image Printer 64-bit 1.00.0000
 {ABAE53E9-1AF7-406F-A318-8F2097906F55} Intel(R) PRO/Wireless Driver 19.02.0000.4750
 {ABB19BB4-838D-3082-BDA4-87C6604181A2} Microsoft Visual C++ 2013 x64 Minimum Runtime - 12.0.40649 12.0.40649
+{ABCAD346-4F4B-49E9-9AA1-28EF8C26059D} OpenOffice 4.1.5 4.15.9789
 {ABD534B7-E951-470E-92C2-CD5AF1735726} Windows Live Essentials 15.4.3502.0922
 {ABE2F2AA-7ADC-4717-9573-BF3F83C696AC} Windows Live Mail 15.4.3502.0922
 {AC052048-9828-45E3-872B-04CE30A3B58B} ScpToolkit 1.6.238.16010
@@ -3793,6 +3811,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {AFBAB9A0-DDE8-49AE-8C17-A01B61BEE64B} Garmin MapSource 6.16.3
 {AFBBBDDA-4519-34DC-AADE-030C48DE14A7} Visual C++ for Cross Platform Mobile Development (x64) 14.0.25116
 {AFD7A60B-D384-335B-AFD8-48F4ED8072C2} Google Chrome 67.0.3396.99
+{AFEF1712-682C-428F-A093-81991E115C62} H&R Block Virginia 2015 1.15.5001
 {AFF7E080-1974-45BF-9310-10DE1A1F5ED0} Adobe AIR 2.6.0.19120
 {AFF89951-EFF1-3543-92CE-BE535855A3A7} Microsoft NuGet - Visual Studio 2013 2.8.50926.663
 {AFFBC271-AA8F-4908-BEAE-491B96AC57C4} Windows Live Mail 16.4.3503.0728
@@ -3880,6 +3899,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {B431C944-726E-409E-B4A1-8864E64E4F6C} Microsoft VC++ redistributables repacked. 12.0.0.0
 {B445502B-2F83-4873-90F1-06059F71A46A} HPLJUTCore 014.000.0001
 {B455E95A-B804-439F-B533-336B1635AE97} NVIDIA PhysX 9.14.0702
+{B45A0D14-2208-32C6-9DB6-4F413FC67B9D} Microsoft .NET Framework 4.5.1 (SVE) 4.5.50938
 {B4712CB7-27D7-4F61-8805-BCF9BE1CFC4A} Windows Live Writer Resources 15.4.3502.0922
 {B48A745E-B79A-417F-8775-421EF44C92D1} TurboTax 2015 WinPerFuegoContent 015.000.0429
 {B48E0F51-4C4A-45A2-ABFD-89D7D5F8AFB4} Microsoft SQL Server 2016 RsFx Driver 13.1.4001.0
@@ -4212,6 +4232,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {C9F05151-95A9-4B9B-B534-1760E2D014A5} Windows Live Remote Client Resources 15.4.5722.2
 {C9F3471E-1DD0-41F1-9325-6570E4505786} SQL Server 2016 Management Studio for Analysis Services Localization 13.0.15700.28
 {CA16E2AA-4499-4FE5-A88C-174612920734} Python 3.6.3 Executables (32-bit) 3.6.3150.0
+{CA3A5612-64CB-35A5-AD31-7CD1B1EDA96A} Google Chrome 67.0.3396.99
 {CA4225F5-F28F-3395-8FB7-92A7E05E8479} Microsoft ASP.NET Diagnostic Pack for Visual Studio 15.0.30925.0
 {CA5671C3-41A6-4156-87BA-3BC94E960E80} Photo Common 16.4.3522.0110
 {CA6BCA2F-EDEB-408F-850B-31404BE16A61} I.R.I.S. OCR 12.3.4.0
@@ -4282,6 +4303,8 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {CE0F178A-9F6D-4186-9EBB-49C4D3BBBEA6} AVG 2012 12.0.3222
 {CE15D1B6-19B6-4D4D-8F43-CF5D2C3356FF} McAfee VirusScan Enterprise 8.8.07000
 {CE17A35C-B700-4512-AEBC-1458BF352AE5} Photo Common 16.4.3522.0110
+{CE1F04C7-79BC-4219-BE6A-BA490224D4B5} iTunes 12.1.2.27
+{CE25DBD3-FCA7-4E77-9A60-F77BE12FC4BA} Adobe AIR 30.0.0.107
 {CE26F10F-C80F-4377-908B-1B7882AE2CE3} Crystal Reports Basic Runtime for Visual Studio 2008 10.5.1.0
 {CE2CDD62-0124-36CA-84D3-9F4DCF5C5BD9} Microsoft .NET Framework 3.5 SP1 3.5.30729
 {CE37CE67-2660-30EE-805B-78829CC3554B} Microsoft Agents for Visual Studio 2015 Preview 14.0.23102
@@ -4645,6 +4668,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {E27B1D7B-3B34-43A2-9FC0-9828D5DF46E2} Kaspersky Anti-Virus 17.0.0.611
 {E2A6344A-45BF-47A0-9AE1-848325E7FD88} Apple Application Support (64-bit) 6.2
 {E2BDF3F4-0BA8-30E7-B956-30F6776EE152} Microsoft .NET Framework 4.7.1 (HEB) 4.7.02558
+{E2DF5FE4-AC07-40D6-95BD-4CD85BC96675} H&R Block Vermont 2016 1.16.2801
 {E2DFE069-083E-4631-9B6C-43C48E991DE5} Junk Mail filter update 14.0.8089.726
 {E2E81BA0-07B8-36E7-B860-822059039AE4} Microsoft Visual Studio 2015 XAML Designer - ENU 14.0.23107
 {E3047FA0-2D6B-4BD6-8CD4-599955F1CE9D} Microsoft-Maus- und Tastatur-Center 2.2.173.0
@@ -4736,6 +4760,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {E9AD2143-26D5-4201-BED1-19DCC03B407D} Windows Live Messenger 15.4.3538.0513
 {E9C0B8EB-B111-3627-A20C-5AFD1D6BD235} Microsoft Visual Studio 2015 SDK - ENU 14.0.25123
 {E9D98402-21AB-4E9F-BF6B-47AF36EF7E97} Windows Live Writer Resources 15.4.3502.0922
+{E9E68605-DE3F-4B4C-871B-FEB06DC5D167} Adobe Flash Player 29 NPAPI 29.0.0.171
 {E9E9EDD5-7054-4CDB-990B-0F5895A0829C} HP Officejet 7110 series Basic Device Software 29.0.964.38891
 {E9F0BCD8-6BD5-1ED7-EDA3-9FCF2A478AA1} Microsoft App Update for microsoft.windowscommunicationsapps_17.0.1119.516_x64__8wekyb3d8bbwe (x64) 1.0.0.0
 {E9FA781F-3E80-4399-825A-AD3E11C28C77} MSVCRT110_amd64 16.4.1109.0912
@@ -4748,6 +4773,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {EA9886ED-21F8-4867-A049-CE6817291EE6} VC12X86Redist 1.00.0000
 {EAB1BDF2-734A-4D44-9169-7615D185C974} Windows Live Mesh 15.4.3502.0922
 {EAEBD050-D20B-4D2B-B3A7-6BDBBF3F1A3E} HP Hotkey Support 6.2.31.1
+{EAF2BA67-401F-37C2-9D20-7E379CBDFE9D} Microsoft .NET Framework 4.5.1 (DAN) 4.5.50938
 {EAFB2AD8-D92B-464C-8D97-B9CB94703C4A} iCloud 3.0.2.163
 {EB0A3BCB-B9DF-4906-B066-BDEC6E213B91} Microsoft SQL Server 2008 Setup Support Files (English) 10.0.1600.22
 {EB4B3254-5483-3C7B-AC56-D49231C3B51A} Visual C++ IDE Core Professional Plus Resource Package 14.0.25123
@@ -4960,6 +4986,8 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {F8CFEB22-A2E7-3971-9EDA-4B11EDEFC185} Microsoft Visual C++ 2013 x86 Additional Runtime - 12.0.21005 12.0.21005
 {F8F52853-A1A7-42C7-A082-5A6D5853BB0B} VS JIT Debugger 16.0.76.0
 {F8F630A7-6789-44D5-8653-3B27969CF337} Windows Live Essentials 16.4.3528.0331
+{F9000000-0018-0000-0000-074957833700} ABBYY FineReader 9.0 Sprint 9.01.513.58212
+{F914BC59-918A-498F-B2E3-B274C9CB48A8} Google Earth Pro 7.3.2.5491
 {F934477A-37FA-411C-8C71-2582AF3E81DF} Python 3.5.2 Executables (64-bit symbols) 3.5.2150.0
 {F93E37BD-4053-37CA-A7BB-A5B74508006C} Microsoft Visual Studio Tools for Applications 2015 Finalizer 14.0.23829
 {F944F1F7-77A9-394A-A500-FB3BFA69EBDC} Visual C++ IDE Professional Plus Resource Package 14.0.23107
@@ -5026,6 +5054,7 @@ This is a list of GUIDs Tron doesn't care about and will be ignored entirely. Mo
 {FD5EA685-85D0-3143-9DA5-9E30BFD00BAF} Microsoft Visual Studio Express 2013 for Web — PLK 12.0.21005
 {FD733BA2-59BF-4BF1-ADD4-14A1F3EB98CD} Microsoft Visual Studio 2015 XAML Visual Diagnostics 14.0.25431
 {FD78FCBB-B20E-370E-BA1C-FE6886D4214F} Google Chrome 63.0.3239.132
+{FD7F0DB8-0E96-4D64-AD4D-9B5A936AF2A8} LightScribe System Software 1.18.20.1
 {FD8A9511-BFC9-43B5-BB75-9CEC0EA03CF0} ControlCenter4 CSDK 4.6.1.1
 {FD9D64F4-CAF5-3D23-845A-B843C78CC1A5} Microsoft Visual Studio 2010 Tools for Office Runtime (x64) 10.0.60830
 {FDB30193-FDA0-3DAA-ACCA-A75EEFE53607} Microsoft Visual C++ 2012 x86 Additional Runtime - 11.0.50727 11.0.50727
