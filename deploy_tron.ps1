@@ -33,8 +33,9 @@ Requirements:  1. Expects master copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.8 + Add -resume command to WinSCP FTP upload script for the new binary exe only
-               1.4.7 + Add -speed=200 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
+Version:       1.4.9 - Remove --verbose from all GPG commands
+               1.4.8 + Add -resume command to WinSCP FTP upload script for the new binary exe only
+               1.4.7 + Add -speed=xxx (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
                1.4.6 / Rename $SeedFolderBTS to $SeedFolderRS to reflect name change from BT Sync to Resilio Sync
                      / Rename all instances of btsync directory to resiliosync
                1.4.5 * Change renaming of .exe pack during FTP upload to UPLOADING_$NewBinary instead of $NewBinary.UPLOADING to be more readily visible in the browser
@@ -107,7 +108,7 @@ param (
 	[string]$HashDeep = "R:\utilities\cli_utils\hashdeep.exe",                  # e.g. "$env:SystemRoot\system32\hashdeep.exe"
 
 	# Path to gpg.exe (for signing)
-	[string]$gpg = "${env:ProgramFiles(x86)}\GNU\GnuPG\pub\gpg.exe",            # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
+	[string]$gpg = "${env:ProgramFiles(x86)}\GnuPG\bin\gpg.exe",                # e.g. "$env:ProgramFiles\gpg4win\bin\gpg.exe"
 
 	# Path to mktorrent.exe (for .torrent generation)
 	[string]$mktorrent = "R:\applications\mktorrent\mktorrent.exe",             # e.g. "R:\applications\mktorrent\mktorrent.exe"
@@ -180,8 +181,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.4.8"
-$SCRIPT_UPDATED = "2017-10-04"
+$SCRIPT_VERSION = "1.4.9"
+$SCRIPT_UPDATED = "2018-08-08"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server and stash it in $OldVersion
@@ -215,6 +216,9 @@ $pathsToCheck = @(
 
     # Local machine: hashdeep
     "$HashDeep",
+
+    # Local machine: gpg.exe
+    "$gpg",
 
     # Master copy: Tron's \resources subfolder
     "$MasterCopy\tron\resources",
@@ -293,9 +297,9 @@ write-host " About to replace Tron v$OldVersion ($OldDate) with v$NewVersion ($C
 ""
 write-host " Are you sure?" -f red
 ""
-Write-Host -n 'Press any key to continue...';
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+write-host " Don't forget to input GPG pin at the prompt!" -f red
 ""
+pause
 clear
 
 
@@ -338,7 +342,7 @@ log "   Done" darkgreen
 log "   PGP signing checksums.txt..." green
 ""
 remove-item $MasterCopy\integrity_verification\checksums.txt.asc -force -recurse -ea SilentlyContinue | out-null
-& $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $MasterCopy\integrity_verification\checksums.txt
+& $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --detach-sign $MasterCopy\integrity_verification\checksums.txt
 while (1 -eq 1) {
 	if (test-path $MasterCopy\integrity_verification\checksums.txt.asc) {
 		""
@@ -353,7 +357,7 @@ while (1 -eq 1) {
 # JOB: Verify PGP signature before FTP upload
 log "   Verifying PGP signature of checksums.txt..." green
 ""
-& $gpg --batch --yes --verbose --verify $MasterCopy\integrity_verification\checksums.txt.asc $MasterCopy\integrity_verification\checksums.txt
+& $gpg --batch --yes --verify $MasterCopy\integrity_verification\checksums.txt.asc $MasterCopy\integrity_verification\checksums.txt
 if ($? -eq "True") {
 	""
 	log "   Done" darkgreen
@@ -430,7 +434,7 @@ log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.t
 	# Sleep for a few seconds to make sure the pack has had time to finish uploading to the local seed server static pack location
 	start-sleep -s 10
 	# Rename the file to prepare it for uploading
-	ren "$env:temp\$NewBinary" "$env:temp\UPLOADING_$NewBinary"
+	ren "$env:temp\$NewBinary" "$env:temp\UPLOADING"
 	popd
 log "   Done" darkgreen
 
@@ -439,7 +443,7 @@ log "   Done" darkgreen
 log "   PGP signing sha256sums.txt..." green
 ""
 remove-item $env:temp\sha256sums.txt.asc -force -recurse -ea SilentlyContinue | out-null
-& $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --verbose --detach-sign $env:temp\sha256sums.txt
+& $gpg --batch --yes --local-user $gpgUsername --passphrase $gpgPassphrase --armor --detach-sign $env:temp\sha256sums.txt
 while (1 -eq 1) {
 	if (test-path $env:temp\sha256sums.txt.asc) {
 		""
@@ -453,7 +457,7 @@ while (1 -eq 1) {
 
 # JOB: Verify PGP signature of sha256sums.txt
 log "   Verifying PGP signature of sha256sums.txt..." green
-& $gpg --batch --yes --verbose --verify $env:temp\sha256sums.txt.asc $env:temp\sha256sums.txt
+& $gpg --batch --yes --verify $env:temp\sha256sums.txt.asc $env:temp\sha256sums.txt
 if ($? -eq "True") {
 	log "   Done" darkgreen
 } else {
@@ -462,7 +466,7 @@ if ($? -eq "True") {
 
 
 # JOB: Build FTP upload script
-# Tron exe will have "UPLOADING" appended to its name until upload is complete
+# Tron exe will be called UPLOADING until transfer is complete
 log "   Building FTP deployment script..." green
 	"option batch abort" | Out-File $env:temp\deploy_tron_ftp_script.txt -encoding ascii
 	"option confirm off" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
@@ -472,8 +476,8 @@ log "   Building FTP deployment script..." green
 	"rm *.torrent" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	"rm sha256sums*" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$TorrentSaveLocation\Tron v$NewVersion ($CUR_DATE).torrent`""
-	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary -speed=149 -resume `"$env:temp\UPLOADING_$NewBinary`""
-	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"UPLOADING_$NewBinary`" `"$NewBinary`""
+	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary -resume `"$env:temp\UPLOADING`""
+	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "mv `"UPLOADING`" `"$NewBinary`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 	add-content -path $env:temp\deploy_tron_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
 	#write-output "mv "UPLOADING_$NewBinary" "$NewBinary"" | Out-File $env:temp\deploy_tron_ftp_script.txt -append -encoding ascii
@@ -511,17 +515,17 @@ log "   Version deployed:                  v$NewVersion ($CUR_DATE)"
 log "   Version replaced:                  v$OldVersion ($OldDate)"
 log "   Local seed server:                 $SeedServer"
 log "   Local seed directories:"
-log "             BT Sync (RELEASE):       $SeedFolderRS"
+log "             Resilio Sync (RELEASE):  $SeedFolderRS"
 log "             Syncthing (RELEASE):     $SeedFolderST"
 log "   Local torrent autoloader location: $TorrentAutoloaderLocation"
 log "   Local torrent save location:       $TorrentSaveLocation"
 log "   Local static pack storage:         $StaticPackStorageLocation"
 log "   Remote repo host:                  $Repo_FTP_Host"
-log "   Remote repo upload path:           $Repo_FTP_Host/$Repo_FTP_DepositPath"
+log "   Remote repo upload path:           $Repo_FTP_Host$Repo_FTP_DepositPath"
 log "   Log file:                          $LOGPATH\$LOGFILE"
 log "                                      Notify mirror ops, post release to Reddit" blue
 log "                                      and start the .torrent file" blue
-write-output "Press any key to continue..."; $HOST.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | out-null
+pause
 
 # Close the main() function. End of the script
 }
