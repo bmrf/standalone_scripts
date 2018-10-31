@@ -33,7 +33,8 @@ Requirements:  1. Expects master copy directory to look like this:
 							- vocatus-public-key.asc
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.9 - Remove --verbose from all GPG commands
+Version:       1.5.0 + Add deletion of any existing UPLOAD binary in $env:temp to prevent accidentally uploading an old version
+               1.4.9 - Remove --verbose from all GPG commands
                1.4.8 + Add -resume command to WinSCP FTP upload script for the new binary exe only
                1.4.7 + Add -speed=xxx (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
                1.4.6 / Rename $SeedFolderBTS to $SeedFolderRS to reflect name change from BT Sync to Resilio Sync
@@ -181,8 +182,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.4.9"
-$SCRIPT_UPDATED = "2018-08-08"
+$SCRIPT_VERSION = "1.5.0"
+$SCRIPT_UPDATED = "2018-10-31"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server and stash it in $OldVersion
@@ -433,6 +434,8 @@ log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.t
 	gc .\sha256sums_TEMP2.txt | out-file .\sha256sums.txt -encoding utf8 -append
 	# Sleep for a few seconds to make sure the pack has had time to finish uploading to the local seed server static pack location
 	start-sleep -s 10
+	# Nuke any old version that might be lingering in temp
+	remove-item "$env:temp\UPLOADING" -force -recurse -ea SilentlyContinue | out-null
 	# Rename the file to prepare it for uploading
 	ren "$env:temp\$NewBinary" "$env:temp\UPLOADING"
 	popd
