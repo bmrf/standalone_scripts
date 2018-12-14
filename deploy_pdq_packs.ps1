@@ -27,7 +27,9 @@ Requirements:  1. Expects master copy directory to look like this:
 
 
 Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-Version:       1.0.1 + Add -speed=350 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
+Version:       1.0.2 + Add command to nuke any existing "UPLOADING" file in the temp directory. Was causing upload script to upload the wrong file
+                     - Remove -speed=350 command because Cox stopped being stupid
+               1.0.1 + Add -speed=350 (KB) command to WinSCP FTP upload script because Cox is stupid and auto-kills any FTP upload that goes above a certain rate
                      + add -resume command to WinSCP FTP upload script for the new binary exe only
                1.0.0 . Initial write, fork of deploy_tron.ps1
 
@@ -117,7 +119,7 @@ param (
 	[string]$Repo_URL = "https://bmrf.org/repos/pdq_packs",                      # e.g. "http://bmrf.org/repos/pdq_packs"
 
 	# FTP information for where we'll upload the final sha256sums.txt and "PDQ Pack vX.Y.Z (yyyy-mm-dd).exe" file to
-	[string]$Repo_FTP_Host = "xxx",                                             # e.g. "bmrf.org"
+	[string]$Repo_FTP_Host = "bmrf.org",                                        # e.g. "bmrf.org"
 	[string]$Repo_FTP_Username = "xxx",
 	[string]$Repo_FTP_Password = "xxx",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/pdq_packs/",            # e.g. "/public_html/repos/pdq_packs/"
@@ -142,8 +144,8 @@ param (
 ###################
 # PREP AND CHECKS #
 ###################
-$SCRIPT_VERSION = "1.0.1"
-$SCRIPT_UPDATED = "2017-10-04"
+$SCRIPT_VERSION = "1.0.2"
+$SCRIPT_UPDATED = "2018-12-13"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # The "split" command/method is similar to variable cutting in batch (e.g. %myVar:~3,0%)
@@ -225,9 +227,9 @@ write-host " About to replace PDQ Pack v$OldVersion ($OldDate) with v$NewVersion
 ""
 write-host " Are you sure?" -f red
 ""
-Write-Host -n 'Press any key to continue...';
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+write-host " Don't forget to input GPG pin at the prompt!" -f red
 ""
+pause
 clear
 
 
@@ -357,7 +359,9 @@ log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.t
 	# Append the result to the sha256sums.txt we pulled from the repo
 	gc .\sha256sums_TEMP2.txt | out-file .\sha256sums.txt -encoding utf8 -append
 	# Sleep for a few seconds to make sure the pack has had time to finish uploading to the local seed server static pack location
-	start-sleep -s 10
+	start-sleep -s 30
+	# Nuke any old version that might be lingering in temp
+	remove-item "$env:temp\UPLOADING" -force -recurse -ea SilentlyContinue | out-null
 	# Rename the file to prepare it for uploading
 	ren "$env:temp\$NewBinary" "$env:temp\UPLOADING"
 	popd
@@ -401,7 +405,7 @@ log "   Building FTP deployment script..." green
 	"rm *.torrent" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
 	"rm sha256sums*" | Out-File $env:temp\deploy_pdq_pack_ftp_script.txt -append -encoding ascii
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary `"$TorrentSaveLocation\PDQ Pack v$NewVersion ($CUR_DATE).torrent`""
-	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary -speed=350 -resume `"$env:temp\UPLOADING`""
+	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary -resume `"$env:temp\UPLOADING`""
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "mv `"UPLOADING`" `"$NewBinary`""
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=binary `"$env:temp\sha256sums.txt`""
 	add-content -path $env:temp\deploy_pdq_pack_ftp_script.txt -value "put -transfer=ascii `"$env:temp\sha256sums.txt.asc`""
