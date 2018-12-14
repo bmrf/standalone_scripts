@@ -433,7 +433,7 @@ log "   Calculating SHA256 hash for binary pack and appending it to sha256sums.t
 	# Append the result to the sha256sums.txt we pulled from the repo
 	gc .\sha256sums_TEMP2.txt | out-file .\sha256sums.txt -encoding utf8 -append
 	# Sleep for a few seconds to make sure the pack has had time to finish uploading to the local seed server static pack location
-	start-sleep -s 10
+	start-sleep -s 12
 	# Nuke any old version that might be lingering in temp
 	remove-item "$env:temp\UPLOADING" -force -recurse -ea SilentlyContinue | out-null
 	# Rename the file to prepare it for uploading
