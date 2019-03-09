@@ -1,4 +1,4 @@
-List of Metro apps Tron will NEVER try to remove. Mostly used by the automatic Metro ingestion script to weed out entries we don't care about.
+List of Metro apps Tron will NEVER try to remove. Used by the automatic Metro ingestion script to weed out entries we don't care about.
 
 1527c705-839a-4832-9118-54d4Bd6a0c89
 2FE3CB00.PicsArt-PhotoStudio
@@ -40,6 +40,7 @@ JuniperNetworks.JunosPulseVpn
 KaliLinux.54290C8133FEE
 KhanAcademy.KhanAcademy
 LastPass.LastPass
+LastPass.LastPassFreePasswordManager
 Microsoft.3DBuilder
 Microsoft.AAD.BrokerPlugin
 Microsoft.AccountsControl
@@ -81,6 +82,7 @@ Microsoft.MicrosoftEdgeExtensionToolkit
 Microsoft.MicrosoftMinesweeper
 Microsoft.MixedReality.Portal
 Microsoft.MoCamera
+Microsoft.NET.CoreRuntime.1.1
 Microsoft.NET.Native.Framework.1.0
 Microsoft.NET.Native.Framework.1.1
 Microsoft.NET.Native.Framework.1.2
@@ -120,6 +122,7 @@ Microsoft.SurfaceHub
 Microsoft.Taptiles
 Microsoft.Todos
 Microsoft.TranslatorforMicrosoftEdge
+Microsoft.UI.Xaml.2.0
 Microsoft.VCLibs.110.00
 Microsoft.VCLibs.110.00.UWPDesktop
 Microsoft.VCLibs.120.00
@@ -127,6 +130,7 @@ Microsoft.VCLibs.120.00.Preview
 Microsoft.VCLibs.120.00.Preview.Internal
 Microsoft.VCLibs.120.00.Universal
 Microsoft.VCLibs.140.00
+Microsoft.VCLibs.140.00.Debug
 Microsoft.VCLibs.140.00.UWPDesktop
 Microsoft.VP9VideoExtensions
 Microsoft.Wallet
