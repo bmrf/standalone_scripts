@@ -1,6 +1,6 @@
-:: One liner commands for windows – cheat sheet
-:: v1.1.0
-:: 2017-03-29
+:: One liner commands for windows Â– cheat sheet
+:: v1.1.1
+:: 2019-07-03
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -98,7 +98,7 @@ wmic process where name="cmd.exe" delete
 net share
 wmic share list brief
 
-:: BATCH: Remotely display machine’s MAC address
+:: BATCH: Remotely display machineÂ’s MAC address
 wmic /node:machinename nic get macaddress
 
 :: BATCH: Remotely list running processes every second
@@ -149,7 +149,7 @@ sc config example disabled
 wmic useraccount list brief
 
 :: BATCH: Enable RDP remotely
-wmic /node:"machinename 4" path Win32_TerminalServiceSetting where AllowTSConnections=“0" call SetAllowTSConnections “1"
+wmic /node:"machinename 4" path Win32_TerminalServiceSetting where AllowTSConnections=Â“0" call SetAllowTSConnections Â“1"
 
 :: BATCH: List number of times a user logged on
 wmic netlogin where (name like "%%Admin%%") get numberoflogons
@@ -178,7 +178,7 @@ shutdown /m \\192.168.1.1 /r /t 0 /f
 :: BATCH: Copy entire folder and its contents from a remote source to local machine
 xcopy /s \\remotecomputer\directory c:\local
 
-:: BATCH: Find location of file with string “blah" in file name
+:: BATCH: Find location of file with string Â“blah" in file name
 dir c:\ /s /b | find "blah"
 
 :: BATCH: Determine name of a machine with known IP
@@ -229,7 +229,7 @@ systeminformation
 :: BATCH: Startup applications
 wmic startup get caption,command
 
-:: BATCH: Recursively unzip all zip folders, you’ll need unzip.exe for this
+:: BATCH: Recursively unzip all zip folders, youÂ’ll need unzip.exe for this
 FOR /R %a (*.zip) do unzip -d unzipDir "%a"
 
 :: BATCH: Variable extraction
@@ -258,6 +258,14 @@ set ALPHABET=abcdefghijklmnopqrstuvwxyz
 echo %ALPHABET:~0,-2%
 abcdefghijklmnopqrstuvwxyz
 
+:: BATCH: Find all files bigger than 100MB starting at C:\
+forfiles /P C:\ /S /M * /C "cmd /c if @fsize GEQ 104857600 echo @path"
+
+:: BATCH: Find all files bigger than 1GB starting at C:\
+forfiles /P C:\ /S /M * /C "cmd /c if @fsize GEQ 1073741824 echo @path"
+
+:: BATCH: Find all files greater than 200MB and modified since 01/17/2016
+forfiles /P D:\ /M *.* /S /D +"01/17/2016" /C "cmd /c if @fsize gtr 209715200 echo @path @fsize @fdate @ftime"
 
 
 #######################
@@ -273,7 +281,7 @@ cmd /c dir /b /a:-d						# ugly hack
 powershell "Set-ExecutionPolicy Unrestricted -force"
 
 # POWERSHELL: Rename Active Directory computer
-Rename-computer –computername "computer" –newname "newcomputername" –domaincredential domain\AdminUsername –force –restart
+Rename-computer Â–computername "computer" Â–newname "newcomputername" Â–domaincredential domain\AdminUsername Â–force Â–restart
 
 # POWERSHELL: Function to get current AD site
 function Get-ADComputerSite($ComputerName)
@@ -313,7 +321,7 @@ Measure-Command {.\mybatchfile.bat}|%{$_.TotalMilliseconds}
 powershell.exe "Measure-Command {cmd.exe /c wmic product get identifyingnumber,name,version /all}|%{$_.TotalMilliseconds}"
 
 # POWERSHELL: Find time and initiating user of last system reboot
-Get-EventLog -log system –newest 1000 | where-object {$_.eventid –eq '1074'} | format-table machinename, username, timegenerated –autosize
+Get-EventLog -log system Â–newest 1000 | where-object {$_.eventid Â–eq '1074'} | format-table machinename, username, timegenerated Â–autosize
 
 # POWERSHELL: Find all MP3s and sort by ascending size:
 Get-ChildItem 'C:\search\directory\' -recurse -include *.mp3 | select-object fullname,length | sort length
