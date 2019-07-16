@@ -135,7 +135,7 @@ param (
 	[string]$TorrentSaveLocationCygwinFormat = "/cygdrive/r/documents/logs/torrents",  # e.g. "/cygdrive/r/unsorted"
 
 	# Server holding the Tron seed directories
-	[string]$SeedServer = "\\thebrain",                                         # e.g. "\\thebrain"
+	[string]$SeedServer = "\\10.0.0.4",                                         # e.g. "\\thebrain"
 
 	# Torrent upload directory. e.g. where to copy the .torrent file so it can be loaded by the Bittorrent software
 	# Relative path to $SeedServer
@@ -183,7 +183,7 @@ param (
 # PREP AND CHECKS #
 ###################
 $SCRIPT_VERSION = "1.5.0"
-$SCRIPT_UPDATED = "2018-10-31"
+$SCRIPT_UPDATED = "2019-07-16"
 $CUR_DATE=get-date -f "yyyy-MM-dd"
 
 # Extract version number of current version from the seed server and stash it in $OldVersion
@@ -254,19 +254,19 @@ $pathsToCheck = @(
     # Master copy: the Instructions file
     "$MasterCopy\tron\Instructions -- YES ACTUALLY READ THEM.txt",
 
-    # Seed server: top level Tron folder (BT Sync)
+    # Seed server: top level Tron folder (Resilio Sync)
     "$SeedServer\$SeedFolderRS",
 
     # Seed server: top level Tron folder (Syncthing)
     "$SeedServer\$SeedFolderST",
 
-    # Seed server: \tron\integrity_verification sub-folder (BT Sync)
+    # Seed server: \tron\integrity_verification sub-folder (Resilio Sync)
     "$SeedServer\$SeedFolderRS\integrity_verification",
 
     # Seed server: \tron\integrity_verification sub-folder (Syncthing)
     "$SeedServer\$SeedFolderST\integrity_verification",
 
-    # Seed server: the public key (BT Sync)
+    # Seed server: the public key (Resilio Sync)
     "$SeedServer\$SeedFolderRS\integrity_verification\vocatus-public-key.asc",
 
     # Seed server: the public key (Syncthing)
@@ -328,7 +328,7 @@ log "   Clearing RELEASE targets on local seed server..." green
 	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 log "   Done" darkgreen
-
+pause
 
 # JOB: Calculate hashes of every single file in the \tron directory structure
 log "   Calculating individual hashes of all included files, please wait..." green
@@ -376,7 +376,7 @@ if ($? -eq "True") { log "   Done" darkgreen } else { log " ! There was a proble
 
 # JOB: Upload from master copy to seed server directories
 log "   Master copy is gold. Copying from master to local seed directories..." green
-	log "   Loading BT Sync RELEASE seed..." green
+	log "   Loading Resilio Sync RELEASE seed..." green
 		cp $MasterCopy\* $SeedServer\$SeedFolderRS\ -recurse -force
 	log "   Done" darkgreen
 	log "   Loading Syncthing RELEASE seed..." green
@@ -403,7 +403,7 @@ log "   Updating master repo (remote)..." green
 
 # JOB: Pack Tron to into a binary pack (.exe archive) using 7z and stash it in the TEMP directory.
 # Create the file name using the new version number extracted from tron.bat and exclude any
-# files with "sync" in the title (these are BT Sync hidden files, we don't need to pack them
+# files with "sync" in the title (these are Resilio Sync hidden files, we don't need to pack them
 log "   Building binary pack, please wait..." green
 	& "$SevenZip" a -sfx "$env:temp\$NewBinary" ".\*" -x!*sync* -x!*ini* >> $LOGPATH\$LOGFILE
 log "   Done" darkgreen
