@@ -1,4 +1,4 @@
-:: One liner commands for windows  cheat sheet
+﻿:: One liner commands for windows / cheat sheet
 :: v1.1.1
 :: 2019-07-03
 :: Batch commands first, Powershell commands below
@@ -98,7 +98,7 @@ wmic process where name="cmd.exe" delete
 net share
 wmic share list brief
 
-:: BATCH: Remotely display machines MAC address
+:: BATCH: Remotely display machine's MAC address
 wmic /node:machinename nic get macaddress
 
 :: BATCH: Remotely list running processes every second
@@ -149,7 +149,7 @@ sc config example disabled
 wmic useraccount list brief
 
 :: BATCH: Enable RDP remotely
-wmic /node:"machinename 4" path Win32_TerminalServiceSetting where AllowTSConnections=0" call SetAllowTSConnections 1"
+wmic /node:"machinename 4" path Win32_TerminalServiceSetting where AllowTSConnections=0" call SetAllowTSConnections 1"
 
 :: BATCH: List number of times a user logged on
 wmic netlogin where (name like "%%Admin%%") get numberoflogons
@@ -229,7 +229,7 @@ systeminformation
 :: BATCH: Startup applications
 wmic startup get caption,command
 
-:: BATCH: Recursively unzip all zip folders, youll need unzip.exe for this
+:: BATCH: Recursively unzip all zip folders, you'll need unzip.exe for this
 FOR /R %a (*.zip) do unzip -d unzipDir "%a"
 
 :: BATCH: Variable extraction
@@ -281,7 +281,7 @@ cmd /c dir /b /a:-d						# ugly hack
 powershell "Set-ExecutionPolicy Unrestricted -force"
 
 # POWERSHELL: Rename Active Directory computer
-Rename-computer computername "computer" newname "newcomputername" domaincredential domain\AdminUsername force restart
+Rename-computer -computername "computer" -newname "newcomputername" -domaincredential domain\AdminUsername -force -restart
 
 # POWERSHELL: Function to get current AD site
 function Get-ADComputerSite($ComputerName)
@@ -321,7 +321,7 @@ Measure-Command {.\mybatchfile.bat}|%{$_.TotalMilliseconds}
 powershell.exe "Measure-Command {cmd.exe /c wmic product get identifyingnumber,name,version /all}|%{$_.TotalMilliseconds}"
 
 # POWERSHELL: Find time and initiating user of last system reboot
-Get-EventLog -log system newest 1000 | where-object {$_.eventid eq '1074'} | format-table machinename, username, timegenerated autosize
+Get-EventLog -log system -newest 1000 | where-object {$_.eventid -eq '1074'} | format-table machinename, username, timegenerated -autosize
 
 # POWERSHELL: Find all MP3s and sort by ascending size:
 Get-ChildItem 'C:\search\directory\' -recurse -include *.mp3 | select-object fullname,length | sort length
