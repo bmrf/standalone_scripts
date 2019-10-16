@@ -98,13 +98,13 @@ wmic process where name="cmd.exe" delete
 net share
 wmic share list brief
 
-:: BATCH: Remotely display machine's MAC address
+:: BATCH: Display remote machines MAC address
 wmic /node:machinename nic get macaddress
 
-:: BATCH: Remotely list running processes every second
+:: BATCH: List remote systems running processes every second
 wmic /node:machinename process list brief /every:1
 
-:: BATCH: Remotely display System Info
+:: BATCH: Display remote systems System Info
 wmic /node:machinename computersystem list full
 
 :: BATCH: Disk drive information
@@ -163,7 +163,7 @@ rwinsta /server:192.168.1.1 2
 :: BATCH: Remotely query registry for last logged in user
 reg query "\\computername\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon" /v DefaultUserName
 
-:: BATCH: List all computers in domain "blah"; dump the output in "output.txt"
+:: BATCH: List all computers in domain "blah" (limited to first 6000 results); dump the output in "output.txt"
 dsquery computer "OU=example,DC=blah" -o rdn -limit 6000 &gt; output.txt
 
 :: BATCH: Reboot immediately
