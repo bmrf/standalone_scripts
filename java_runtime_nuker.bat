@@ -1,4 +1,4 @@
-:: Purpose:       1. Nuke ALL versions of JavaFX and the Java Runtime, series 3 through 9, x86 and x64
+:: Purpose:       1. Nuke ALL versions of JavaFX and the Java Runtime, series 3 through 11, x86 and x64
 ::                2. Leaves Java Development Kit installations intact
 ::                3. Reinstalls the latest JRE (if you want it to)
 ::                4. Puts the lotion on its skin.
