@@ -10,7 +10,9 @@
 ::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.6 + ADDITION:    Add GUID for JRE 10.0.2
+:: Version:       1.8.7 + ADDITION:    Add commands to remove JRE 11
+::                      - REMOVAL:     Remove "re-install JRE after removal" functionality. It was buggy, and it makes more sense to have re-installation handled by a separate script or task
+::                1.8.6 + ADDITION:    Add GUID for JRE 10.0.2
 ::                1.8.5 + ADDITION:    Add GUID for JRE 9.0.4
 ::                1.8.4 + ADDITION:    Add support for removal of JRE series 9
 ::                1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries from the Windows system folders. Thanks to /u/Mikkehy
@@ -52,22 +54,6 @@ set FORCE_CLOSE_PROCESSES=yes
 :: Exit code to use when FORCE_CLOSE_PROCESSES is "no" and a running Java process is detected
 set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 
-:: Java re-install. Do you want to reinstall Java afterwards?
-:: Change either of these to 'yes' if you want to reinstall Java after cleanup.
-:: If you do, make sure to set the location, file names and arguments below!
-set REINSTALL_JAVA_x64=no
-set REINSTALL_JAVA_x86=no
-
-:: The JRE installer must be in a place the script can find it (e.g. network path, same directory, etc)
-:: JRE 64-bit reinstaller
-set JAVA_LOCATION_x64=%~dp0
-set JAVA_BINARY_x64=jre-8u144-windows-x64.exe
-set JAVA_ARGUMENTS_x64=/s
-
-:: JRE 32-bit reinstaller
-set JAVA_LOCATION_x86=%~dp0
-set JAVA_BINARY_x86=jre-8u144-windows-x86.exe
-set JAVA_ARGUMENTS_x86=/s
 
 
 
@@ -83,8 +69,8 @@ set JAVA_ARGUMENTS_x86=/s
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.8.6
-set SCRIPT_UPDATED=2018-07-18
+set SCRIPT_VERSION=1.8.7
+set SCRIPT_UPDATED=2019-10-16
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -217,9 +203,15 @@ call :log "%CUR_DATE% %TIME%   This might take a few minutes. Don't close this w
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 :: Beginning with JRE versions over 99 (JRE8 was first major version to have subversions go over 99), the GUID string "2F8__", which identified architecture, switched to "2F__", presumably to make room for the new 3rd digit in the version identifying section. You can see this in the JRE8 portion below.
 
+:: JRE 11
+call :log "%CUR_DATE% %TIME%   JRE 11..."
+%WMIC% product where "name like 'Java 11%%'" uninstall /nointeractive
+
 :: JRE 10
 call :log "%CUR_DATE% %TIME%   JRE 10..."
+%WMIC% product where "IdentifyingNumber like ''" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "IdentifyingNumber like '{EECB2736-D013-5AC5-9917-7656712F6931}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "name like 'Java 10%%'" uninstall /nointeractive
 
 :: JRE 9
 call :log "%CUR_DATE% %TIME%   JRE 9..."
@@ -462,25 +454,6 @@ call :log "%CUR_DATE% %TIME%   File and directory cleanup done."
 echo. >> "%LOGPATH%\%LOGFILE%"
 echo.
 
-
-:::::::::::::::::::::::::
-:: JAVA REINSTALLATION :: -- If we wanted to reinstall the JRE after cleanup, this is where it happens
-:::::::::::::::::::::::::
-:: x64
-if %REINSTALL_JAVA_x64%==yes (
-	call :log "%CUR_DATE% %TIME% ! Variable "REINSTALL_JAVA_x64" was set to 'yes'. Now installing %JAVA_BINARY_x64%..."
-	"%JAVA_LOCATION_x64%\%JAVA_BINARY_x64%" %JAVA_ARGUMENTS_x64%
-	java -version
-	echo Done.>> "%LOGPATH%\%LOGFILE%"
-)
-
-:: x86
-if %REINSTALL_JAVA_x86%==yes (
-	call :log "%CUR_DATE% %TIME% ! Variable "REINSTALL_JAVA_x86" was set to 'yes'. Now installing %JAVA_BINARY_x86%..."
-	"%JAVA_LOCATION_x86%\%JAVA_BINARY_x86%" %JAVA_ARGUMENTS_x86%
-	java -version
-	echo Done.>> "%LOGPATH%\%LOGFILE%"
-)
 
 :: Done.
 call :log "%CUR_DATE% %TIME%   Registry hive backups: %TEMP%\java_purge_registry_backup\"
