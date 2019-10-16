@@ -20,7 +20,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :: Thanks to UJSTech for this ( http://community.spiceworks.com/topic/post/2898378 )
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 
-:: Possible return values of above command & returned string:
+:: Example Windows version of above command & returned string:
    Windows XP Professional SP3:     Microsoft Windows XP
    Windows Server 2003 Enterprise:  Microsoft Windows Server 2003
    Windows Vista Home Premium:      Windows Vista (TM) Home Premium
@@ -178,7 +178,7 @@ shutdown /m \\192.168.1.1 /r /t 0 /f
 :: BATCH: Copy entire folder and its contents from a remote source to local machine
 xcopy /s \\remotecomputer\directory c:\local
 
-:: BATCH: Find location of file with string blah" in file name
+:: BATCH: Find location of file with string "blah" in file name
 dir c:\ /s /b | find "blah"
 
 :: BATCH: Determine name of a machine with known IP
