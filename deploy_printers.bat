@@ -60,9 +60,9 @@ if not exist "%TEMP%\map_printers.bat" (
 	echo echo.>> %TEMP%\map_printers.bat
 	echo Mapping printers, please wait...>> %TEMP%\map_printers.bat
 	echo echo.>> %TEMP%\map_printers.bat
-	echo start "%PRINTER1%">> %TEMP%\map_printers.bat 2>nul
-	echo start "%PRINTER2%">> %TEMP%\map_printers.bat 2>nul
-	echo start "%PRINTER3%">> %TEMP%\map_printers.bat 2>nul
+	echo rundll32 printui.dll,PrintUIEntry /in /n"%PRINTER1%">> %TEMP%\map_printers.bat 2>nul
+	echo rundll32 printui.dll,PrintUIEntry /in /n"%PRINTER2%">> %TEMP%\map_printers.bat 2>nul
+	echo rundll32 printui.dll,PrintUIEntry /in /n"%PRINTER3%">> %TEMP%\map_printers.bat 2>nul
 )
 
 :: Upload the script to the remote system(s)
