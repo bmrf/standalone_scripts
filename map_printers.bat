@@ -55,11 +55,11 @@ echo %CUR_DATE% %TIME% Checking %PRINTER1% online status...>> "%LOGPATH%\%LOGFIL
 echo %CUR_DATE% %TIME% Checking %PRINTER1% online status...
 rundll32 printui.dll,PrintUIEntry /q /Xg /f "%TEMP%\printer_check" /n"%PRINT_SERVER%\%PRINTER1%" >nul
 if /i not exist "%TEMP%\printer_check" (
-	echo %CUR_DATE% %TIME% %PRINTER1% appears to be down or not responding, skipping.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% %PRINTER1% appears to be down or not responding, skipping.
+	echo %CUR_DATE% %TIME% "%PRINTER1%" appears to be down, skipping.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% "%PRINTER1%" appears to be down, skipping.
 ) else ( 
-	echo %CUR_DATE% %TIME% %PRINTER1% up, mapping now...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% %PRINTER1% up, mapping now...
+	echo %CUR_DATE% %TIME% "%PRINTER1%" online, mapping now...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% "%PRINTER1%" online, mapping now...
 	rundll32 printui.dll,PrintUIEntry /q /in /n"%PRINT_SERVER%\%PRINTER1%"
 	echo %CUR_DATE% %TIME% Mapped.
 )
@@ -71,11 +71,11 @@ echo %CUR_DATE% %TIME% Checking %PRINTER2% online status...>> "%LOGPATH%\%LOGFIL
 echo %CUR_DATE% %TIME% Checking %PRINTER2% online status...
 rundll32 printui.dll,PrintUIEntry /q /Xg /f "%TEMP%\printer_check" /n"%PRINT_SERVER%\%PRINTER2%" >nul
 if /i not exist "%TEMP%\printer_check" (
-	echo %CUR_DATE% %TIME% %PRINTER2% appears to be down or not responding, skipping.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% %PRINTER2% appears to be down or not responding, skipping.
+	echo %CUR_DATE% %TIME% "%PRINTER2%" appears to be down, skipping.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% "%PRINTER2%" appears to be down, skipping.
 ) else ( 
-	echo %CUR_DATE% %TIME% %PRINTER2% up, mapping now...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% %PRINTER2% up, mapping now...
+	echo %CUR_DATE% %TIME% "%PRINTER2%" online, mapping now...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% "%PRINTER2%" online, mapping now...
 	rundll32 printui.dll,PrintUIEntry /q /in /n"%PRINT_SERVER%\%PRINTER2%"
 	echo %CUR_DATE% %TIME% Mapped.
 )
@@ -83,15 +83,15 @@ if exist "%TEMP%\printer_check" del /f /q "%TEMP%\printer_check" >nul
 
 
 :: Printer 3
-echo %CUR_DATE% %TIME% Checking %PRINTER3% online status...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME% Checking %PRINTER3% online status...
+echo %CUR_DATE% %TIME% Checking "%PRINTER3%"...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME% Checking "%PRINTER3%"...
 rundll32 printui.dll,PrintUIEntry /q /Xg /f "%TEMP%\printer_check" /n"%PRINT_SERVER%\%PRINTER3%" >nul
 if /i not exist "%TEMP%\printer_check" (
-	echo %CUR_DATE% %TIME% %PRINTER3% appears to be down or not responding, skipping.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% %PRINTER3% appears to be down or not responding, skipping.
+	echo %CUR_DATE% %TIME% "%PRINTER3%" appears to be down, skipping.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% "%PRINTER3%" appears to be down, skipping.
 ) else ( 
-	echo %CUR_DATE% %TIME% %PRINTER3% up, mapping now...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% %PRINTER3% up, mapping now...
+	echo %CUR_DATE% %TIME% "%PRINTER3%" online, mapping now...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% "%PRINTER3%" online, mapping now...
 	rundll32 printui.dll,PrintUIEntry /q /in /n"%PRINT_SERVER%\%PRINTER3%"
 	echo %CUR_DATE% %TIME% Mapped.
 )
@@ -100,18 +100,7 @@ if exist "%TEMP%\printer_check" del /f /q "%TEMP%\printer_check" >nul
 
 :: Wrap-Up
 echo %CUR_DATE% %TIME% Printers mapped.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME% Printers mapped, have a nice day!
-echo %CUR_DATE% %TIME% Please contact the S-6 if you have any questions.
-echo %CUR_DATE% %TIME% This window will close in 3 seconds.
-ping -n 3 localhost >nul
-
-
-
-
-
-
-
-
-
-
-
+echo                       Printers mapped, have a nice day!
+echo                       Please contact the S-6 if you have any questions.
+echo                       This window will close in 3 seconds.
+ping -n 5 localhost >nul
