@@ -19,7 +19,7 @@
 ::                                     (       \\172.16.1.5\share name  )
 
 :: Log settings
-set LOGPATH=%SystemDrive%\Logs
+set LOGPATH=%TEMP%
 set LOGFILE=deploy_all_users_autorun_script.log
 
 :: Target information
@@ -78,17 +78,19 @@ echo.
 SETLOCAL ENABLEDELAYEDEXPANSION
 for /f %%i in (%SYSTEMS%) do (
 	ping %%i -n 1 >nul
-	if /i not !ERRORLEVEL!==0 echo %%i seems to be offline, skipping... && goto :skip_system
-	copy %SCRIPT% /y "\\%%i\c$\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	echo Uploaded to %%i.
-	:skip_system
+	if /i not !ERRORLEVEL!==0 (
+		echo %CUR_DATE% %TIME%  %%i seems to be offline, skipping...
+	) else (		
+		copy %SCRIPT% /y "\\%%i\c$\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		echo %CUR_DATE% %TIME%  Uploaded to %%i.
+	)
 )
 ENDLOCAL
 
 
 :: Done
 echo.
-echo %TIME% Done.
+echo %CUR_DATE% %TIME% Done.
 
 
 
