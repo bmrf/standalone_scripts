@@ -2,7 +2,7 @@
 :: Requirements:  Administrative rights on target machines
 ::                psexec.exe in location specified below
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Usage:         Run like this:  .\deploy_printers.ps1 -CheckOU "Name of OU to scan"
+:: Usage:         Run like this:  .\deploy_printers.bat
 :: History:       1.0.0 + Initial write
 
 
