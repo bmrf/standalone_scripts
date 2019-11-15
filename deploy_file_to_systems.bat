@@ -92,11 +92,11 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 for /f %%i in (%SYSTEMS%) do (
 	ping %%i -n 1 >nul
 	if /i not !ERRORLEVEL!==0 (
-		echo %CUR_DATE% %TIME%  ! %%i seems to be offline, skipping...
+		echo %CUR_DATE% %TIME%  ^! %%i seems to be offline, skipping...
 	) else (		
 		copy %FILE% /y "\\%%i\c$\windows\system32\group policy\machine" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		echo %CUR_DATE% %TIME%    Uploaded to %%i, now triggering gpupdate.
-		%PSEXEC% -accepteula -nobanner -n 3 -d \\%%i gpupdate /force
+		%PSEXEC% -accepteula -nobanner -n 3 -d \\%%i gpupdate /force /target:computer >nul
 		echo %CUR_DATE% %TIME%    gpupdated /force triggered on %%i, moving to next target.
 	)
 )
