@@ -24,7 +24,7 @@ set LOGFILE=deploy_all_users_autorun_file.log
 
 :: Target information
 set SYSTEMS=systems.txt
-set FILE=Registry.pol
+set FILE=Machine
 
 :: PSexec location
 set PSEXEC=psexec.exe
