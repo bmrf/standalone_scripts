@@ -97,7 +97,7 @@ for /f %%i in (%SYSTEMS%) do (
 		copy %FILE% /y "\\%%i\c$\windows\system32\GroupPolicy\machine" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		echo %CUR_DATE% %TIME%    Uploaded to %%i, now triggering gpupdate.
 		%PSEXEC% -accepteula -nobanner -n 3 -d \\%%i gpupdate /force /target:computer >nul
-		echo %CUR_DATE% %TIME%    gpupdated /force triggered on %%i, moving to next target.
+		echo %CUR_DATE% %TIME%    gpupdate /force triggered on %%i, moving to next target.
 	)
 )
 ENDLOCAL
