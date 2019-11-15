@@ -1,4 +1,4 @@
-:: Purpose:       Deploys a file to remote system(s) All Users startup folder
+:: Purpose:       Deploys a file to remote system(s)
 :: Requirements:  1. Administrative rights on the target machines
 ::                2. The file you are deploying must be in the same directory as this file
 ::                3. The list of systems you are deploying to must be in the same directory as this file
