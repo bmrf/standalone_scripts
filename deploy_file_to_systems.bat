@@ -3,7 +3,7 @@
 ::                2. The file you are deploying must be in the same directory as this file
 ::                3. The list of systems you are deploying to must be in the same directory as this file
 :: Author:        vocatus.gate@gmail.com // github.com/bmrf // reddit.com/user/vocatus // PGP: 0x07d1490f82a211a2
-:: Usage:         Run like this:  .\deploy_all_users_autorun_file.bat
+:: Usage:         Run like this:  .\deploy_file_to_systems.bat
 :: History:       1.0.0 + Initial write
 
 
@@ -24,7 +24,7 @@ set LOGFILE=deploy_all_users_autorun_file.log
 
 :: Target information
 set SYSTEMS=systems.txt
-set FILE=iCafe_Printers.pol
+set FILE=Registry.pol
 
 :: PSexec location
 set PSEXEC=psexec.exe
