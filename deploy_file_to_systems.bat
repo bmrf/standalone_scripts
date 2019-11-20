@@ -24,7 +24,8 @@ set LOGFILE=deploy_all_users_autorun_file.log
 
 :: Target information
 set SYSTEMS=systems.txt
-set FILE=Machine
+set FILE=Registry.pol
+set FILE2=lgpo.exe
 
 :: PSexec location
 set PSEXEC=psexec.exe
@@ -48,7 +49,7 @@ if not exist "%SYSTEMS%" (
 	echo ERROR: Cannot find %SYSTEMS%
 	echo.
 	echo        Place %SYSTEMS% in the same
-	echo        directory as this file.
+	echo        directory as this script.
 	echo.
 	pause
 	goto :eof
@@ -60,7 +61,19 @@ if not exist "%FILE%" (
 	echo ERROR: Cannot find %FILE%
 	echo.
 	echo        Place %FILE% in the same
-	echo        directory as this FILE.
+	echo        directory as this script.
+	echo.
+	pause
+	goto :eof
+)
+
+:: Check that our FILE2 exists
+if not exist "%FILE2%" (
+	echo.
+	echo ERROR: Cannot find %FILE2%
+	echo.
+	echo        Place %FILE2% in the same
+	echo        directory as this script.
 	echo.
 	pause
 	goto :eof
@@ -72,7 +85,7 @@ if not exist "%PSEXEC%" (
 	echo ERROR: Cannot find %PSEXEC%
 	echo.
 	echo        Place %PSEXEC% in the same
-	echo        directory as this PSEXEC.
+	echo        directory as this script.
 	echo.
 	pause
 	goto :eof
@@ -94,10 +107,20 @@ for /f %%i in (%SYSTEMS%) do (
 	if /i not !ERRORLEVEL!==0 (
 		echo %CUR_DATE% %TIME%  ^! %%i seems to be offline, skipping...
 	) else (		
-		copy %FILE% /y "\\%%i\c$\windows\system32\GroupPolicy\machine" >> "%LOGPATH%\%LOGFILE%" 2>&1
-		echo %CUR_DATE% %TIME%    Uploaded to %%i, now triggering gpupdate.
-		%PSEXEC% -accepteula -nobanner -n 3 -d \\%%i gpupdate /force /target:computer >nul
-		echo %CUR_DATE% %TIME%    gpupdate /force triggered on %%i, moving to next target.
+		copy %FILE% /y "\\%%i\c$\Users\Public\Downloads" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		copy %FILE2% /y "\\%%i\c$\Users\Public\Downloads" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		echo %CUR_DATE% %TIME%    Uploaded to %%i, triggering import...
+		
+		:: wait for process to finish
+		%PSEXEC% -accepteula -nobanner -n 3 \\%%i c:\users\public\downloads\lgpo.exe /v /m c:\users\public\downloads\Registry.pol
+		
+		:: don't wait for process to finish
+		:: %PSEXEC% -accepteula -nobanner -n 3 -d \\%%i c:\users\public\downloads\lgpo.exe /v /m c:\users\public\downloads\Registry.pol
+
+		echo %CUR_DATE% %TIME%    import triggered on %%i, cleaning up...
+		del /f /q "\\%%i\c$\Users\Public\Downloads\%FILE%"
+		del /f /q "\\%%i\c$\Users\Public\Downloads\%FILE2%"
+		echo %CUR_DATE% %TIME%    cleanup done, moving to next system.
 	)
 )
 ENDLOCAL
