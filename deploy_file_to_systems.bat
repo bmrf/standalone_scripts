@@ -36,12 +36,16 @@ set PSEXEC=psexec.exe
 :::::::::::::::::::::
 @echo off && cls
 set FILE_VERSION=1.0.0
-set FILE_UPDATED=2019-11-15
+set FILE_UPDATED=2019-11-20
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
+:: Set title
 title Deploying %FILE% to targets...
+
+:: Make log directory if it doesn't exist
+if not exist "%LOGPATH%" mkdir "%LOGPATH%"
 
 :: Check that the target list exists
 if not exist "%SYSTEMS%" (
@@ -107,20 +111,22 @@ for /f %%i in (%SYSTEMS%) do (
 	if /i not !ERRORLEVEL!==0 (
 		echo %CUR_DATE% %TIME%  ^! %%i seems to be offline, skipping...
 	) else (		
-		copy %FILE% /y "\\%%i\c$\Users\Public\Downloads" >> "%LOGPATH%\%LOGFILE%" 2>&1
-		copy %FILE2% /y "\\%%i\c$\Users\Public\Downloads" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		copy %FILE% /y "\\%%i\c$\temp\Downloads" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		copy %FILE2% /y "\\%%i\c$\temp\Downloads" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		echo %CUR_DATE% %TIME%    Uploaded to %%i, triggering import...
 		
 		:: wait for process to finish
-		%PSEXEC% -accepteula -nobanner -n 3 \\%%i %Public%\downloads\lgpo.exe /v /m %Public%\downloads\Registry.pol
+		:: we use cmd /c prefix to allow us to capture remote system output in the local log file
+		%PSEXEC% -accepteula -nobanner -n 3 \\%%i cmd /c "c:\temp\lgpo.exe /v /m c:\temp\Registry.pol" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		
 		:: don't wait for process to finish
-		:: %PSEXEC% -accepteula -nobanner -n 3 -d \\%%i %Public%\downloads\lgpo.exe /v /m %Public%\downloads\Registry.pol
+		:: we use cmd /c prefix to allow us to capture remote system output in the local log file
+		:: %PSEXEC% -accepteula -nobanner -n 3 -d \\%%i cmd /c "c:\temp\lgpo.exe /v /m c:\temp\Registry.pol" >> "%LOGPATH%\%LOGFILE%" 2>&1
 
-		echo %CUR_DATE% %TIME%    import triggered on %%i, cleaning up...
-		del /f /q "\\%%i\c$\Users\Public\Downloads\%FILE%"
-		del /f /q "\\%%i\c$\Users\Public\Downloads\%FILE2%"
-		echo %CUR_DATE% %TIME%    cleanup done, moving to next system.
+		echo %CUR_DATE% %TIME%   Import triggered on %%i, cleaning up...
+		del /f /q "\\%%i\c$\temp\Downloads\%FILE%"
+		del /f /q "\\%%i\c$\temp\Downloads\%FILE2%"
+		echo %CUR_DATE% %TIME%   Cleanup done, moving to next system.
 	)
 )
 ENDLOCAL
