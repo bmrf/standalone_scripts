@@ -12,9 +12,9 @@
 :: VARIABLES :: ---- Set these to your desired values
 :::::::::::::::
 :: Rules for variables:
-::  * NO quotes!                       (bad:  "c:\directory\path"       )
-::  * NO trailing slashes on the path! (bad:   c:\directory\            )
-::  * Spaces are okay                  (okay:  c:\my folder\with spaces )
+::  * NO quotes!                       (bad:  "%SystemDrive%\directory\path"       )
+::  * NO trailing slashes on the path! (bad:   %SystemDrive%\directory\            )
+::  * Spaces are okay                  (okay:  %SystemDrive%\my folder\with spaces )
 ::  * Network paths are okay           (okay:  \\server\share name      )
 ::                                     (       \\172.16.1.5\share name  )
 
@@ -112,10 +112,10 @@ for /f %%i in (%SYSTEMS%) do (
 		echo %CUR_DATE% %TIME%    Uploaded to %%i, triggering import...
 		
 		:: wait for process to finish
-		%PSEXEC% -accepteula -nobanner -n 3 \\%%i c:\users\public\downloads\lgpo.exe /v /m c:\users\public\downloads\Registry.pol
+		%PSEXEC% -accepteula -nobanner -n 3 \\%%i %Public%\downloads\lgpo.exe /v /m %Public%\downloads\Registry.pol
 		
 		:: don't wait for process to finish
-		:: %PSEXEC% -accepteula -nobanner -n 3 -d \\%%i c:\users\public\downloads\lgpo.exe /v /m c:\users\public\downloads\Registry.pol
+		:: %PSEXEC% -accepteula -nobanner -n 3 -d \\%%i %Public%\downloads\lgpo.exe /v /m %Public%\downloads\Registry.pol
 
 		echo %CUR_DATE% %TIME%    import triggered on %%i, cleaning up...
 		del /f /q "\\%%i\c$\Users\Public\Downloads\%FILE%"
