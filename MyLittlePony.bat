@@ -40,7 +40,7 @@ schtasks /run /tn "Windows93"
 ====================================
 
 :: Bonus: Schedule a popup message every hour
-schtasks /f /create /SC HOURLY /TN "PonyReminder" /TR "msg console ADMIT YOUR LOVE OF MY LITTLE PONY!"
+schtasks /f /create /SC HOURLY /TN "PonyReminder" /TR "msg console ADMIT YOUR LOVE FOR MYLITTLEPONY!"
 
 :: Bonus: Schedule a popup message every 3 minutes
 schtasks /f /create /SC MINUTE /MO 3 /TN "PonyReminder" /TR "msg console ADMIT YOUR LOVE FOR PONIES!"
