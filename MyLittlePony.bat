@@ -4,6 +4,9 @@ schtasks /f /create /sc hourly /tn MyLittlePony /tr "'%ProgramFiles(x86)%\Intern
 :: Launch the MyLittlePony website every 5 minutes in Kiosk mode (full-screen, all controls except alt-f4 disabled)
 schtasks /f /create /sc minute /MO 5 /tn MyLittlePony /tr "'%ProgramFiles(x86)%\Internet Explorer\iexplore.exe' -k https://mylittlepony.hasbro.com/en-us"
 
+:: Alternate version of above command if Task Scheduler execution of IE is blocked
+schtasks /f /create /sc minute /MO 5 /tn MyLittlePony /tr "%windir%\explorer.exe \"https://mylittlepony.hasbro.com/en-us\""
+
 :: Launch the Windows93 website every hour in Kiosk mode (full-screen, all controls except alt-f4 disabled)
 schtasks /f /create /sc hourly /tn Windows93 /tr "'%ProgramFiles(x86)%\Internet Explorer\iexplore.exe' -k http://windows93.net"
 
@@ -37,7 +40,7 @@ schtasks /run /tn "Windows93"
 ====================================
 
 :: Bonus: Schedule a popup message every hour
-schtasks /f /create /SC HOURLY /TN "PonyReminder" /TR "msg console ADMIT YOUR LOVE FOR PONIES!"
+schtasks /f /create /SC HOURLY /TN "PonyReminder" /TR "msg console ADMIT YOUR LOVE OF MY LITTLE PONY!"
 
 :: Bonus: Schedule a popup message every 3 minutes
 schtasks /f /create /SC MINUTE /MO 3 /TN "PonyReminder" /TR "msg console ADMIT YOUR LOVE FOR PONIES!"
