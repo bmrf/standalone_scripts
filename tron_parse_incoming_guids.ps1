@@ -53,7 +53,7 @@ param (
 # PREP #
 ########
 $SCRIPT_VERSION = "1.0.2"
-$SCRIPT_UPDATED = "2017-12-28"
+$SCRIPT_UPDATED = "2019-12-14"
 
 
 #############
@@ -221,6 +221,7 @@ log "   Extracted common bulk items into separate files"
 # Clean up after ourselves
 ri "$env:temp\tron_parse_incoming_guids_working_file_1_duplicates_removed.txt" -ea silentlycontinue
 ri "$env:temp\parse_incoming_guids_working_file_2_toolbar_bho_removed.txt" -ea silentlycontinue
+ri "$env:temp\tron_parse_incoming_guids_candidateListFile.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp1.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp2.txt" -ea silentlycontinue
 ri "$incomingGUIDDirectory\GUID_dump_*.txt" -ea silentlycontinue
