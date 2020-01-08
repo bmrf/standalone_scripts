@@ -1,5 +1,5 @@
 # Removes old versions of drivers from the Windows driver store
-# I did not write the script, but found it somewhere online. Spacing/tabbing is messed up but I've tested the script and it works as of 2020-01-08
+# I did not write this script, but found it somewhere online. Spacing/tabbing is messed up but I've tested the script and it works as of 2020-01-08
 
 $dismOut = dism /online /get-drivers
 $Lines = $dismOut | select -Skip 10
