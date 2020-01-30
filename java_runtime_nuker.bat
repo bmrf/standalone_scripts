@@ -70,7 +70,7 @@ set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 :::::::::::::::::::::
 @echo off && cls
 set SCRIPT_VERSION=1.8.7
-set SCRIPT_UPDATED=2019-10-16
+set SCRIPT_UPDATED=2020-01-30
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -100,7 +100,7 @@ echo  JAVA RUNTIME NUKER
 echo  v%SCRIPT_VERSION%, updated %SCRIPT_UPDATED%
 if %OS_VERSION%==XP echo. && call :log "%CUR_DATE% %TIME%  ! Windows XP detected, using alternate command set to compensate."
 echo.
-call :log "%CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-8, x86 and x64) and JavaFX..."
+call :log "%CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-11, x86 and x64) and JavaFX..."
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
 %WMIC% timezone >NUL
