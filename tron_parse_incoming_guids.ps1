@@ -21,13 +21,13 @@
 #                                     (       "\\172.16.1.5\share name"  )
 param (
 	# Path to master file
-    [string] $byGUIDListFile = "R:\utilities\security\cleanup-repair\tron\tron\resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.txt",
+    [string] $byGUIDListFile = "r:\utilities\security\cleanup-repair\tron\tron\resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.txt",
 
     # Path to toolbar/BHO file
-    [string] $toolbarBHOListFile = "R:\utilities\security\cleanup-repair\tron\tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt",
+    [string] $toolbarBHOListFile = "r:\utilities\security\cleanup-repair\tron\tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt",
 
     # Path to GUID whitelist file
-    [string] $whitelistGUIDPath = "R:\scripts\blackmesa\tron_guid_whitelist.txt",
+    [string] $whitelistGUIDPath = "r:\scripts\blackmesa\tron_guid_whitelist.txt",
 
     # Path to candidate (new) file
     [string] $candidateListFile = "$env:temp\tron_parse_incoming_guids_candidateListFile.txt",
@@ -53,7 +53,7 @@ param (
 # PREP #
 ########
 $SCRIPT_VERSION = "1.0.2"
-$SCRIPT_UPDATED = "2019-12-14"
+$SCRIPT_UPDATED = "2020-02-05"
 
 
 #############
@@ -226,6 +226,7 @@ ri "$env:temp\tron_parse_incoming_guids_temp1.txt" -ea silentlycontinue
 ri "$env:temp\tron_parse_incoming_guids_temp2.txt" -ea silentlycontinue
 ri "$incomingGUIDDirectory\GUID_dump_*.txt" -ea silentlycontinue
 ri "$incomingGUIDDirectory\tron*.log" -ea silentlycontinue
+ri "$env:appdata\Microsoft\Recent\tron_parse_incoming_guids.ps1.lnk" -ea silentlycontinue
 
 # Currently I'm wiping screenshots since I don't care about them
 ri "$incomingGUIDDirectory\tron_*.png" -ea silentlycontinue
