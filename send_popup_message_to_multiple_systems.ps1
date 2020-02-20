@@ -43,8 +43,8 @@ $SCRIPT_UPDATED = "2020-02-20"
 function main() {
 
 # Pull in the list of computers we're targeting
-#$DesktopList=(get-adcomputer -searchbase "$DesktopOU" -filter * | select -expand Name)
-#$LaptopList=(get-adcomputer -searchbase "$LaptopOU" -filter * | select -expand Name)
+$DesktopList=(get-adcomputer -searchbase "$DesktopOU" -filter * | select -expand Name)
+$LaptopList=(get-adcomputer -searchbase "$LaptopOU" -filter * | select -expand Name)
 
 # for testing against specific systems
 #$DesktopList = 'BLISW6CLAAWKPT2',
