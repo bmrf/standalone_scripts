@@ -31,7 +31,7 @@ $MessageToSend = "This is a test of the S-6 notification system, please disregar
 # PREP #
 ########
 $SCRIPT_VERSION = "1.0.0"
-$SCRIPT_UPDATED = "2020-02-20"
+$SCRIPT_UPDATED = "2020-02-21"
 
 
 
@@ -86,7 +86,7 @@ log "   Sending to Desktop OU..." green
 foreach ( $computer in $DesktopList ) {
 
     # Check to see if the system is online before sending
-    if (test-Connection -Cn $computer -quiet) {
+    if (test-Connection -count 1 -cn $computer -quiet) {
 
         # Using Psexec to connect
         # & $psexec \\$computer -i msg * "$MessageToSend"
@@ -110,7 +110,7 @@ log "   Sending to Laptop OU..." green
 
 foreach ( $computer in $LaptopList ) {
     # Check to see if the system is online before sending
-    if (test-Connection -Cn $computer -quiet) {
+    if (test-Connection -count -cn $computer -quiet) {
 
         # Using Psexec to connect
         # & $psexec \\$computer -i msg * "$MessageToSend"
