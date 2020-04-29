@@ -1,0 +1,42 @@
+Shortcut path for "Start Chat Programs" (Skype and Pidgin)
+----------------------------------------------------------
+"C:\root\Scripts\Win32\Communications Control.bat"
+
+
+Shortcut path for Command Prompt
+--------------------------------
+
+:: Basic shell, start at root of C:
+%SystemRoot%\system32\cmd.exe /k cd\ & cls & echo. & echo Welcome %USERNAME%, & uptime & title Shell
+
+:: Change the color of the terminal (/T:xx command)
+%SystemRoot%\system32\cmd.exe /T:8E /k cd\ & cls & echo. & echo Welcome %USERNAME%, & uptime
+
+:: Standalone system
+%SystemRoot%\system32\cmd.exe /k R: & cd r:\unsorted\ & cls & echo. & echo Welcome %USERNAME%, & uptime & title %USERNAME% & prompt %USERNAME%@$T$S$P$_$$$S
+
+:: Domain admin
+%SystemRoot%\system32\cmd.exe /k R: & cd R:\unsorted\ & cls & echo. & echo Welcome %USERNAME%, & uptime & title %USERDOMAIN% & prompt %USERNAME%@$T$S$S$P$_$$$S
+
+
+Shortcut path for Powershell
+----------------------------
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -NoExit cd r:\unsorted; cls; write-host "" ; write-host  "Welcome $env:username`," ; uptime ; write-host ""
+
+DropMyRights.exe
+-----------------
+C:\WINDOWS\system32\DropMyRights.exe "C:\Program Files\Mozilla Firefox\firefox.exe"
+
+
+Rename a file using the current day, month and year
+---------------------------------------------------
+:: Legend:
+::		g is year, e is month, f is day
+for /f "tokens=1-5 delims=/ " %%d in ("%date%") do (
+	rename %DESTINATION%\private.ctc private_%%g-%%e-%%f.ctc.bak
+)
+
+Assign the output of a command to a variable (in this case called "MARKER"). Notice the escaped pipe (^|)
+---------------------------------------------------------------------------------------------------------
+for /f "delims=" %a in ('dir /b ^| findstr "marker_"') do @set MARKER=%a
+for /f "delims=" %a in ('ver') do @set MARKER=%a
