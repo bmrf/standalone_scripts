@@ -1,0 +1,2 @@
+reg.exe add HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v DisabledHotkeys /t REG_SZ /d S /f
+reg.exe add HKEY_CURRENT_USER\Software\Microsoft\Office\14.0\OneNote\Options\Other /v ScreenClippingShortcutKey /t REG_DWORD /d 90 /f
