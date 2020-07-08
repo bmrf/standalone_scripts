@@ -1,6 +1,6 @@
-﻿:: One liner commands for windows / cheat sheet
-:: v1.1.1
-:: 2019-07-03
+:: One liner commands for windows / cheat sheet
+:: v1.1.2
+:: 2020-07-08
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -35,11 +35,8 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
    Windows 10 Professional:         Windows 10 Pro
 
  
-:: BATCH: Check SMART status of all disks
-wmic diskdrive get status
-
-:: BATCH: Check SMART status of all disks with title, index and caption
-WMIC DISKDRIVE GET Availability,Index,Caption
+:: BATCH: Check SMART status of all disks with title, index, caption and status
+wmic diskdrive get Availability,Index,Caption,Status
 
 :: BATCH: Install global shared printer (system-wide)
 rundll32 printui.dll,PrintUIEntry /ga /n "\\SERVER\PRINTER"
