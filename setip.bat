@@ -1,5 +1,5 @@
 :: Purpose:       Allows you to quickly change your IP address without using the GUI
-:: Requirements:  Windows XP, Vista or 7
+:: Requirements:  Windows XP and up
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       3.6.2 * Updated preloaded DNS servers to use dns.watch's DNS instead of Google's
 ::                3.6.1 * Updated preloaded DNS servers to use Google's DNS instead of OpenDNS due to their stupid DNS hijacking
