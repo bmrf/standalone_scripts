@@ -4,7 +4,8 @@
 ::                3. The list of systems you are deploying to must be in the same directory as this file
 :: Author:        vocatus.gate@gmail.com // github.com/bmrf // reddit.com/user/vocatus // PGP: 0x07d1490f82a211a2
 :: Usage:         Run like this:  .\deploy_file_to_systems.bat
-:: History:       1.0.0 + Initial write
+:: History:       1.0.1 * Minor code improvements (create destination directory if it doesn't already exist)
+::                1.0.0 + Initial write
 
 
 
@@ -35,8 +36,8 @@ set PSEXEC=psexec.exe
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set FILE_VERSION=1.0.0
-set FILE_UPDATED=2019-11-20
+set FILE_VERSION=1.0.1
+set FILE_UPDATED=2020-07-16
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -110,22 +111,23 @@ for /f %%i in (%SYSTEMS%) do (
 	ping %%i -n 1 >nul
 	if /i not !ERRORLEVEL!==0 (
 		echo %CUR_DATE% %TIME%  ^! %%i seems to be offline, skipping...
-	) else (		
-		copy %FILE% /y "\\%%i\c$\temp\Downloads" >> "%LOGPATH%\%LOGFILE%" 2>&1
-		copy %FILE2% /y "\\%%i\c$\temp\Downloads" >> "%LOGPATH%\%LOGFILE%" 2>&1
-		echo %CUR_DATE% %TIME%    Uploaded to %%i, triggering import...
+	) else (
+		if not exist "\\%%i\c$\temp" mkdir "\\%%i\c$\temp"
+		copy %FILE% /y "\\%%i\c$\temp\" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		copy %FILE2% /y "\\%%i\c$\temp\" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		echo %CUR_DATE% %TIME%    Uploaded to %%i.
 		
-		:: wait for process to finish
+		:: wait for process to finish - DISABLED, was only used once
 		:: we use cmd /c prefix to allow us to capture remote system output in the local log file
-		%PSEXEC% -accepteula -nobanner -n 3 \\%%i cmd /c "c:\temp\lgpo.exe /v /m c:\temp\Registry.pol" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		:: %PSEXEC% -accepteula -nobanner -n 3 \\%%i cmd /c "c:\temp\lgpo.exe /v /m c:\temp\Registry.pol" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		
 		:: don't wait for process to finish
-		:: we use cmd /c prefix to allow us to capture remote system output in the local log file
 		:: %PSEXEC% -accepteula -nobanner -n 3 -d \\%%i cmd /c "c:\temp\lgpo.exe /v /m c:\temp\Registry.pol" >> "%LOGPATH%\%LOGFILE%" 2>&1
 
-		echo %CUR_DATE% %TIME%   Import triggered on %%i, cleaning up...
-		del /f /q "\\%%i\c$\temp\Downloads\%FILE%"
-		del /f /q "\\%%i\c$\temp\Downloads\%FILE2%"
+		:: Cleanup
+		echo %CUR_DATE% %TIME%   Cleaning up on %%i...
+		del /f /q "\\%%i\c\$\temp\%FILE%"
+		del /f /q "\\%%i\c\$\temp\%FILE2%"
 		echo %CUR_DATE% %TIME%   Cleanup done, moving to next system.
 	)
 )
@@ -135,12 +137,6 @@ ENDLOCAL
 :: Done
 echo.
 echo %CUR_DATE% %TIME%   Done.
-
-
-
-
-
-
 
 
 
