@@ -1,6 +1,6 @@
 :: One liner commands for windows / cheat sheet
-:: v1.1.2
-:: 2020-07-08
+:: v1.1.3
+:: 2020-07-16
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -41,6 +41,10 @@ wmic diskdrive get Availability,Index,Caption,Status
 :: BATCH: Install global shared printer (system-wide)
 rundll32 printui.dll,PrintUIEntry /ga /n "\\SERVER\PRINTER"
 
+:: BATCH: Show IPCONFIG output for only a single adapter (long version first, short version second)
+netsh interface ip show addresses eth0
+netsh int ip sh ad eth0
+
 :: BATCH: Add static route to the host 192.168.1.83 via the gateway of 172.16.1.1, on interface #11, and persist across reboots (-p)
 route add 192.168.1.83 mask 255.255.255.255 172.16.1.1 metric 31 if 11 -p
 
@@ -74,7 +78,7 @@ wmic product where description="Symantec" uninstall
 wmic product where name="Symantec" uninstall
 wmic product where version='65.39.83' uninstall
 
-:: BATCH: Alternate examples using wildcards
+:: BATCH: Uninstall programs using wildcards
 wmic product where "name like 'java%%Runtime%%'" uninstall /nointeractive
 wmic product where "name like 'java%%platform%%'" uninstall /nointeractive
 wmic product where "name like 'java%%tm%%'" uninstall /nointeractive
