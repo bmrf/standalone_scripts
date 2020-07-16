@@ -43,15 +43,15 @@ echo                          Pings per check:  %PINGS_PER_CHECK%
 echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY%
 
 :: This block creates the log entries
-echo %CUR_DATE% %TIME%   Initializng PINGUP monitoring script"%LOGPATH%\%LOGFILE%"
-echo                          Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%'"%LOGPATH%\%LOGFILE%"
-echo                          Monitoring:       %HOST% (%DISPLAY_NAME%)"%LOGPATH%\%LOGFILE%"
-echo                          Pings per check:  %PINGS_PER_CHECK% "%LOGPATH%\%LOGFILE%"
-echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY% "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Initializng PINGUP monitoring script >>"%LOGPATH%\%LOGFILE%"
+echo                          Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%' >>"%LOGPATH%\%LOGFILE%"
+echo                          Monitoring:       %HOST% (%DISPLAY_NAME%) >>"%LOGPATH%\%LOGFILE%"
+echo                          Pings per check:  %PINGS_PER_CHECK%  >>"%LOGPATH%\%LOGFILE%"
+echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY%  >>"%LOGPATH%\%LOGFILE%"
  
 echo.
 echo %CUR_DATE% %TIME%   Performing initial test...
-echo %CUR_DATE% %TIME%   Performing initial test..."%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Performing initial test... >>"%LOGPATH%\%LOGFILE%"
 echo.
 
 
@@ -68,13 +68,13 @@ if %ERRORLEVEL%==0 (
 	title UP: %HOST% 
 	color a0
 	echo %CUR_DATE% %TIME%   Host %HOST% ^(%DISPLAY_NAME%^) up.
-	echo %CUR_DATE% %TIME%   Host %HOST% ^(%DISPLAY_NAME%^) up."%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   Host %HOST% ^(%DISPLAY_NAME%^) up. >>"%LOGPATH%\%LOGFILE%"
 ) ELSE (
 	REM Host is DOWN: Black text on red background 
 	title DWN: %HOST%
 	color c0
 	echo %CUR_DATE% %TIME% ! Host %HOST% ^(%DISPLAY_NAME%^) down.
-	echo %CUR_DATE% %TIME% ! Host %HOST% ^(%DISPLAY_NAME%^) down."%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! Host %HOST% ^(%DISPLAY_NAME%^) down. >>"%LOGPATH%\%LOGFILE%"
 )
 
 
