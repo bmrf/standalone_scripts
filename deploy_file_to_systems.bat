@@ -4,7 +4,8 @@
 ::                3. The list of systems you are deploying to must be in the same directory as this file
 :: Author:        vocatus.gate@gmail.com // github.com/bmrf // reddit.com/user/vocatus // PGP: 0x07d1490f82a211a2
 :: Usage:         Run like this:  .\deploy_file_to_systems.bat
-:: History:       1.0.1 * Minor code improvements (create destination directory if it doesn't already exist)
+:: History:       1.0.1 * Create destination directory if it doesn't already exist
+::                      + Add more complete logging
 ::                1.0.0 + Initial write
 
 
@@ -20,8 +21,8 @@
 ::                                     (       \\172.16.1.5\share name  )
 
 :: Log settings
-set LOGPATH=%TEMP%
-set LOGFILE=deploy_all_users_autorun_file.log
+set LOGPATH=%SystemDrive%\logs
+set LOGFILE=deploy_file_to_systems.log
 
 :: Target information
 set SYSTEMS=systems.txt
@@ -29,7 +30,7 @@ set FILE=Registry.pol
 set FILE2=lgpo.exe
 
 :: PSexec location
-set PSEXEC=psexec.exe
+:: set PSEXEC=psexec.exe
 
 
 :::::::::::::::::::::
@@ -85,16 +86,16 @@ if not exist "%FILE2%" (
 )
 
 :: Check that psexec exists
-if not exist "%PSEXEC%" (
-	echo.
-	echo ERROR: Cannot find %PSEXEC%
-	echo.
-	echo        Place %PSEXEC% in the same
-	echo        directory as this script.
-	echo.
-	pause
-	goto :eof
-)
+::if not exist "%PSEXEC%" (
+::	echo.
+::	echo ERROR: Cannot find %PSEXEC%
+::	echo.
+::	echo        Place %PSEXEC% in the same
+::	echo        directory as this script.
+::	echo.
+::	pause
+::	goto :eof
+::)
 
 
 
@@ -104,6 +105,7 @@ if not exist "%PSEXEC%" (
 
 
 echo %CUR_DATE% %TIME%   Deploying %FILE% to systems listed in %SYSTEMS%...
+echo %CUR_DATE% %TIME%   Deploying %FILE% to systems listed in %SYSTEMS%...>> "%LOGPATH%\%LOGFILE%" 2>&1
 
 :: Upload the file to the remote system(s)
 SETLOCAL ENABLEDELAYEDEXPANSION
@@ -111,11 +113,13 @@ for /f %%i in (%SYSTEMS%) do (
 	ping %%i -n 1 >nul
 	if /i not !ERRORLEVEL!==0 (
 		echo %CUR_DATE% %TIME%  ^! %%i seems to be offline, skipping...
+		echo %CUR_DATE% %TIME%  ^! %%i seems to be offline, skipping...>> "%LOGPATH%\%LOGFILE%" 2>&1
 	) else (
-		if not exist "\\%%i\c$\temp" mkdir "\\%%i\c$\temp"
+		if not exist "\\%%i\c$\temp" mkdir "\\%%i\c$\temp" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		copy %FILE% /y "\\%%i\c$\temp\" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		copy %FILE2% /y "\\%%i\c$\temp\" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		echo %CUR_DATE% %TIME%    Uploaded to %%i.
+		echo %CUR_DATE% %TIME%    Uploaded to %%i.>> "%LOGPATH%\%LOGFILE%" 2>&1
 		
 		:: wait for process to finish - DISABLED, was only used once
 		:: we use cmd /c prefix to allow us to capture remote system output in the local log file
@@ -126,9 +130,11 @@ for /f %%i in (%SYSTEMS%) do (
 
 		:: Cleanup
 		echo %CUR_DATE% %TIME%   Cleaning up on %%i...
+		echo %CUR_DATE% %TIME%   Cleaning up on %%i...>> "%LOGPATH%\%LOGFILE%" 2>&1
 		del /f /q "\\%%i\c\$\temp\%FILE%"
 		del /f /q "\\%%i\c\$\temp\%FILE2%"
 		echo %CUR_DATE% %TIME%   Cleanup done, moving to next system.
+		echo %CUR_DATE% %TIME%   Cleanup done, moving to next system.>> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 )
 ENDLOCAL
@@ -137,6 +143,7 @@ ENDLOCAL
 :: Done
 echo.
 echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%" 2>&1
 
 
 
