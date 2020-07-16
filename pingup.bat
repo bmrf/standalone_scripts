@@ -25,12 +25,12 @@ call :set_cur_date
 set HOST=8.8.4.4
 set DISPLAY_NAME=GoogleDNS
 set LOGPATH=%SystemDrive%\logs
-set LOGFILE=C:\logs\pingup_%DISPLAY_NAME%.log
+set LOGFILE=pingup_%DISPLAY_NAME%.log
 set PINGS_PER_CHECK=3
 set RECHECK_COOLDOWN_DELAY=10
 
 :: make the log directory if it doesn't exist
-if not exist "%LOGPATH%\%LOGFILE%" mkdir "%LOGPATH%\%LOGFILE%" >nul
+if not exist "%LOGPATH%" mkdir "%LOGPATH%" >nul
 
 
 :::::::::::::
