@@ -1,7 +1,8 @@
 :: Purpose:       Allows you to quickly change your IP address without using the GUI
 :: Requirements:  Windows XP and up
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       3.6.2 * Updated preloaded DNS servers to use dns.watch's DNS instead of Google's
+:: Version:       3.6.3 * Improve robustness of IPCONFIG output
+::                3.6.2 * Updated preloaded DNS servers to use dns.watch's DNS instead of Google's
 ::                3.6.1 * Updated preloaded DNS servers to use Google's DNS instead of OpenDNS due to their stupid DNS hijacking
 ::                      - Removed some TITLE commands
 ::                3.6.0 * Reworked CUR_DATE variable to handle more than one Date/Time format
@@ -21,7 +22,9 @@
 ::                2.0.0 / Changed hard-coded adapter name to a script-wide variable and cleaned up menus
 ::                1.5.0 + Created basic (ugly) menu structure
 ::                1.0.0   Initial write
+@echo off
 SETLOCAL
+
 
 :::::::::::::::
 :: VARIABLES :: --------------- These are the defaults. Change them if you so desire. -------- ::
@@ -33,7 +36,7 @@ SETLOCAL
 ::  * Network paths are okay           (okay:  \\server\share name      )
 ::                                     (       \\172.16.1.5\share name  )
 :: \/ The first argument passed to the script becomes the adapter to be changed. \/
-set ADAPTER=%1
+set ADAPTER_NAME=%1
 set IP=
 set GATEWAY=
 set MASK=
@@ -51,12 +54,21 @@ set DNS3=84.200.70.40
 :::::::::::::::::::::
 :: Prep and checks ::
 :::::::::::::::::::::
-@echo off
-set SCRIPT_VERSION=3.6.2
-set SCRIPT_UPDATED=2014-07-23
+
+set SCRIPT_VERSION=3.6.3
+set SCRIPT_UPDATED=2020-07-16
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+
+:: Get IP information (excluding VMware adapters)
+if exist "%TEMP%\temp_ethernet_adapter_config1.txt" del /f /q "%TEMP%\temp_ethernet_adapter_config1.txt" >nul
+if exist "%TEMP%\temp_ethernet_adapter_config.txt" del /f /q "%TEMP%\temp_ethernet_adapter_config.txt" >nul
+if exist "%TEMP%\tmpip.txt" del /f /q "%TEMP%\tmpip.txt" >nul
+:: Get all non-VMWare adapters
+netsh interface show interface | findstr /v VMware | findstr Enabled > "%TEMP%\tmpip.txt" && @for /f "tokens=4" %%a in (%TEMP%\tmpip.txt) do @netsh interface ip show config name=%%a >> "%TEMP%\temp_ethernet_adapter_config1.txt"
+:: Strip out the terms "metric" "WINS" and "suffix"
+findstr /i /v "metric WINS suffix" <"%TEMP%\temp_ethernet_adapter_config1.txt" >"%TEMP%\temp_ethernet_adapter_config.txt"
 
 
 :::::::::::::::::::::
@@ -86,16 +98,18 @@ goto start
 ::::::::::
 :help
 echo.
-echo  setip v%SCRIPT_VERSION% -- Set your IP address from the command line. 
+echo  %~nx0 v%SCRIPT_VERSION% -- Set your IP address from the command line. 
 echo.
 echo  USAGE: 
-echo    %0% ^[adapter name^] ^[dhcp ^| static^]
+echo    %~nx0 ^["adapter name"^] ^[dhcp ^| static^]
+echo.
 echo  where:
 echo      adapter name -- Optional: specify which adapter to modify
 echo      dhcp         -- Optional: specify to attempt to get an IP address via DHCP
 echo      static       -- Optional: specify you want to set a static IP address
 echo.
-echo  If you invoke the script with no arguments it will go to the interactive menu.
+echo  If you run the script with no arguments it will go to the interactive menu.
+echo  If the adapter name has spaces in it, surround it with quotes "like this"
 echo.
 goto end
 
@@ -106,27 +120,25 @@ goto end
 :specify_adapter
 cls
 title TCP/IP Configuration for LAN
-ipconfig /all > "%TEMP%\tempLANconfig.txt"
-findstr /R "IPv4 IPv6 Subnet DHCP Dhcp IP.A Default Ethernet DNS.Ser" <"%TEMP%\tempLANconfig.txt" >"%TEMP%\tempLANconfig2.txt"
+
 echo.
 echo ------------------------------
 echo  Current TCP/IP Configuration
 echo ------------------------------
-echo.
-type "%TEMP%\tempLANconfig2.txt"
+type "%TEMP%\temp_ethernet_adapter_config.txt"
 echo.
 echo  ************************************************************
-echo  To save time, invoke the script with the name of the adapter 
-echo  you want changed.
+echo  Which adapter do you want to change? (eth0, wlan0, etc)
 echo.
-echo  Examples:  setip "Local Area Connection 1"
-echo             setip Wireless static
-echo             setip Wireless dhcp
+echo  (To save time, run the script with the name of the adapter 
+echo  you want changed)
+echo.
+echo  Examples:  %~nx0 "Local Area Connection 1"
+echo             %~nx0 eth0 static
+echo             %~nx0 eth1 dhcp
 echo  ************************************************************
-echo  When setting the adapter here, use quotes around the name if 
-echo  it contains spaces.
 echo.
-set /p ADAPTER=Enter the name of the ADAPTER to change: 
+set /p ADAPTER_NAME=Enter the name of the ADAPTER to change: 
 goto start
 
 		
@@ -134,18 +146,16 @@ goto start
 :: Main Screen ::
 :::::::::::::::::
 :start
-color 07 & title TCP/IP Config for %ADAPTER% & cls
-ipconfig /all > "%TEMP%\tempLANconfig.txt"
-findstr /R "IPv4 IPv6 Subnet DHCP Dhcp IP.A Default Ethernet DNS.Ser" <"%TEMP%\tempLANconfig.txt" >"%TEMP%\tempLANconfig2.txt"
+title TCP/IP Config for "%ADAPTER_NAME%" & cls
 echo.
 echo ------------------------------
 echo  Current TCP/IP Configuration
 echo ------------------------------
 echo.
-type "%TEMP%\tempLANconfig2.txt"
+type "%TEMP%\temp_ethernet_adapter_config.txt"
 echo. 
 echo. 
-echo    Adapter to be changed is: %ADAPTER%
+echo    Adapter to be changed is: "%ADAPTER_NAME%"
 echo    -----------------------------------
 echo    Enter "1" to change the IP address manually.
 echo    Enter "2" to set the adapter to DHCP and attempt to acquire an address.
@@ -171,7 +181,7 @@ pause
 ::::::::::::::::::
 :enter_values
 echo.
-echo  Modifying adapter %ADAPTER%
+echo  Modifying adapter "%ADAPTER_NAME%"
 echo.
 set /p IP=Enter the new IP address:        
 set /p MASK=Enter the new subnet mask:       
@@ -209,18 +219,18 @@ set /p CHOICE=Apply this configuration? [Y/n]:
 	if '%CHOICE%'=='n' goto start
 
 :execute_do
-color 07 & cls
+color & cls
 echo.
 echo Applying the TCP/IP configuration.
 echo This could take up to 30 seconds, please be patient...
 echo.
 echo Setting IP address to %IP%...
-	netsh interface ip set address name=%ADAPTER% source=static %IP% %MASK% %GATEWAY% 1
+	netsh interface ip set address name="%ADAPTER_NAME%" source=static %IP% %MASK% %GATEWAY% 1
 echo Setting the default gateway %GATEWAY% as primary DNS...
-	netsh interface ip set dns name=%ADAPTER% static %DNS1% primary
+	netsh interface ip set dns name="%ADAPTER_NAME%" static %DNS1% primary
 echo Setting %DNS2% and %DNS3% as the alternate DNS servers...
-	netsh interface ip add dns name=%ADAPTER% %DNS2% index=2
-	netsh interface ip add dns name=%ADAPTER% %DNS3% index=3
+	netsh interface ip add dns name="%ADAPTER_NAME%" %DNS2% index=2
+	netsh interface ip add dns name="%ADAPTER_NAME%" %DNS3% index=3
 goto done
 
 
@@ -229,11 +239,11 @@ goto done
 ::::::::::
 :dhcp
 echo.
-echo Using DHCP to acquire IP address for adapter %ADAPTER%...
+echo Using DHCP to acquire IP address for adapter "%ADAPTER_NAME%"...
 echo.
-netsh interface ip set address name=%ADAPTER% source=dhcp
+netsh interface ip set address name="%ADAPTER_NAME%" source=dhcp
 echo Using DHCP to acquire DNS servers...
-netsh interface ip set dns name=%ADAPTER% source=dhcp
+netsh interface ip set dns name="%ADAPTER_NAME%" source=dhcp
 ipconfig /renew
 goto done
 
@@ -259,10 +269,11 @@ echo   --------
 ipconfig /all > "%TEMP%\tempLANconfig.txt"
 findstr /R "IPv4 IPv6 Subnet DHCP Dhcp IP.A Default Ethernet DNS.Ser" <"%TEMP%\tempLANconfig.txt" >"%TEMP%\tempLANconfig2.txt"
 echo.
-type "%TEMP%\tempLANconfig2.txt"
+type "%TEMP%\temp_ethernet_adapter_config.txt"
 echo.
-del "%TEMP%\tempLANconfig.txt" /Q 2>nul
-del "%TEMP%\tempLANconfig2.txt" /Q 2>nul
+if exist "%TEMP%\temp_ethernet_adapter_config1.txt" del /f /q "%TEMP%\temp_ethernet_adapter_config1.txt" >nul
+if exist "%TEMP%\temp_ethernet_adapter_config.txt" del /f /q "%TEMP%\temp_ethernet_adapter_config.txt" >nul
+if exist "%TEMP%\tmpip.txt" del /f /q "%TEMP%\tmpip.txt" >nul
 pause
 goto end
 
@@ -272,6 +283,7 @@ echo.
 echo Canceled! Goodbye.
 
 :end
-del "%TEMP%\tempLANconfig.txt" /Q 2>nul
-del "%TEMP%\tempLANconfig2.txt" /Q 2>nul
+if exist "%TEMP%\temp_ethernet_adapter_config1.txt" del /f /q "%TEMP%\temp_ethernet_adapter_config1.txt" >nul
+if exist "%TEMP%\temp_ethernet_adapter_config.txt" del /f /q "%TEMP%\temp_ethernet_adapter_config.txt" >nul
+if exist "%TEMP%\tmpip.txt" del /f /q "%TEMP%\tmpip.txt" >nul
 ENDLOCAL
