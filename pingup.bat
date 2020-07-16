@@ -27,7 +27,7 @@ set DISPLAY_NAME=GoogleDNS
 set LOGPATH=%SystemDrive%\logs
 set LOGFILE=pingup_%DISPLAY_NAME%.log
 set PINGS_PER_CHECK=3
-set RECHECK_COOLDOWN_DELAY=10
+set RECHECK_COOLDOWN_DELAY=30
 
 :: make the log directory if it doesn't exist
 if not exist "%LOGPATH%" mkdir "%LOGPATH%" >nul
@@ -67,19 +67,19 @@ ping %HOST% -n %PINGS_PER_CHECK% | find /i "TTL" > nul
 if %ERRORLEVEL%==0 (
 	title UP: %HOST% 
 	color a0
-	echo %CUR_DATE% %TIME%   Host %HOST% ^(%DISPLAY_NAME%^) up.
-	echo %CUR_DATE% %TIME%   Host %HOST% ^(%DISPLAY_NAME%^) up. >>"%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   %DISPLAY_NAME% ^(%HOST%^) up.
+	echo %CUR_DATE% %TIME%   %DISPLAY_NAME% ^(%HOST%^) up. >>"%LOGPATH%\%LOGFILE%"
 ) ELSE (
 	REM Host is DOWN: Black text on red background 
 	title DWN: %HOST%
 	color c0
-	echo %CUR_DATE% %TIME% ! Host %HOST% ^(%DISPLAY_NAME%^) down.
-	echo %CUR_DATE% %TIME% ! Host %HOST% ^(%DISPLAY_NAME%^) down. >>"%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! %DISPLAY_NAME% ^(%HOST%^) down.
+	echo %CUR_DATE% %TIME% ! %DISPLAY_NAME% ^(%HOST%^) down. >>"%LOGPATH%\%LOGFILE%"
 )
 
 
 :: Cooldown until next check
-ping localhost -n 60 >NUL
+ping localhost -n %RECHECK_COOLDOWN_DELAY% >NUL
 goto start
 
 
