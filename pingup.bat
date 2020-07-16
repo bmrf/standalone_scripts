@@ -13,7 +13,7 @@
 ::::::::::
 @echo off
 set SCRIPT_VERSION=1.2.1
-set SCRIPT_UPDATED=2016-05-10
+set SCRIPT_UPDATED=2020-07-16
 cls
 call :set_cur_date
 
@@ -21,11 +21,16 @@ call :set_cur_date
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Set host to check here
-set HOST=DNS_OR_IP_TO_CHECK_HERE
-set DISPLAY_NAME="FRIENDLY DISPLAY NAME HERE (DOESN'T AFFECT SCRIPT FUNCTION)"
-set LOGFILE=C:\Logs\pingup_%DISPLAY_NAME%.log
-set PINGS_PER_CHECK=5
-set RECHECK_COOLDOWN_DELAY=60
+::set HOST=72.201.99.26
+set HOST=8.8.4.4
+set DISPLAY_NAME=GoogleDNS
+set LOGPATH=%SystemDrive%\logs
+set LOGFILE=C:\logs\pingup_%DISPLAY_NAME%.log
+set PINGS_PER_CHECK=3
+set RECHECK_COOLDOWN_DELAY=10
+
+:: make the log directory if it doesn't exist
+if not exist "%LOGPATH%\%LOGFILE%" mkdir "%LOGPATH%\%LOGFILE%" >nul
 
 
 :::::::::::::
@@ -33,19 +38,20 @@ set RECHECK_COOLDOWN_DELAY=60
 :::::::::::::
 echo %CUR_DATE% %TIME%   Initializng PINGUP monitoring script
 echo                          Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%'
-echo                          Monitoring:       %HOST% (%DISPLAY_NAME%)
+echo                          Monitoring:       %HOST% ^(%DISPLAY_NAME%^)
 echo                          Pings per check:  %PINGS_PER_CHECK%
 echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY%
 
-echo %CUR_DATE% %TIME%   Initializng PINGUP monitoring script>> %LOGFILE%
-echo                          Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%'>> %LOGFILE%
-echo                          Monitoring:       %HOST% (%DISPLAY_NAME%)>> %LOGFILE%
-echo                          Pings per check:  %PINGS_PER_CHECK%>> %LOGFILE%
-echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY%>> %LOGFILE%
-
+:: This block creates the log entries
+echo %CUR_DATE% %TIME%   Initializng PINGUP monitoring script"%LOGPATH%\%LOGFILE%"
+echo                          Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%'"%LOGPATH%\%LOGFILE%"
+echo                          Monitoring:       %HOST% (%DISPLAY_NAME%)"%LOGPATH%\%LOGFILE%"
+echo                          Pings per check:  %PINGS_PER_CHECK% "%LOGPATH%\%LOGFILE%"
+echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY% "%LOGPATH%\%LOGFILE%"
+ 
 echo.
 echo %CUR_DATE% %TIME%   Performing initial test...
-echo %CUR_DATE% %TIME%   Performing initial test...>> %LOGFILE%
+echo %CUR_DATE% %TIME%   Performing initial test..."%LOGPATH%\%LOGFILE%"
 echo.
 
 
@@ -62,13 +68,13 @@ if %ERRORLEVEL%==0 (
 	title UP: %HOST% 
 	color a0
 	echo %CUR_DATE% %TIME%   Host %HOST% ^(%DISPLAY_NAME%^) up.
-	echo %CUR_DATE% %TIME%   Host %HOST% ^(%DISPLAY_NAME%^) up.>> %LOGFILE%
+	echo %CUR_DATE% %TIME%   Host %HOST% ^(%DISPLAY_NAME%^) up."%LOGPATH%\%LOGFILE%"
 ) ELSE (
 	REM Host is DOWN: Black text on red background 
 	title DWN: %HOST%
 	color c0
 	echo %CUR_DATE% %TIME% ! Host %HOST% ^(%DISPLAY_NAME%^) down.
-	echo %CUR_DATE% %TIME% ! Host %HOST% ^(%DISPLAY_NAME%^) down.>> %LOGFILE%
+	echo %CUR_DATE% %TIME% ! Host %HOST% ^(%DISPLAY_NAME%^) down."%LOGPATH%\%LOGFILE%"
 )
 
 
