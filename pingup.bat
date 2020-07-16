@@ -37,19 +37,19 @@ if not exist "%LOGPATH%" mkdir "%LOGPATH%" >nul
 :: EXECUTE ::
 :::::::::::::
 echo %CUR_DATE% %TIME%   Initializng PINGUP monitoring script
-echo                         Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%'
-echo                         Monitoring:       %HOST% ^(%DISPLAY_NAME%^)
-echo                         Logging to:       %LOGPATH%\%LOGFILE%
-echo                         Pings per check:  %PINGS_PER_CHECK%
-echo                         Recheck cooldown: %RECHECK_COOLDOWN_DELAY%
+echo                          Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%'
+echo                          Monitoring:       %HOST% ^(%DISPLAY_NAME%^)
+echo                          Logging to:       %LOGPATH%\%LOGFILE%
+echo                          Pings per check:  %PINGS_PER_CHECK%
+echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY%
 
 :: This block creates the log entries
 echo %CUR_DATE% %TIME%   Initializng PINGUP monitoring script >> "%LOGPATH%\%LOGFILE%"
-echo                         Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%' >> "%LOGPATH%\%LOGFILE%"
-echo                         Monitoring:       %HOST% (%DISPLAY_NAME%) >> "%LOGPATH%\%LOGFILE%"
-echo                         Logging to:       %LOGPATH%\%LOGFILE% >> "%LOGPATH%\%LOGFILE%"
-echo                         Pings per check:  %PINGS_PER_CHECK%  >> "%LOGPATH%\%LOGFILE%"
-echo                         Recheck cooldown: %RECHECK_COOLDOWN_DELAY%  >> "%LOGPATH%\%LOGFILE%"
+echo                          Executing as %USERDOMAIN%\%USERNAME% on '%COMPUTERNAME%' >> "%LOGPATH%\%LOGFILE%"
+echo                          Monitoring:       %HOST% (%DISPLAY_NAME%) >> "%LOGPATH%\%LOGFILE%"
+echo                          Logging to:       %LOGPATH%\%LOGFILE% >> "%LOGPATH%\%LOGFILE%"
+echo                          Pings per check:  %PINGS_PER_CHECK%  >> "%LOGPATH%\%LOGFILE%"
+echo                          Recheck cooldown: %RECHECK_COOLDOWN_DELAY%  >> "%LOGPATH%\%LOGFILE%"
  
 echo.
 echo %CUR_DATE% %TIME%   Performing initial test...
