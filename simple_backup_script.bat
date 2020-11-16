@@ -14,6 +14,7 @@
 :: /XD " "		Exlude any directory containing this string [ "string" ]
 :: /COPY: DAT	Copy only Data (the file), attributes (read-only, etc), and Timestamps
 :: /NP			No progress (don't display progress)
+:: /MT:8		Use 8 threads to copy
 ::
 :: --findstr--
 :: /I			Search is NOT case-sensitive
@@ -28,7 +29,7 @@ pushd %~dp0
 set SOURCE=%1
 set DESTINATION=%2
 set SKIP_PURGE=no
-if %3==yes (set SKIP_PURGE=yes)
+if "%3"=="yes" (set SKIP_PURGE=yes)
 
 
 :: Log file
@@ -60,7 +61,7 @@ title Copying files...
 :: robocopy "%source%" "%destination%" /E /NP /PURGE /ZB /LOG:"%LOGPATH%\%LOGFILE%"
 
 if %SKIP_PURGE%==yes (
-	robocopy "%source%" "%destination%" /E /ZB /FFT
+	robocopy "%source%" "%destination%" /E /ZB /FFT /MT:8 /R:2 /W:5
 ) else (
-	robocopy "%source%" "%destination%" /E /PURGE /ZB /FFT
+	robocopy "%source%" "%destination%" /E /PURGE /ZB /FFT /MT:8 /R:2 /W:5
 )
