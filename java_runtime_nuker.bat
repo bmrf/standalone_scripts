@@ -6,28 +6,29 @@
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 ::                Latest version is always here: http://www.reddit.com/r/usefulscripts/comments/2hzt5c/batch_java_runtime_nuker_purge_all_versions_of/
 ::                additional thanks to: 
-::                 - /u/sdjason         : JRE reinstall functionality; selective process killing; et al
-::                 - /u/MrYiff          : bug fix related to OS_VERSION variable
-::                 - /u/cannibalkitteh  : additional registry & file cleaning locations
+::                 - u/sdjason         : JRE reinstall functionality; selective process killing; et al
+::                 - u/MrYiff          : bug fix related to OS_VERSION variable
+::                 - u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.7 + ADDITION:    Add commands to remove JRE 11
+:: Version:       1.8.8 * IMPROVEMENT: Add catchall command to JRE 8 section. Thanks to u/Tieta
+::                1.8.7 + ADDITION:    Add commands to remove JRE 11
 ::                      - REMOVAL:     Remove "re-install JRE after removal" functionality. It was buggy, and it makes more sense to have re-installation handled by a separate script or task
 ::                1.8.6 + ADDITION:    Add GUID for JRE 10.0.2
 ::                1.8.5 + ADDITION:    Add GUID for JRE 9.0.4
 ::                1.8.4 + ADDITION:    Add support for removal of JRE series 9
-::                1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries from the Windows system folders. Thanks to /u/Mikkehy
-::                1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
+::                1.8.3 * IMPROVEMENT: Add deletion of orphaned Java binaries from the Windows system folders. Thanks to u/Mikkehy
+::                1.8.2 * IMPROVEMENT: Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to u/flash44007
 ::                1.8.1 ! BUG FIX:     Fix crash error on unescaped "*" character
-::                1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to /u/GoogleDrummer
+::                1.8.0 ! BUG FIX:     Fix uncommon failure where JRE uninstallers fail because they can't find certain files. Thanks to u/GoogleDrummer
 ::                      * IMPROVEMENT: Import logging function used in Tron and convert all double "echo" statements to log calls
 ::                      * COMMENTS:    Minor comment cleanup
-::                1.7.2 * IMPROVEMENT: Add section to remove leftover symlinks in PATH folder to JRE exes. Thanks to /u/turnerf
-::                1.7.1 * IMPROVEMENT: Remove all /va flags. This had the effect of deleting key values but leaving keys intact, which could break re-installations that thought Java was still installed when in fact it was not. Big thanks to /u/RazorZero
-::                      * IMPROVEMENT: Reduce 10 JavaSoft registry key deletion commands to 2 by deleting entire JavaSoft key instead of individual subkeys. Thanks to /u/RazorZero
-::                1.7.0 * IMPROVEMENT: Target additional JRE8 GUID {26A24AE4-039D-4CA4-87B4-2F8__180__F0}. Thanks to /u/Caboose816
-::                1.6.9 * IMPROVEMENT: Add process "jp2launcher" to target for killing (or checking) before running. Thanks to /u/citricacidx
-::                1.6.8 ! BUG FIX:     Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to /u/placebonocebo
-::                1.6.7 * IMPROVEMENT: Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to /u/placebonocebo
+::                1.7.2 * IMPROVEMENT: Add section to remove leftover symlinks in PATH folder to JRE exes. Thanks to u/turnerf
+::                1.7.1 * IMPROVEMENT: Remove all /va flags. This had the effect of deleting key values but leaving keys intact, which could break re-installations that thought Java was still installed when in fact it was not. Big thanks to u/RazorZero
+::                      * IMPROVEMENT: Reduce 10 JavaSoft registry key deletion commands to 2 by deleting entire JavaSoft key instead of individual subkeys. Thanks to u/RazorZero
+::                1.7.0 * IMPROVEMENT: Target additional JRE8 GUID {26A24AE4-039D-4CA4-87B4-2F8__180__F0}. Thanks to u/Caboose816
+::                1.6.9 * IMPROVEMENT: Add process "jp2launcher" to target for killing (or checking) before running. Thanks to u/citricacidx
+::                1.6.8 ! BUG FIX:     Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to u/placebonocebo
+::                1.6.7 * IMPROVEMENT: Delete %ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\ if it exists. Thanks to u/placebonocebo
 ::                <outdated changelog comments removed>
 ::                1.0.0   Initial write
 SETLOCAL
@@ -69,8 +70,8 @@ set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.8.7
-set SCRIPT_UPDATED=2020-01-30
+set SCRIPT_VERSION=1.8.8
+set SCRIPT_UPDATED=2020-12-03
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -182,7 +183,7 @@ if %FORCE_CLOSE_PROCESSES%==no (
 :: PRE-DELETE ::
 ::::::::::::::::
 :: Sometimes the JRE uninstallers will fail if they can't find some files; deleting the reg keys seems to resolve it
-:: Thanks to /u/GoogleDrummer for this section
+:: Thanks to u/GoogleDrummer for this section
 regedit /e "%TEMP%\dump.txt" HKEY_CLASSES_ROOT\Installer\Products
 find "HKEY_CLASSES_ROOT\Installer\Products\4EA42A62" "%TEMP%\dump.txt" > "%TEMP%\keys_to_delete.txt"
 for /f "delims=[]" %%i in (%TEMP%\keys_to_delete.txt) do reg delete "%%i" /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -228,6 +229,7 @@ call :log "%CUR_DATE% %TIME%   JRE 8..."
 :: This line catches any version above 99 since it's three characters instead of two. Oracle also dropped the "8" from
 :: the last part of the GUID, so instead of "2F8__" it's now "2F__", presumably to make room for the 3rd digit on the right
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "name like 'Java 8%%'" uninstall /nointeractive
 
 :: JRE 7
 call :log "%CUR_DATE% %TIME%   JRE 7..."
