@@ -13,10 +13,10 @@
 #############
 
 # OU containing desktops to target
-$DesktopOU = "OU=MB,OU=Desktops,DC=com"
+$DesktopOU = "OU=MB,OU=Desktops,OU=DPTMS,OU=IMCOM,OU=Bliss,OU=Installations,DC=nasw,DC=ds,DC=army,DC=mil"
 
 # OU containing laptops to target
-$LaptopOU = "OU=MB,OU=Laptops,DC=com"
+$LaptopOU = "OU=MB,OU=Laptops,OU=DPTMS,OU=IMCOM,OU=Bliss,OU=Installations,DC=nasw,DC=ds,DC=army,DC=mil"
 
 # Message to send
 #$message = "Please save your work and restart your computer ASAP. Thanks, S-6."
@@ -81,12 +81,12 @@ pause
 
 
 # Loop through and send the message (Desktop OU)
-log "   Sending to Desktop OU..." green
+log "   Sending to hosts in the Desktop OU..." green
 
 foreach ( $computer in $DesktopList ) {
 
     # Check to see if the system is online before sending
-    if (test-Connection -count 1 -cn $computer -quiet) {
+    if (test-Connection -count 1 -Cn $computer -quiet) {
 
         # Using Psexec to connect
         # & $psexec \\$computer -i msg * "$MessageToSend"
@@ -106,11 +106,11 @@ log "   Done." darkgreen
 
 
 # Loop through and send the message (Laptop OU)
-log "   Sending to Laptop OU..." green
+log "   Sending to hosts in the Laptop OU..." green
 
 foreach ( $computer in $LaptopList ) {
     # Check to see if the system is online before sending
-    if (test-Connection -count -cn $computer -quiet) {
+    if (test-Connection -count 1 -Cn $computer -quiet) {
 
         # Using Psexec to connect
         # & $psexec \\$computer -i msg * "$MessageToSend"
