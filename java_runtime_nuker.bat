@@ -11,6 +11,7 @@
 ::                 - u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
 :: Version:       1.8.8 * IMPROVEMENT: Add catchall command to JRE 8 section. Thanks to u/Tieta
+::                      * IMPROVEMENT: Add removal of "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath", thanks to u/Tieta
 ::                1.8.7 + ADDITION:    Add commands to remove JRE 11
 ::                      - REMOVAL:     Remove "re-install JRE after removal" functionality. It was buggy, and it makes more sense to have re-installation handled by a separate script or task
 ::                1.8.6 + ADDITION:    Add GUID for JRE 10.0.2
@@ -71,7 +72,7 @@ set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 :::::::::::::::::::::
 @echo off && cls
 set SCRIPT_VERSION=1.8.8
-set SCRIPT_UPDATED=2020-12-03
+set SCRIPT_UPDATED=2020-12-10
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -448,6 +449,7 @@ call :log "%CUR_DATE% %TIME%   Searching for and purging other Java Runtime-rela
 del /F /Q %SystemDrive%\1033.mst >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /S /Q "%SystemDrive%\J2SE Runtime Environment*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /S /Q "%SystemDrive%\Documents and Settings\All Users\Application Data\Oracle\Java\javapath\*.exe" 2>NUL
+if exist "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath" rmdir /s /q "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath"
 if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\" rmdir /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\"
 echo.
 
