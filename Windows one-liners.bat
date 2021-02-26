@@ -1,6 +1,6 @@
 :: One liner commands for windows / cheat sheet
-:: v1.1.3
-:: 2020-07-16
+:: v1.1.4
+:: 2021-02-26
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -353,5 +353,11 @@ invoke-command -session $InteractiveSession {Get-Process | select-object name,VM
 
 # POWERSHELL: Get installed version of Powershell:
 $PSVersionTable.PSVersion
+
+# POWERSHELL: Manually expire an Active Directory account
+# Bind to user in AD, expire password immediately, then save change in AD
+$User = [ADSI]"LDAP://cn=Jim Smith,ou=West,dc=domain,dc=com"
+$User.pdwLastSet = 0
+$User.SetInfo()
 
 :eof
