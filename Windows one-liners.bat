@@ -1,6 +1,6 @@
 :: One liner commands for windows / cheat sheet
-:: v1.1.4
-:: 2021-02-26
+:: v1.1.5
+:: 2021-05-10
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -114,6 +114,12 @@ wmic partition list full
 
 :: BATCH: BIOS info
 wmic bios list full
+
+:: BATCH: Get system model number
+wmic csproduct get name
+
+:: BATCH: Get system serial number
+wmic product get serialnumber
 
 :: BATCH: Get hard drive physical serial numbers (first option gives serial number printed on the hard drive case). Last one gets it from a remote system
 wmic path win32_physicalmedia get SerialNumber
