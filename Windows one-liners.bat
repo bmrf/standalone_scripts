@@ -1,6 +1,6 @@
 :: One liner commands for windows / cheat sheet
-:: v1.1.5
-:: 2021-05-10
+:: v1.1.6
+:: 2021-07-21
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -335,6 +335,9 @@ Get-ChildItem 'C:\search\directory\' -recurse -include *.mp3 | select-object ful
 
 # POWERSHELL: List all installed Microsoft hotfixes/patches
 Get-HotFix | select-object hotfixid,installedon | sort installedon
+
+# POWERSHELL: List all installed 3rd party (non-Microsoft) programs, sorted by installation date
+Get-WMIObject -Query "SELECT * FROM Win32_Product Where Not Vendor Like '%Microsoft%'" | Select-Object Name,Version,Vendor,InstallDate | sort -property InstallDate -descending | format-table -autosize
 
 # POWERSHELL: Start an interactive PowerShell session on the remote computer myserver:
 Enter-PsSession myserver
