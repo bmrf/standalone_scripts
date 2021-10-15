@@ -125,7 +125,7 @@ param (
 
 	# Master copy of Tron. Directory path, not file path. This directory
 	# should contain \resources and \integrity_verification subfolders
-	# Cygwin format version is required for mktorrent.exe
+	# Cygwin path format is required for mktorrent.exe
 	[string]$MasterCopy = "r:\utilities\security\cleanup-repair\tron",          # e.g. "r:\utilities\security\cleanup-repair\tron"
 	[string]$MasterCopyCygwinFormat = "/cygdrive/r/utilities/security/cleanup-repair/tron/tron",  # e.g. "/cygdrive/r/utilities/security/cleanup-repair/tron/tron"
 
@@ -158,13 +158,13 @@ param (
 
 	# FTP information for where we'll upload the final sha256sums.txt and "Tron vX.Y.Z (yyyy-mm-dd).exe" file to
 	[string]$Repo_FTP_Host = "bmrf.org",                                        # e.g. "bmrf.org"
-	[string]$Repo_FTP_Username = "xxx",
-	[string]$Repo_FTP_Password = "xxx",
+	[string]$Repo_FTP_Username = "bmrforg",
+	[string]$Repo_FTP_Password = "7Ek78m4Hnt",
 	[string]$Repo_FTP_DepositPath = "/public_html/repos/tron/",                 # e.g. "/public_html/repos/tron/"
 
 	# PGP key authentication information
-	[string]$gpgUsername = "xxx",
-	[string]$gpgPassphrase = "xxx"
+	[string]$gpgUsername = "vocatus.gate",
+	[string]$gpgPassphrase = "blue9"
 )
 
 
@@ -328,7 +328,7 @@ log "   Clearing RELEASE targets on local seed server..." green
 	remove-item $SeedServer\$SeedFolderST\tron\* -force -recurse -ea SilentlyContinue | out-null
 	remove-item $SeedServer\$SeedFolderST\integrity_verification\*txt* -force -recurse -ea SilentlyContinue | out-null
 log "   Done" darkgreen
-pause
+
 
 # JOB: Calculate hashes of every single file in the \tron directory structure
 log "   Calculating individual hashes of all included files, please wait..." green
@@ -370,7 +370,7 @@ if ($? -eq "True") {
 
 # JOB: Create .torrent file for the release
 log "   Generating .torrent file and saving to $TorrentSaveLocationCygwinFormat..." green
-	& $mktorrent -n "Tron v$NewVersion ($CUR_DATE)" -c "Instructions and support at https://www.reddit.com/r/TronScript" -a $TorrentTracker1,$TorrentTracker2,$TorrentTracker3,$TorrentTracker4,$TorrentTracker5,$TorrentTracker6,$TorrentTracker7 -o "$TorrentSaveLocationCygwinFormat/Tron v$NewVersion ($CUR_DATE).torrent" $MasterCopyCygwinFormat
+	& $mktorrent -n "Tron v$NewVersion ($CUR_DATE)" -c "Instructions and support at https://old.reddit.com/r/TronScript" -a $TorrentTracker1,$TorrentTracker2,$TorrentTracker3,$TorrentTracker4,$TorrentTracker5,$TorrentTracker6,$TorrentTracker7 -o "$TorrentSaveLocationCygwinFormat/Tron v$NewVersion ($CUR_DATE).torrent" $MasterCopyCygwinFormat
 if ($? -eq "True") { log "   Done" darkgreen } else { log " ! There was a problem creating the .torrent" red }
 
 
