@@ -1,4 +1,4 @@
-:: These are GUIDs Tron explicitly ignores and will not remove under any circumstances
+:: List of GUIDs Tron ignores and will not try to remove. Used by the OEM ingestion script to weed out entries we don't care about.
 
 {00000000-0000-0100-0000-0CE90DA3512B} Microsoft Dynamics NAV 2017 RoleTailored Client 10.0.14199.0
 {00000000-0000-0100-A577-0000836BD2D2} Microsoft Dynamics NAV Setup 10.0.14199.0
