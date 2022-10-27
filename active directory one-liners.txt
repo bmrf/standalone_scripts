@@ -1,25 +1,17 @@
-# FSMO Roles
-ntdsutilroles Connections "Connect to server %logonserver%" Quit "selectOperation Target" "List roles for conn server" Quit Quit Quit
-[JDH: This is really a series of steps, not a single command
-expression]
-
-# Domain Controllers
+# List all Domain Controllers
 Nltest /dclist:%userdnsdomain%
 
-# Domain Controller IP Configuration
-for /f %i in (‘dsquery server -domain %userdnsdomain% -o rdn’) do psexec \\%i ipconfig /all
-
-# Stale computer accounts
+# List stale computer accounts
 dsquery computer domainroot -stalepwd 180 -limit 0
 
-# Stale user accounts
+# List stale user accounts
 dsquery user domainroot -stalepwd 180 -limit 0
 
-# Disabled user accounts
+# List disabled user accounts
 dsquery user domainroot -disabled -limit 0
 
 # AD Database disk usage
-for /f %i in (‘dsquery server -domain %userdnsdomain% -o rdn’) do dir \\%i\admin$\ntds
+for /f %i in ("dsquery server -domain %userdnsdomain% -o rdn") do dir \\%i\admin$\ntds
 
 # Global Catalog Servers from DNS
 dnscmd %logonserver% /enumrecords %userdnsdomain% _tcp | find /i "3268"
@@ -40,7 +32,7 @@ dsquery * domainroot -filter"(&(objectCategory=Person)(objectClass=User)(userAcc
 dsquery * domainroot -filter "(&(objectCategory=Person)(objectClass=User)(userAccountControl:1.2.840.113556.1.4.803:=2))"
 
 # DNS Information
-for /f %i in (‘dsquery server -domain %userdnsdomain% -o rdn’) do dnscmd %i /info
+for /f %i in ("dsquery server -domain %userdnsdomain% -o rdn") do dnscmd %i /info
 
 # DNS Zone Detailed information
 dnscmd /zoneinfo %userdnsdomain%
@@ -48,10 +40,10 @@ dnscmd /zoneinfo %userdnsdomain%
 # Garbage Collection and tombstone
 dsquery * "cn=Directory Service,cn=WindowsNT,cn=Services,cn=Configuration,DC=forestRootDomain" -attrgarbageCollPeriod tombstoneLifetime
 
-# Netsh authorised DHCP Servers
+# List authorised DHCP Servers
 netsh dhcp show server
 
-# DSQuery authorised DHCP Servers
+# DSQuery version of list authorised DHCP Servers
 Dsquery * "cn=NetServices,cn=Services,cn=Configuration, DC=forestRootDomain" -attr dhcpServers
 
 # DHCP server information
@@ -60,7 +52,7 @@ netsh dhcp server \\DHCP_SERVER show all
 # DHCP server dump
 netsh dhcp server \\DHCP_SERVER dump
 
-# WINS serer information
+# WINS server information
 Netsh wins server \\WINS_SERVER dump
 
 # Group Policy Verification Tool
@@ -73,28 +65,33 @@ dsquery computer -limit 0
 dsquery user -limit 0
 
 # List Service Principal Names
-for /f %i in (‘dsquery server -domain %userdnsdomain% -o rdn’) do setspn -L %i
+for /f %i in ("dsquery server -domain %userdnsdomain% -o rdn") do setspn -L %i
 
-# Compare DC Replica Object Count
-dsastat ?s:DC1;DC2;… ?b:Domain ?gcattrs:objectclass ?p:999
+# List Domain Controller IP Configuration (requires psexec.exe from Sysinternals/Microsoft)
+for /f %i in ("dsquery server -domain %userdnsdomain% -o rdn") do psexec \\%i ipconfig /all
+
+# List DC FSMO Roles
+ntdsutilroles Connections "Connect to server %logonserver%" Quit "selectOperation Target" "List roles for conn server" Quit Quit Quit
+[JDH: This is really a series of steps, not a single command
+expression]
 
 # Check AD ACLs
 acldiag dc=domainTree
 
 # NTFRS Replica Sets
-for /f %i in (‘dsquery server -domain %userdnsdomain% -o rdn’) do ntfrsutl sets %i
+for /f %i in ("dsquery server -domain %userdnsdomain% -o rdn") do ntfrsutl sets %i
 
 # NTFRS DS View
-for /f %i in (‘dsquery server -domain %userdnsdomain% -o rdn’) do ntfrsutl ds %i
+for /f %i in ("dsquery server -domain %userdnsdomain% -o rdn") do ntfrsutl ds %i
 
 # Domain Controllers per site
 Dsquery * "CN=Sites,CN=Configuration,DC=forestRootDomain" -filter (objectCategory=Server)
 
 # DNS Zones in AD
-for /f %i in (‘dsquery server -o rdn’) do Dsquery * -s %i domainroot -filter (objectCategory=dnsZone)
+for /f %i in ("dsquery server -o rdn") do Dsquery * -s %i domainroot -filter (objectCategory=dnsZone)
 
 # Enumerate DNS Server Zones
-for /f %i in (‘dsquery server -o rdn’) do dnscmd %i /enumzones
+for /f %i in ("dsquery server -o rdn") do dnscmd %i /enumzones
 
 # Subnet information
 Dsquery subnet ?limit 0
@@ -103,7 +100,7 @@ Dsquery subnet ?limit 0
 Dsquery OU
 
 # ACL on all OUs
-For /f "delims=|" %i in (‘dsquery OU’) do acldiag %i
+For /f "delims=|" %i in ("dsquery OU") do acldiag %i
 
 # Domain Trusts
 nltest /domain_trusts /v
@@ -111,17 +108,17 @@ nltest /domain_trusts /v
 # Print DNS Zones
 dnscmd DNSServer /zoneprint DNSZone
 
-# Active DHCP leases
-For /f %i in (DHCPServers.txt) do for /f "delims=- " %j in (‘"netshdhcp server \\%i show scope | find /i "active""’) do netsh dhcp server\\%i scope %j show clientsv5
+# List active DHCP leases against a list of DHCP servers specified in DHCPServers.txt
+For /f %i in (DHCPServers.txt) do for /f "delims=- " %j in (""netshdhcp server \\%i show scope | find /i "active""") do netsh dhcp server\\%i scope %j show clientsv5
 
 # DHCP Server Active Scope Info
 For /f %i in (DHCPServers.txt) do netsh dhcp server \\%i show scope | find /i "active"
 
 # Resolve DHCP clients hostnames
-for /f "tokens=1,2,3 delims=," %i in (Output from ‘Find Subnets fromDHCP clients’) do @for /f "tokens=2 delims=: " %m in (‘"nslookup %j |find /i "Name:""’) do echo %m,%j,%k,%i
+for /f "tokens=1,2,3 delims=," %i in (Output from "Find Subnets fromDHCP clients") do @for /f "tokens=2 delims=: " %m in (""nslookup %j |find /i "Name:""") do echo %m,%j,%k,%i
 
 # Find two online PCs per subnet
-Echo. > TwoClientsPerSubnet.txt & for /f "tokens=1,2,3,4delims=, " %i in (‘"find /i "pc" ‘Output from Resolve DHCP clientshostnames’"’) do for /f "tokens=3 skip=1 delims=: " %m in (‘"Find /i /c"%l" TwoClientsPerSubnet.txt"’) do If %m LEQ 1 for /f %p in (‘"ping -n1 %i | find /i /c "(0% loss""’) do If %p==1 Echo %i,%j,%k,%l
+Echo. > TwoClientsPerSubnet.txt & for /f "tokens=1,2,3,4delims=, " %i in (""find /i "pc" "Output from Resolve DHCP clientshostnames""") do for /f "tokens=3 skip=1 delims=: " %m in (""Find /i /c"%l" TwoClientsPerSubnet.txt"") do If %m LEQ 1 for /f %p in (""ping -n1 %i | find /i /c "(0% loss""") do If %p==1 Echo %i,%j,%k,%l
 
 # AD Subnet and Site Information
 dsquery * "CN=Subnets,CN=Sites,CN=Configuration,DC=forestRootDomain" -attr cn siteObject description location
@@ -138,13 +135,10 @@ dsget group "groupDN" -members | dsget user -samid -fn -mi -ln -display -empid -
 # Total DHCP Scopes
 find /i "subnet" "Output from DHCP server information" | find /i "subnet"
 
-# Site Links and Cost
+# List domain site Links and Cost
 dsquery * "CN=Sites,CN=Configuration,DC=forestRootDomain" -attr cn costdescription replInterval siteList -filter (objectClass=siteLink)
 
-# Time gpresult
-timethis gpresult /v
-
-# Check time against Domain
+# Check local system time against Domain time
 w32tm /monitor /computers:ForestRootPDC
 
 # Domain Controller Diagnostics
@@ -189,23 +183,23 @@ dsquery * forestRoot -filter (objectCategory=nTDSConnection) ?attr distinguished
 # Find all connection schedules
 adfind -b "cn=Configuration,dc=qraps,dc=com,dc=au" -f "objectcategory=ntdsConnection" cn Schedule -csv
 
-# Software Information for each server
-for /f %i in (Output from ‘Domain Controllers’) do psinfo \\%i &filever \\%i\admin$\explorer.exe \\%i\admin$\system32\vbscript.dll\\%i\admin$\system32\kernel32.dll \\%i\admin$\system32\wbem\winmgmt.exe\\%i\admin$\system32\oleaut32.dll
+# Software Information for each server, requires psinfo from Microsoft/Sysinternals
+for /f %i in (Output from "Domain Controllers") do psinfo \\%i &filever \\%i\admin$\explorer.exe \\%i\admin$\system32\vbscript.dll\\%i\admin$\system32\kernel32.dll \\%i\admin$\system32\wbem\winmgmt.exe\\%i\admin$\system32\oleaut32.dll
 
 # Check Terminal Services Delete Temp on Exit flag
-For /f %i in (Output from ‘Domain Controllers’) do Reg query"\\%i\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TerminalServer" /v DeleteTempDirsOnExit
+For /f %i in (Output from "Domain Controllers") do Reg query"\\%i\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TerminalServer" /v DeleteTempDirsOnExit
 
 # For each XP workstation, query the current site and what Group Policy info
-@dsquery * domainroot -filter"(&(objectCategory=Computer)(operatingSystem=Windows XPProfessional))" -limit 0 -attr cn > Workstations.txt & @For /f%i in (Workstations.txt) do @ping %i -n 1 >NUL & @if ErrorLevel0 If NOT ErrorLevel 1 @Echo %i & for /f "tokens=3" %k in (‘"regquery "\\%i\hklm\software\microsoft\windows\currentversion\grouppolicy\history" /v DCName | Find /i "DCName""’) do @for /f %m in(‘"nltest /server:%i /dsgetsite | find /i /v "completedsuccessfully""’) do @echo %i,%k,%m
+@dsquery * domainroot -filter"(&(objectCategory=Computer)(operatingSystem=Windows XPProfessional))" -limit 0 -attr cn > Workstations.txt & @For /f%i in (Workstations.txt) do @ping %i -n 1 >NUL & @if ErrorLevel0 If NOT ErrorLevel 1 @Echo %i & for /f "tokens=3" %k in (""regquery "\\%i\hklm\software\microsoft\windows\currentversion\grouppolicy\history" /v DCName | Find /i "DCName""") do @for /f %m in(""nltest /server:%i /dsgetsite | find /i /v "completedsuccessfully""") do @echo %i,%k,%m
 
 # Information on existing GPOs
 dsquery * "CN=Policies,CN=System,domainRoot" -filter"(objectCategory=groupPolicyContainer)" -attr displayName cnwhenCreated gPCFileSysPath
 
 # Copy all Group Policy .pol files
-for /f "tokens=1-8 delims=\" %i in (‘dir /b /s\\%userdnsdomain%\sysvol\%userdnsdomain%\policies\*.pol’) do @echo copy\\%i\%j\%k\%l\%m\%n\%o %m_%n.pol
+for /f "tokens=1-8 delims=\" %i in ("dir /b /s\\%userdnsdomain%\sysvol\%userdnsdomain%\policies\*.pol") do @echo copy\\%i\%j\%k\%l\%m\%n\%o %m_%n.pol
 
 # Domain Controller Netlogon entries
-for /f %i in (‘dsquery server /o rdn’) do echo %i & reg query\\%i\hklm\system\currentcontrolset\services\netlogon\parameters
+for /f %i in ("dsquery server /o rdn") do echo %i & reg query\\%i\hklm\system\currentcontrolset\services\netlogon\parameters
 
 # WINS Statistics
 for /f "tokens=1,2 delims=," %i in (WINSServers.txt) do netsh wins server \\%i show statistics
@@ -254,7 +248,7 @@ dsquery * cn=partitions,cn=configuration,dc=%domain% -filter"(|(systemFlags=3)(s
 Name dnsroot ntmixeddomain NetBIOSName
 
 # Find the parent of a process
-wmic path Win32_Process WHERE Name=’notepad.exe’ GET Name,ParentProcessId
+wmic path Win32_Process WHERE Name="notepad.exe" GET Name,ParentProcessId
 
 # Lookup SRV records from DNS
 nslookup -type=srv _ldap._tcp.dc._msdcs.{domainRoot}
@@ -266,10 +260,10 @@ dsquery * cn=configuration,DC=forestRootDomain -attr whencreated -scope base
 dsquery * "CN=System,DC=domainRoot" -filter "(objectClass=trustedDomain)" -attr trustPartner flatName
 
 # Find a DC for each trusted domain
-for /f "skip=1" %i in (‘"dsquery * CN=System,DC=domainRoot -filter(objectClass=trustedDomain) -attr trustPartner"’) do nltest /dsgetdc:%i
+for /f "skip=1" %i in (""dsquery * CN=System,DC=domainRoot -filter(objectClass=trustedDomain) -attr trustPartner"") do nltest /dsgetdc:%i
 
 # Check the notification packages installed on all DCs
-for /f %i in (‘dsquery server /o rdn’) do @for /f "tokens=4" %m in(‘"reg query\\%i\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa /v"Notification Packages" | find /i "Notification""’) do @echo %i,%m
+for /f %i in ("dsquery server /o rdn") do @for /f "tokens=4" %m in(""reg query\\%i\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa /v"Notification Packages" | find /i "Notification""") do @echo %i,%m
 
 # List ACLs in SDDL format
 setacl -on %filepath% -ot file -actn list -lst f:sddl
