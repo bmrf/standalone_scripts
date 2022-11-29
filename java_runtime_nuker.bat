@@ -10,7 +10,8 @@
 ::                 - u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.8.8 * IMPROVEMENT: Add catchall command to JRE 8 section. Thanks to u/Tieta
+:: Version:       1.8.9 ! BUG FIX:     Fix "C:\Program Files (x86)\Java" not getting removed. Thanks to github:stacked01
+::                1.8.8 * IMPROVEMENT: Add catchall command to JRE 8 section. Thanks to u/Tieta
 ::                      * IMPROVEMENT: Add removal of "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath", thanks to u/Tieta
 ::                1.8.7 + ADDITION:    Add commands to remove JRE 11
 ::                      - REMOVAL:     Remove "re-install JRE after removal" functionality. It was buggy, and it makes more sense to have re-installation handled by a separate script or task
@@ -71,8 +72,8 @@ set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.8.8
-set SCRIPT_UPDATED=2020-12-10
+set SCRIPT_VERSION=1.8.9
+set SCRIPT_UPDATED=2022-11-29
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -411,6 +412,7 @@ if exist "%ProgramFiles(x86)%" (
 	for /D /R "%ProgramFiles(x86)%\Java\" %%x in (j2re*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 	for /D /R "%ProgramFiles(x86)%\Java\" %%x in (jre*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 	if exist "%ProgramFiles(x86)%\JavaSoft\JRE" rmdir /S /Q "%ProgramFiles(x86)%\JavaSoft\JRE" >> "%LOGPATH%\%LOGFILE%"
+	if exist "%ProgramFiles(x86)%\Java" rmdir /S /Q "%ProgramFiles(x86)%\Java" >> "%LOGPATH%\%LOGFILE%"
 	)
 
 :: Nuke 64-bit Java installation directories
@@ -418,6 +420,7 @@ call :log "%CUR_DATE% %TIME%   Removing '%ProgramFiles%\Java\jre*' directories..
 for /D /R "%ProgramFiles%\Java\" %%x in (j2re*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 for /D /R "%ProgramFiles%\Java\" %%x in (jre*) do if exist "%%x" rmdir /S /Q "%%x">> "%LOGPATH%\%LOGFILE%"
 if exist "%ProgramFiles%\JavaSoft\JRE" rmdir /S /Q "%ProgramFiles%\JavaSoft\JRE" >> "%LOGPATH%\%LOGFILE%"
+if exist "%ProgramFiles%\Java" rmdir /S /Q "%ProgramFiles%\Java" >> "%LOGPATH%\%LOGFILE%"
 
 :: Nuke the Java Update directory (normally contains jaureg.exe, jucheck.exe, and jusched.exe)
 rmdir /S /Q "%CommonProgramFiles%\Java\Java Update\">> "%LOGPATH%\%LOGFILE%" 2>NUL
