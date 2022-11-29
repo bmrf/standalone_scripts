@@ -103,6 +103,7 @@ echo  JAVA RUNTIME NUKER
 echo  v%SCRIPT_VERSION%, updated %SCRIPT_UPDATED%
 if %OS_VERSION%==XP echo. && call :log "%CUR_DATE% %TIME%  ! Windows XP detected, using alternate command set to compensate."
 echo.
+call :log "%CUR_DATE% %TIME%   Java Runtime Nuker v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)"
 call :log "%CUR_DATE% %TIME%   Beginning removal of Java Runtime Environments (series 3-11, x86 and x64) and JavaFX..."
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
