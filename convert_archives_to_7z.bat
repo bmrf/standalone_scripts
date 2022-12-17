@@ -75,7 +75,6 @@ call :log "%CUR_DATE% %TIME%   Conversion complete."
 echo.
 
 
-pause
 :::::::::::::::
 :: FUNCTIONS ::
 :::::::::::::::
