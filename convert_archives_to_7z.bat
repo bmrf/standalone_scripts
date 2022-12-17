@@ -4,10 +4,11 @@
 :: Author:        vocatus.gate@gmail.com // github.com/bmrf // reddit.com/user/vocatus // PGP: 0x07d1490f82a211a2
 :: Usage:         1. Place this file in the top-level directory containing the files you want to convert
 ::                2. Run this file (preferably with Administrator rights, although it's not strictly necessary)
-:: History:       1.0.2 + Add logging
+:: History:       1.0.3 + Add multithreading and compression level 9 (highest)
+::                1.0.2 + Add logging
 ::                1.0.1 + Add recursion
 ::                1.0.0 + Initial write
-@echo off
+::@echo off
 
 
 :::::::::::::::
@@ -22,8 +23,8 @@ set LOGFILE=%COMPUTERNAME%_convert_archives_to_7z.log
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set SCRIPT_VERSION=1.0.2
-set SCRIPT_UPDATED=2022-12-16
+set SCRIPT_VERSION=1.0.3
+set SCRIPT_UPDATED=2022-12-17
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -64,7 +65,7 @@ for /r %%f in (%FILETYPES%) do (
     call :log "%CUR_DATE% %TIME%    %%f..."
     "%SEVENZIP%" x -y -o"%%f_tmp" "%%f" * >> %LOGPATH%\%LOGFILE% 2>&1
     pushd %%f_tmp
-    "%SEVENZIP%" a -y -r -t7z ..\"%%~nf".7z *  >> %LOGPATH%\%LOGFILE% 2>&1
+    "%SEVENZIP%" a -y -r -mmt4 -mx9 -t7z ..\"%%~nf".7z *  >> %LOGPATH%\%LOGFILE% 2>&1
     popd
     rmdir /s /q "%%f_tmp" >> %LOGPATH%\%LOGFILE% 2>&1
     del /f /q "%%f" >> %LOGPATH%\%LOGFILE% 2>&1
@@ -74,7 +75,7 @@ call :log "%CUR_DATE% %TIME%   Conversion complete."
 echo.
 
 
-
+pause
 :::::::::::::::
 :: FUNCTIONS ::
 :::::::::::::::
