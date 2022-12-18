@@ -4,11 +4,13 @@
 :: Author:        vocatus.gate@gmail.com // github.com/bmrf // reddit.com/user/vocatus // PGP: 0x07d1490f82a211a2
 :: Usage:         1. Place this file in the top-level directory containing the files you want to convert
 ::                2. Run this file (preferably with Administrator rights, although it's not strictly necessary)
-:: History:       1.0.3 + Add multithreading and compression level 9 (highest)
+:: History:       1.0.4 + Add rudimentary conversion verification, to avoid removing source file if conversion failed. Thanks to u/CompWizrd
+::                      + Add creation of log directory if it doesn't exist. Thanks to u/jimicus
+::                1.0.3 + Add multithreading and compression level 9 (highest)
 ::                1.0.2 + Add logging
 ::                1.0.1 + Add recursion
 ::                1.0.0 + Initial write
-::@echo off
+@echo off
 
 
 :::::::::::::::
@@ -23,11 +25,13 @@ set LOGFILE=%COMPUTERNAME%_convert_archives_to_7z.log
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set SCRIPT_VERSION=1.0.3
-set SCRIPT_UPDATED=2022-12-17
+set SCRIPT_VERSION=1.0.4
+set SCRIPT_UPDATED=2022-12-18
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
-FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+for /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') do set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+:: Create the log directory if it doesn't exist
+if not exist %LOGPATH% mkdir %LOGPATH%
 
 
 :::::::::::::
@@ -61,18 +65,39 @@ echo.
 call :log "%CUR_DATE% %TIME%   Converting files..."
 
 :: For each file, extract it to a temp folder, re-pack it, and delete the original file
-for /r %%f in (%FILETYPES%) do ( 
-    call :log "%CUR_DATE% %TIME%    %%f..."
-    "%SEVENZIP%" x -y -o"%%f_tmp" "%%f" * >> %LOGPATH%\%LOGFILE% 2>&1
-    pushd %%f_tmp
-    "%SEVENZIP%" a -y -r -mmt4 -mx9 -t7z ..\"%%~nf".7z *  >> %LOGPATH%\%LOGFILE% 2>&1
+setlocal enabledelayedexpansion
+for /r %%f in (%FILETYPES%) do (
+
+	:: Build some easier to read variables
+	set FILE=%%f
+	set FILE_NO_EXT=%%~nf
+	set FILE_PATH=%%~dpf
+	set NEW_FILE=!FILE_NO_EXT!.7z
+	set UNPACK_DIR=!FILE_PATH!!FILE_NO_EXT!_tmp
+
+	:: Do the conversion
+	call :log "%CUR_DATE% %TIME%    !FILE!..."
+	"%SEVENZIP%" x -y -o"!UNPACK_DIR!" "!FILE!" * >> %LOGPATH%\%LOGFILE% 2>&1
+	pushd "!UNPACK_DIR!"
+    "%SEVENZIP%" a -y -r -mmt4 -mx9 -t7z ..\"!NEW_FILE!" *  >> %LOGPATH%\%LOGFILE% 2>&1
+
+	:: Make sure we were able to create the .7z archive before deleting the original file
+	if exist ..\"!NEW_FILE!" (
+		del /f /q "!FILE!" >> %LOGPATH%\%LOGFILE% 2>&1
+	) else (
+		call :log "%CUR_DATE% %TIME% ^^^!  Conversion verification of '!FILE!' failed, original not removed."
+	)
     popd
-    rmdir /s /q "%%f_tmp" >> %LOGPATH%\%LOGFILE% 2>&1
-    del /f /q "%%f" >> %LOGPATH%\%LOGFILE% 2>&1
+
+	:: Cleanup unpack directory
+    rmdir /s /q "!UNPACK_DIR!" >> %LOGPATH%\%LOGFILE% 2>&1
 )
+endlocal
 
 call :log "%CUR_DATE% %TIME%   Conversion complete."
 echo.
+
+
 
 
 :::::::::::::::
