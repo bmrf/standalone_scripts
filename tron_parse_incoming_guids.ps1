@@ -4,7 +4,8 @@
  Requirements: Specify path to master GUID file, incoming file to check against, and output file
  Author:       reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
  History:      1.0.3 * Simply whitespace removal block, use regex instead of multiple repetitive statements
- ::            1.0.2 + Add extraction of common entries ("CCC", "Microsoft" etc) into separate files for easy review
+                     + Add extraction of "Intel" entries into separate file
+               1.0.2 + Add extraction of common entries ("CCC", "Microsoft" etc) into separate files for easy review
                1.0.1 + Add auto compilation and cleanup of incoming GUID lists
                1.0.0   Initial write
  Usage:        Make sure paths are specified correctly (variables below) then run the script
@@ -91,7 +92,6 @@ gc "$env:temp\tron_parse_incoming_guids_temp1.txt" | Where-Object {$_ -notmatch 
 $trimSpaces = gc "$env:temp\tron_parse_incoming_guids_temp2.txt"
 $trimSpaces = $trimSpaces -replace '\s{2,}', ' '
 $trimSpaces | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-
 
 # Sort remaining contents and remove duplicates
 gc "$env:temp\tron_parse_incoming_guids_temp2.txt" | sort | get-unique > $candidateListFile
@@ -207,6 +207,12 @@ type $outputFile | find /i `"Windows`" > $incomingGUIDDirectory\guid_parsed_dump
 type $outputFile | find /v /i `"Windows`" > $incomingGUIDDirectory\temp1111.txt
 type $incomingGUIDDirectory\temp1111.txt > $outputFile
 ri "$incomingGUIDDirectory\temp1111.txt" -ea silentlycontinue
+
+type $outputFile | find /i `"Intel`" > $incomingGUIDDirectory\guid_parsed_dump_windows.txt
+type $outputFile | find /v /i `"Intel`" > $incomingGUIDDirectory\temp1111.txt
+type $incomingGUIDDirectory\temp1111.txt > $outputFile
+ri "$incomingGUIDDirectory\temp1111.txt" -ea silentlycontinue
+
 
 log "   Extracted common bulk items into separate files"
 
