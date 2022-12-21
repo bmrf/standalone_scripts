@@ -3,7 +3,8 @@
                Removes all lines that are already in the by_GUID list, then outputs new unique lines to a new file
  Requirements: Specify path to master GUID file, incoming file to check against, and output file
  Author:       reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
- History:      1.0.2 + Add extraction of common entries ("CCC", "Microsoft" etc) into separate files for easy review
+ History:      1.0.3 * Simply whitespace removal block, use regex instead of multiple repetitive statements
+ ::            1.0.2 + Add extraction of common entries ("CCC", "Microsoft" etc) into separate files for easy review
                1.0.1 + Add auto compilation and cleanup of incoming GUID lists
                1.0.0   Initial write
  Usage:        Make sure paths are specified correctly (variables below) then run the script
@@ -52,8 +53,8 @@ param (
 ########
 # PREP #
 ########
-$SCRIPT_VERSION = "1.0.2"
-$SCRIPT_UPDATED = "2020-02-05"
+$SCRIPT_VERSION = "1.0.3"
+$SCRIPT_UPDATED = "2022-12-21"
 
 
 #############
@@ -87,17 +88,10 @@ log "   Compiled new candidate list. Now processing, please wait..."
 gc "$env:temp\tron_parse_incoming_guids_temp1.txt" | Where-Object {$_ -notmatch 'IdentifyingNumber'} | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
 
 # Condense whitespace (replace multiple spaces with one)
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
-(gc "$env:temp\tron_parse_incoming_guids_temp2.txt").replace('  ', ' ') | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+$trimSpaces = gc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+$trimSpaces = $trimSpaces -replace '\s{2,}', ' '
+$trimSpaces | sc "$env:temp\tron_parse_incoming_guids_temp2.txt"
+
 
 # Sort remaining contents and remove duplicates
 gc "$env:temp\tron_parse_incoming_guids_temp2.txt" | sort | get-unique > $candidateListFile
