@@ -25,19 +25,19 @@ param (
 	# Path to master file
     [string] $byGUIDListFile = "r:\utilities\security\cleanup-repair\tron\tron\resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.txt",
 
-    # Path to toolbar/BHO file
+	# Path to toolbar/BHO file
     [string] $toolbarBHOListFile = "r:\utilities\security\cleanup-repair\tron\tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt",
 
-    # Path to GUID whitelist file
+	# Path to GUID whitelist file
     [string] $whitelistGUIDPath = "r:\scripts\blackmesa\tron_guid_whitelist.txt",
 
-    # Path to candidate (new) file
+	# Path to candidate (new) file
     [string] $candidateListFile = "$env:temp\tron_parse_incoming_guids_candidateListFile.txt",
 
 	# Path to directory containing incoming GUID dump files
     [string] $incomingGUIDDirectory = "r:\unsorted",
 
-    # Path to output directory
+	# Path to output directory
     [string] $outputFile = "r:\unsorted\guid_parsed_dump.txt"
 
 )
