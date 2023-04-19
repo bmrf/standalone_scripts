@@ -26,6 +26,9 @@ iostat -x 1
 # Disk usage summary by directory
 du -chs /*
 
+# Find Operating System install date (CentOS/RHEL variants)
+ tune2fs -l /dev/mapper/systemvg-root |grep  'Filesystem created'
+
 # Disk usage summary by directory, alternate (sometimes more effective)
 du -h / | grep '[0-9\.]\+G'
 du -h / | grep '^\s*[0-9\.]\+G'			# only directories larger than 1.0 GB
@@ -48,6 +51,7 @@ tail -f /var/log/httpd
 # Useful tools for watching NIC traffic/throughput
 vnstat -l -i eth1
 iptraf
+iptraf-ng	# new version
 ntop		# Self-contained webGUI traffic monitor, with graphs and detailed tables. Runs by default on port 3000
 
 # Add static route for a specific host
