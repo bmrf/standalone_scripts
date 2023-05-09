@@ -1,10 +1,11 @@
 :: One liner commands for windows / cheat sheet
-:: v1.1.6
-:: 2021-07-21
+:: v1.1.7
+:: 2023-05-09
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
-start "" "%ProgramFiles(x86)%\Notepad++\notepad++.exe" "%CD%\Windows one-liners.bat"
+start "" "%ProgramFiles%\Notepad++\notepad++.exe" "%CD%\Windows one-liners.bat"
+::start "" "%USERPROFILE%\root\applications\notepad++\notepad++.exe" "%CD%\Windows one-liners.bat"
 goto :eof
 
 
@@ -284,6 +285,12 @@ ls -ad | ForEach-Object{$_.Name}		# PS v3.0 only
 ls -name
 cmd /c dir /b /a:-d						# ugly hack
 
+# POWERSHELL: List large files (size in GB) 
+Get-ChildItem c:\ -r -ErrorAction SilentlyContinue –Force |sort -descending -property length | select -first 50 name, DirectoryName, @{Name="MB";Expression={[Math]::round($_.length / 1GB, 2)}}
+
+# POWERSHELL: List large files (size in GB) (alternate version)
+gci -r|sort -descending -property length | select -first 50 name, @{Name="Gigabytes";Expression={[Math]::round($_.length / 1GB, 2)}}
+
 # Batch: globally enable Powershell scripts
 powershell "Set-ExecutionPolicy Unrestricted -force"
 
@@ -303,8 +310,8 @@ get-service | foreach-object{ if ($_.status -eq "stopped") {write-host -f red $_
 # POWERSHELL: Search the Security event log for any entry containing "taco", and then format it into an auto-sized table
 Get-EventLog security -message "*taco*" | format-table -autosize;
 
-# POWERSHELL: Search the System event log for any entry containing "usb", format it to an auto-sized table and don't truncate the text ("-wrap"), then dump the output in C:\Logs\usblog.txt
-Get-EventLog system -message "*usb*" | format-table -wrap -autosize | Out-file C:\Logs\usblog.txt
+# POWERSHELL: Search the System event log for any entry containing "usb", format it to an auto-sized table and don't truncate the text ("-wrap"), then dump the output in C:\logs\usblog.txt
+Get-EventLog system -message "*usb*" | format-table -wrap -autosize | Out-file C:\logs\usblog.txt
 
 # POWERSHELL: Search the Security event log for all instances of EventID 4688 (USB storage device plugged in)
 get-eventlog security | Where-Object {$_.EventID -eq 4688} | format-table -autosize
