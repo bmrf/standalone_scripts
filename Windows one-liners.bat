@@ -327,7 +327,7 @@ Get-WmiObject -Class Win32_NetworkAdapter Format-Table DeviceId, Name, MACAddres
 Get-WMIobject win32_networkadapterconfiguration | where {$_.IPEnabled -eq "True"} | Select-Object pscomputername,ipaddress,defaultipgateway,ipsubnet,dnsserversearchorder,winsprimaryserver | format-Table -Auto
 
 # POWERSHELL: Download a file from the web
-(new-object System.Net.WebClient).Downloadfile("http://example.com/file.txt", "C:\Users\Travis\file.txt")
+(new-object System.Net.WebClient).Downloadfile("http://example.com/file.txt", "C:\Users\$env:username\Desktop\file.txt")
 
 # POWERSHELL: Measure how long a command takes to finish
 Measure-Command {.\mybatchfile.bat}|%{$_.TotalMilliseconds}
