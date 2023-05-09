@@ -300,7 +300,7 @@ Rename-computer -computername "computer" -newname "newcomputername" -domaincrede
 # POWERSHELL: Function to get current AD site
 function Get-ADComputerSite($ComputerName)
 {
- $site = nltest /server:$env:ComputerName /dsgetsite
+ $site = nltest /server:$ComputerName /dsgetsite
  if($LASTEXITCODE -eq 0){ $site[0] }
 }
 
