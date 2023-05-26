@@ -10,7 +10,8 @@
 ::                 - u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.9.0 * ADDITION:    Add removal of "\Common Files\Oracle\Java" under Program Files. Thanks to github:stacked01
+:: Version:       1.9.1 * IMPROVEMENT: Add removal of Control Panel icons. Thanks to github:7JD-MW
+::                1.9.0 * ADDITION:    Add removal of "\Common Files\Oracle\Java" under Program Files. Thanks to github:stacked01
 ::                1.8.9 ! BUG FIX:     Fix "C:\Program Files (x86)\Java" not getting removed. Thanks to github:stacked01
 ::                1.8.8 * IMPROVEMENT: Add catchall command to JRE 8 section. Thanks to u/Tieta
 ::                      * IMPROVEMENT: Add removal of "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath", thanks to u/Tieta
@@ -73,8 +74,8 @@ set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.9.0
-set SCRIPT_UPDATED=2022-11-30
+set SCRIPT_VERSION=1.9.1
+set SCRIPT_UPDATED=2023-05-26
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -459,6 +460,9 @@ del /F /S /Q "%SystemDrive%\J2SE Runtime Environment*" >> "%LOGPATH%\%LOGFILE%" 
 del /F /S /Q "%SystemDrive%\Documents and Settings\All Users\Application Data\Oracle\Java\javapath\*.exe" 2>NUL
 if exist "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath" rmdir /s /q "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath"
 if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\" rmdir /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\"
+:: Control Panel icons
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace{4299124F-F2C3-41b4-9C73-9236B2AD0E8F}" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\explorer\ControlPanelWOW64\NameSpace{4299124F-F2C3-41b4-9C73-9236B2AD0E8F}" /f
 echo.
 
 
