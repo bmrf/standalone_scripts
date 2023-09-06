@@ -52,6 +52,7 @@
 {00170409-78E1-11D2-B60F-006097C998E7} Microsoft Word 2000 SR-1 9.00.3821                
 {0017BF37-5FC6-4025-A766-7F63AAED92FA} Windows Mobile Extension SDK 10.0.14393.0 - ARM 10.1.14393.33             
 {00180408-78E1-11D2-B60F-006097C998E7} Microsoft Access 2000 Runtime 9.00.3308                
+{001D765B-88DF-49F0-BA26-71C3FD9160E2} Microsoft.NET.Sdk.tvOS.Manifest-7.0.100 (x64) 16.4.7098
 {00203668-8170-44A0-BE44-B632FA4D780F} Adobe AIR 1.0.8.4990                  
 {00221B31-30B0-45BD-A59D-857166BDE960} Microsoft .NET Host FX Resolver - 7.0.3 (x64) 56.15.55162 
 {00257FA9-3622-45E4-8B4B-A792CC5169EB} SQLite ADO.NET 2.0/3.5 Provider 1.066.0                
@@ -75,6 +76,7 @@
 {0075AAC2-EA9F-490E-83F7-5D5F81EB2A43} ASUS GPU TweakII 1.0.6.9                 
 {0076335E-2BC2-41A1-9844-2F407C30F60C} Microsoft Windows Desktop Targeting Pack - 6.0.6 (x86) 48.27.42342            
 {007F778D-F15C-4EAB-AE92-071D21FAF632} Adobe Photoshop Elements 9 9                
+{008633A8-3E07-45BC-AC5A-01EEF2EF41FD} Microsoft .NET Host - 7.0.10 (x86) 56.43.64668
 {008667B9-294F-45C3-BB03-E6FBC58B26AF} Microsoft Windows Desktop Runtime - 5.0.10 (x64) 40.40.30418             
 {00884F14-05BD-4D8E-90E5-1ABF78948CA4} Windows Live Mesh 15.4.3502.0922                 
 {0088DEA9-92A8-474D-9185-27BE56FF3439} Microsoft VC++ redistributables repacked. 12.0.0.0                
@@ -171,6 +173,7 @@
 {0240359E-6A4C-4884-9E94-B397A02D893C} Remote Desktop Connection Manager 2.7.14060                
 {0241389C-B6C8-4B88-A2BE-AB0AC1F77E63} VMware Workstation 16.2.0                  
 {0247081A-1F68-4F20-BC87-07F5A66E5CB9} Microsoft .NET Runtime - 5.0.1 (x64) 40.4.29525              
+{02492442-3CAA-4FCF-8585-678866F34C0E} Microsoft .NET Host FX Resolver - 7.0.9 (x86) 56.39.63170
 {024FDD4C-B4EE-4CFC-696F-9A36B3BE4D41} Catalyst Control Center Graphics Previews Vista 2010.0406.2133.36843              
 {025055FC-779B-42F3-95A5-F6926B2964EF} Intel(R) Wireless Display 2.0.31.0                 
 {02570AE0-BEE0-4A6C-BE3F-D806E9F2EA17} ScanSoft PaperPort 11 11.2.0000                 
@@ -232,6 +235,7 @@
 {037FADB6-2BF2-33F9-B7AA-6E48A4543749} Google Chrome 69.0.3497.100                  
 {03823A23-C756-4C95-8D81-09C06AEFFBBA} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {0388DE59-86DF-BFDA-0A68-53A10BEDE635} Windows 8.1 WDK Headers and Libs 10.1.14393.0              
+{038E31C6-56FA-4A22-AFFB-FD0191290D6C} Microsoft .NET 7.0 Templates 7.0.400 (x64) 28.6.43700
 {039480EE-6933-4845-88B8-77FD0C3D059D} Windows Live Mesh 15.4.3502.0922                 
 {03976998-4294-4FA5-9BE9-3E01B1DBEDC3} Python 3.8.1 Core Interpreter (32-bit) 3.8.1150.0               
 {0398A685-FD8D-46B3-9816-C47319B0CF5E} Python 2.7.14 2.7.14150                  
@@ -309,6 +313,7 @@
 {05698AE5-C0A1-3F7A-BC4D-FBF94DE842E8} Microsoft Edge 112.0.1722.39 
 {056B5F67-696C-4A56-8C7C-36EA4421DF1A} Microsoft Visual Studio 2019 Tools for Unity 4.5.1.0             
 {0574D78E-4FFC-4EB1-B710-8E12E9271F96} Windows Live Messenger 16.4.3528.0331                 
+{05855322-BE43-41FE-B583-D3AE0C326D58} Microsoft Silverlight 4 SDK 4.0.50826.0
 {05903EEF-72A2-4C1A-AD35-41AD6C7094A8} Python 3.9.7 Standard Library (64-bit) 3.9.7150.0               
 {05935793-A34C-4272-3361-7AF9AEEE5649} Imaging And Configuration Designer 10.1.14393.0                
 {05A143A7-E923-580E-8FF9-D6D9679FEE40} Java(TM) SE Development Kit 17.0.3 (64-bit) 17.0.3.0              
@@ -340,6 +345,7 @@
 {06324A5D-66BB-4FAC-8D0B-9FEC1B230FFF} SQL Server 2017 Client Tools Extensions 14.0.1000.169              
 {064A5FA2-8C87-4522-AD36-1EF114CCF58E} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {064A929A-4DE8-40CF-A901-BD40C14E4D25} PDF Architect 1.1.83.9982                  
+{06542FBD-4EB4-42DF-B579-E3BDC4CB32A9} Microsoft .NET Runtime - 7.0.8 (x86) 56.35.63143
 {0654EA5D-308A-4196-882B-5C09744A5D81} Windows Live Photo Common 15.4.3502.0922                
 {065DC311-BF3D-4DCD-94CA-D903C6DD4C0A} Microsoft .NET Runtime - 6.0.2 (x64) 48.11.35878              
 {065E4EEE-E042-4528-9389-1EDE5528CB0D} DUB-13x2 USB3.0 to Gigabit Ethernet Adapter Windows Drivers 3.0.2.0            
@@ -381,6 +387,7 @@
 {07454B86-DFE5-324C-99E6-07DA932289D8} Microsoft Portable Library Multi-Targeting Pack 14.0.23121.02               
 {0746492E-47B6-4251-940C-44462DFD74BB} Update for Windows 10 for x64-based Systems (KB4480730) 2.55.0.0            
 {074F6EEC-C98A-4924-BD6D-810FA7CF1425} 1E Agent 7.2.0                  
+{076490E1-8ABE-45B1-AF8E-FBE547B2E586} Microsoft .NET Host FX Resolver - 7.0.8 (x86) 56.35.63143
 {076E598A-2B0E-3BFF-9C28-DE9A876231E2} Microsoft Visual C++ 2017 x86 Debug Runtime - 14.11.25325 14.11.25325           
 {076FF390-D283-4174-B602-B0B7B72BD024} Microsoft SQL Server 2012 Transact-SQL ScriptDom 11.3.6020.0              
 {077AD266-F907-45EF-BD2F-72D385471004} Microsoft .NET Core Runtime - 2.2.6 (x64) 16.152.27818             
@@ -416,6 +423,7 @@
 {0854C811-6DAD-441D-AB36-2F73631A04A1} Intel(R) Management Engine Components 1.0.0.0
 {085C5766-EF73-4C92-A2FB-F2FC13B1A5F5} Update for Microsoft en-us Dictionary 16.1.977.1               
 {085CF903-45F3-44FD-BADD-3A957812625C} Microsoft .NET Core AppHost Pack - 3.1.20 (x64_arm) 24.80.30521            
+{0861A044-9B70-44B1-8721-2DE5A6917A62} Microsoft Windows Desktop Targeting Pack - 6.0.0 (x64) 48.3.31217
 {086C537B-DE1A-4A11-8441-6AAF076174B8} Microsoft Azure Authoring Tools - v2.9.5.3 2.9.8699.20              
 {0875A1B4-8C93-48C7-BEC9-4E549B550B1B} Microsoft .NET Runtime - 6.0.0 (x64) 48.3.31210              
 {0886900B-B2F3-452C-B580-60F1253F7F80} Native Instruments Controller Editor 1.5.1.1124                
@@ -465,6 +473,7 @@
 {09CD7304-E2F2-4A3A-86AF-2AC6E54B6F5B} Microsoft Visual C++ 2022 X64 Debug Runtime - 14.32.31326 14.32.31326           
 {09D129D0-1B58-C8BD-42EB-9CEEDBC06BDD} Microsoft App Update for Microsoft.WindowsSoundRecorder_2013.1010.500.2928_neutral_~_8wekyb3d8bbwe (x64) 1.0.0.0              
 {09D51995-D17C-35E4-9143-314298EB5155} Microsoft Portable Library Multi-Targeting Pack 14.0.25431.01               
+{09D63F33-6E85-3B6F-92BF-C328ADA5060E} Microsoft Portable Library Multi-Targeting Pack 17.0.33905.399
 {09DA5EE2-7E46-4DC4-96F9-BFEE50D40659} Citrix Online Launcher Version: 1.0.408                
 {09DC364B-A77A-49A0-972B-E43F0DACC5E3} VMware vSphere Client 5.1 5.1.0.2669                
 {09E18595-3DF3-4EA3-90C5-B15FCC49302F} Microsoft .NET Core Host FX Resolver - 2.1.6 (x64) 16.88.27019           
@@ -477,6 +486,7 @@
 {0A040F52-1CA2-34F1-982B-86FBA1644635} Microsoft .NET Framework 4.7.1 (DEU) 4.7.02558               
 {0A0CADCF-78DA-33C4-A350-CD51849B9702} Microsoft .NET Framework 4 Extended 4.0.30319               
 {0A15C0BD-7AA1-46C6-86E3-387EED47A64E} GlobalProtect 5.0.8                   
+{0A15F72C-8F66-464E-B712-7B7DCF9918E3} Microsoft.NET.Sdk.macOS.Manifest-7.0.100 (x64) 13.3.7098
 {0A2A5039-B37F-489D-B1DC-A5258DF9E697} FIFA 8 1.0.1.1                  
 {0A2EDF2C-9A71-43D7-964A-696BB7CEAC65} IntelliTraceProfilerProxy 15.0.25.0                   
 {0A32089F-1594-3708-A3A7-F24CB4E2096C} Microsoft Office Developer Tools for Visual Studio 14.0.23025             
@@ -621,6 +631,7 @@
 {0D24D233-76D6-4DF0-9044-AE7BAD37E4EB} OpenVPN Connect 3.1.3                  
 {0D261C88-454B-46FE-B43B-640E621BDA11} Windows Live Mail 15.4.3502.0922                 
 {0D2B3674-3B1E-4281-B5FD-37D700602129} Python 3.7.2 pip Bootstrap (32-bit) 3.7.2150.0               
+{0D2C80C6-4F86-3C06-BE56-B4D55BE49D81} Microsoft ASP.NET Core 7.0.10 Targeting Pack (x86) 7.0.10.23364
 {0D2DCFF8-7746-445B-B643-9E85ABE01173} Microsoft Build of OpenJDK with Hotspot 11.0.12+7 (x64) 11.0.12.7            
 {0D2FB6C9-3782-3A33-A596-BF8FFA189FF0} Microsoft ASP.NET Diagnostic Pack for Visual Studio 16.8.557.25636             
 {0D3095C8-9819-41A0-9ADD-BD3E2EB1C335} ScreenConnect Client (962b64c81a24627c) 6.6.18120.6697                 
@@ -676,6 +687,7 @@
 {0E6616A6-A36D-4863-88A1-70CA5F79F849} Microsoft .NET AppHost Pack - 6.0.1 (x64_arm64) 48.7.32725             
 {0E6E6821-36E1-34A3-B840-FD768FD064D1} Visual C++ Compiler/Tools Premium X64 Native Package 14.0.23506             
 {0E75EC67-D081-3018-9CD5-BAF56532273C} Microsoft Visual Studio Team Foundation Server 2017 RC Office Integration Language Pack (x64) - ENU 15.117.26914     
+{0E77F782-B911-4848-86B8-36B9EB922092} Microsoft.NET.Workload.Emscripten.net6.Manifest (x64) 56.35.64642
 {0E8670B8-3965-4930-ADA6-570348B67153} Microsoft SQL Server 2012 Transact-SQL ScriptDom 11.0.2100.60              
 {0E8D087B-5654-4010-AF4D-DE1250B8C1EB} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {0E8DC723-F1CD-424A-96CC-12428E7A1B4B} Citrix Receiver (HDX Flash Redirection) 13.4.0.25               
@@ -928,6 +940,7 @@
 {14C06F09-47BF-37BA-AEF9-CC97A18E6DDC} Microsoft ASP.NET Core 3.1.1 Shared Framework (x64) 3.1.1.0             
 {14C49FC8-3E9B-4F29-8526-26629B5CF30B} Microsoft Visual C++ 2019 X86 Additional Runtime - 14.28.29334 14.28.29334           
 {14D1CABE-2B5A-3AED-B3A7-42315D062965} Microsoft Visual Studio Enterprise 2015 14.0.23107               
+{14DD7530-CCD2-3798-B37D-3839ED6A441C} Microsoft Visual Studio 2010 ADO.NET Entity Framework Tools 10.0.40219
 {14E9DACB-8945-4B62-A19B-2C6245D48490} LibreOffice 7.1.1.2 7.1.1.2                  
 {15150450-57AB-4186-B520-329EED51AF7A} Microsoft .NET Host - 5.0.11 (x64) 40.44.30523              
 {151C1354-B1CD-4768-A691-E03D84929073} AVG 2012 12.0.4365                  
@@ -1019,6 +1032,7 @@
 {17363C84-D727-4039-B94F-3AB6980BC467} Futura Project Tracker 3.2.4 3.2.4                
 {173847FF-DAF3-4D36-A274-85BB54E34982} Microsoft.NET.Workload.Emscripten.net6.Manifest (x64) 56.31.50225
 {173D2989-6B09-3A90-8819-A53E43F99818} Microsoft Visual Studio 2015 Devenv Resources 14.0.23107              
+{174E0D7C-F2C9-49A2-83FB-95A0FE6FA023} Microsoft .NET Host FX Resolver - 7.0.8 (x64) 56.35.63143
 {17504ED4-DB08-40A8-81C2-27D8C01581DA} Windows Live Remote Service Resources 15.4.5722.2               
 {17515373-7495-4995-9089-B7D6DF455C38} Update for Windows 10 for x64-based Systems (KB4023057) 2.6.0.0            
 {17531BCD-C627-46A2-9F1E-7CC920E0E94A} SQL Server 2014 Database Engine Services 12.0.2000.8              
@@ -1118,6 +1132,7 @@
 {19EE9809-F1C8-4723-B43E-AAC1EF0253FD} Microsoft .NET Toolset 7.0.100 (x64) 28.5.24432
 {19F09425-3C20-4730-9E2A-FC2E17C9F362} Windows Live Remote Service Resources 15.4.5722.2               
 {19F7E289-17B8-44EC-A099-927507B6F739} Microsoft Visual C++ 2019 X86 Minimum Runtime - 14.21.27702 14.21.27702           
+{19FCE07F-2A75-44AC-9EA5-8E29FE2F8DBE} Microsoft .NET Host - 7.0.8 (x64) 56.35.63143
 {1A2D3F25-E2E5-4082-A18D-6B6BD756C1C7} Microsoft .NET Core AppHost Pack - 3.1.20 (x64_x86) 24.80.30521            
 {1A4BD749-610A-4E36-A697-BDED2A6643E3} Microsoft .NET Core Runtime - 3.1.3 (x64) 24.76.28628             
 {1A4E7B84-EA47-DED3-75E4-FD50D5A7A974} Windows Team Extension SDK 10.0.26624                
@@ -1146,6 +1161,7 @@
 {1B108AF0-3EE8-3B82-9D1A-BD04D16F82F9} Microsoft Visual Studio Team Foundation Server 2017 Update 9 Office Integration Language Pack (x64) - ENU 15.129.28604    
 {1B267487-4679-4044-A552-84DD4038CA43} Python 3.7.3 Development Libraries (64-bit) 3.7.3150.0               
 {1B278824-7541-EA8F-FFA1-8B73EC7146D5} Windows SDK for Windows Store Apps 10.1.17763.132              
+{1B33F856-548C-4869-81B5-878C1ED2B382} Microsoft .NET SDK 6.0.101 (x64) from Visual Studio 6.1.121.56904
 {1B444AF9-1DBE-4884-8F35-969BEFCF69A8} Intelâ•¦Â¥ Trusted Connect Service Client 1.35.133.1               
 {1B4EDD59-90CE-4BDE-8520-630981088165} Microsoft Visual C++ 2019 X64 Additional Runtime - 14.27.29112 14.27.29112           
 {1B59133B-A2DC-41EF-8AD9-54F64213059A} Microsoft VC++ redistributables repacked. 12.0.0.0                
@@ -1168,6 +1184,7 @@
 {1BCDE46C-168C-463A-81F4-B763F2D20537} O2Micro Flash Memory Card Windows Driver 3.0.08.52              
 {1BF67DC1-8BB5-4AF5-BE20-3B53D9532D01} Microsoft .NET Runtime - 6.0.12 (x64) 48.51.51943 
 {1BFECF08-BAC7-42FD-97B3-A81DB967CFF6} Microsoft SQL Server 2014 RsFx Driver 12.2.5000.0              
+{1C01505B-88E4-3B6E-9B58-19B566A0EA8E} Microsoft ASP.NET Core 6.0.21 Targeting Pack (x86) 6.0.21.23364
 {1C03A416-D8D5-42F6-87CE-4874A383EBEB} Intelâ”¬Â½ PROSet/Wireless WiFi Software 16.10.0.0307                
 {1C1458AA-878E-3671-A463-C670293EC1A3} Microsoft Visual C++ 2015 x86 Additional Runtime - 14.0.23019 14.0.23019           
 {1C15FC16-76B9-E297-905C-0A99FBC5DA1F} Windows PE ARM ARM64 wims 10.1.17134.1               
@@ -1237,6 +1254,7 @@
 {1E073F5B-EB1D-4057-BA68-169194D3DB6D} Microsoft UniversalWindowsPlatform SDK 15.9.15                 
 {1E0FF98D-4AE4-46CC-B624-E771ABD5EA11} TurboTax 2013 1.00.0000                  
 {1E315887-E33F-3726-A9AC-A3A56B0DF4B3} Visual C++ IDE Core Professional Plus Resource Package 14.0.25123            
+{1E349A5D-32BC-40E1-9C54-92CF63F7F8FD} Microsoft Visual Studio Setup WMI Provider 3.7.2174.19405
 {1E5CA362-39B6-4BD0-B9C0-69CF15F0FEA2} AzureTools.Notifications 2.7.30611.1601                   
 {1E5EDF73-13EC-4211-820D-1900B8BD7951} Intel(R) Network Connections 21.1.30.0 21.1.0.0                
 {1E665F2B-6760-42E4-8E97-02B10B97FBA2} Microsoft.NET.Sdk.macOS.Manifest-7.0.100 (x64) 13.0.17 
@@ -1300,6 +1318,7 @@
 {200969CA-4114-4553-832D-4286C5ACBB98} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {200F38B2-1492-4576-B08C-78F2C2C953FC} SQL Server 2017 Client Tools Extensions 14.0.1000.169              
 {200FEC62-3C34-4D60-9CE8-EC372E01C08F} Windows Live SOXE Definitions 15.4.3502.0922                
+{2012098D-EEE9-4769-8DD3-B038050854D4} Microsoft Silverlight 3 SDK 3.0.40818.0
 {201B03D6-FDDA-4C70-8A15-887F5B3CE365} Intel(R) WiDi 4.2.19.0                  
 {20235E2B-1E9F-473D-A215-B2467F1F06E3} Epic Games Launcher 1.3.51.0
 {2024865E-A71D-47F1-AE69-18171FBE89C7} Microsoft Update Health Tools 2.68.0.0                
@@ -1346,6 +1365,7 @@
 {2170A876-572E-31E6-8E5E-157B5EEF508D} Google Chrome 64.0.3282.167                  
 {21764A96-6748-4B83-89E7-7A5063BF156C} Movie Maker 16.4.3528.0331                  
 {2177152C-83DD-4540-B2F0-970F7303B7BA} Windows Live Writer Resources 16.4.3505.0912                
+{217B2755-3BAD-486B-9606-CCD0E6CF3BE8} Microsoft .NET Host - 6.0.20 (x64) 48.83.63169
 {217E19C8-ACC0-C7ED-AB69-A30F3F96C625} Windows SDK for Windows Store Apps Libs 10.1.18362.1             
 {2180B33F-3225-423E-BBC1-7798CFD3CD1F} Microsoft SQL Server 2008 R2 Native Client 10.50.1600.1             
 {219C49EB-81DE-B1E6-22BA-8B267933D331} Windows Team Extension SDK Contracts 10.1.15063.468               
@@ -1456,6 +1476,7 @@
 {236A9CAF-D827-4E36-832C-574EF2DC0DA6} Microsoft .NET AppHost Pack - 7.0.1 (x64) 56.7.51940 
 {236BB7C4-4419-42FD-0409-1E257A25E34D} Adobe Photoshop CS2 9.0
 {236E341D-275F-30BC-8F80-63C7FC854727} Microsoft Visual C++ Compilers 2010 SP1 Standard - x86 10.0.40219           
+{23782E82-6E71-4613-9631-E8F8DD27D052} Microsoft .NET Runtime - 7.0.9 (x64) 56.39.63170
 {237A74C8-F571-4158-9A9A-D29429C353D4} Microsoft .NET Core Runtime - 2.1.3 (x86) 16.76.26725             
 {2385C070-EC26-4AB9-8718-E605C977C0ED} Microsoft redistributable runtime DLLs VS2010 SP1 (x86) 10.0.40219.1             
 {238DF8DA-A706-405E-9073-EE0FF4C62E65} Microsoft Visual Studio Setup Configuration 2.1.1046.44959               
@@ -1551,6 +1572,7 @@
 {26356515-5821-40FA-9C3D-9785052A1062} Apple Application Support (32-bit) 4.3.1                
 {2636F1E4-2BC5-4B19-BFFD-A08F72598309} Python Launcher 3.6.6032.0                  
 {263D4880-F5D2-4AA6-9AAF-BBC03C0EA29B} TTL4v1.2.1Full 1.2.1                   
+{26412D55-690C-3E88-A73C-B7C83CF64900} Microsoft Edge 116.0.1938.43
 {26513CE5-7A51-478D-93BD-AC1D38103463} Windows Live Messenger 15.4.3502.0922                 
 {2656D0AB-9EA4-4C58-A117-635F3CED8B93} Microsoft UI Engine 4.0.0318.1                 
 {266517E6-D866-439D-919C-B8B1A52E6080} OpenOffice.org 3.2 3.2.9502                  
@@ -1744,6 +1766,7 @@
 {26ECE92F-518E-40AF-9108-7B7B444A46DE} Microsoft .NET Core Host - 3.1.28 (x64) 24.112.31513
 {26F71396-D769-39A3-A38F-92F9E1790733} Windows Phone 8 Emulation Host 11.0.60610               
 {26F88B15-E5F0-47D2-8176-1A9312DD44AD} LogMeIn Client 1.3.1648                  
+{26FF35F7-ADBB-4C9F-97DA-79120DB80EC6} Microsoft .NET Host - 6.0.21 (x64) 48.87.64667
 {270D2A13-4AA7-44FD-B9B3-EA09DD8F32E7} Microsoft .NET Core AppHost Pack - 3.1.32 (x64_arm) 24.192.31915 
 {270FEB74-C5B3-4F4F-8AF0-D643063EE511} Microsoft .NET Runtime - 7.0.0 (x86) 56.3.50341
 {27124A2B-8384-498D-8EB2-22B06F9F662B} Microsoft SQL Server 2017 T-SQL Language Service 14.0.17230.0             
@@ -1821,6 +1844,7 @@
 {290C2B0A-CEE1-4F55-AB46-4571EC01DA96} Windows Live UX Platform Language Pack 16.4.3528.0331              
 {290D4DB2-F1B4-4B8E-918D-D71EF29A001B} Intel(R) PROSet/Wireless WiFi Software 14.00.1000                
 {290FC320-2F5A-329E-8840-C4193BD7A9EE} Microsoft .NET Framework 4.5.2 Multi-Targeting Pack (ENU) 4.5.51209             
+{29118998-07B6-46BD-A9E6-B336B8DD2D95} Microsoft .NET AppHost Pack - 6.0.21 (x64) 48.87.64667
 {2918C5B4-A83F-3F2F-BEB9-69ADCAF347E1} Visual C++ Library PGO Headers Package 14.0.24210              
 {2927B938-7A0D-4ACB-9740-431B12F2A745} Microsoft Visual Studio 2015 Update 2 Diagnostic Tools - x86 14.0.25123          
 {29315CEC-E6CE-4394-84DC-6F862E8D9A52} Windows Live UX Platform 16.4.3503.0728                
@@ -2010,6 +2034,7 @@
 {2EC1270D-EBD9-335A-B0E4-45B5CB3E9AAC} Google Chrome 68.0.3440.84                  
 {2EC22D34-55CC-3476-AB5E-3946142F3B7E} Visual C++ Library CRT X64 OneCore For Desktop Package 14.0.23918           
 {2EC26D34-FB67-4C58-AC20-235697551222} Microsoft Web Deploy 4 10.0.3802                
+{2EC74499-9D3D-4613-8A01-A90AC9A8F4DF} Microsoft Windows Desktop Runtime - 7.0.9 (x64) 56.39.63195
 {2EC9AB64-3ACA-460D-B309-0A7052B0C8C0} HP Wireless Button Driver 1.1.21.1                
 {2ED1EFEA-42B2-4FBD-A081-CFF3CD009208} Photo Common 16.4.3522.0110                  
 {2EDC2FA3-1F34-34E5-9085-588C9EFD1CC6} Microsoft Visual C++ 2012 x64 Minimum Runtime - 11.0.60610 11.0.60610           
@@ -2107,6 +2132,7 @@
 {3125D9DE-8D7A-4987-95F3-8A42389833D8} Windows Live Writer Resources 15.4.3502.0922                
 {3125FFC3-55BF-4A19-83EA-DCF4491B3C7C} Windows Live Essentials 16.4.3522.0110                 
 {312E8540-0799-45D5-A02E-DFB8FCA93CCA} SQL Server 2008 R2 SP2 BI Development Studio 10.52.4000.0            
+{3133BC55-90BD-4B87-82A2-6670B3CAFB81} Microsoft Windows Desktop Runtime - 7.0.8 (x64) 56.35.63153
 {3136854E-EC37-345B-8E6B-D26FC5468746} Visual C++ Compiler/Tools Premium ARM Base Package 14.0.24210             
 {313B416A-97E7-F3EF-EDFC-A903A8CA4BC2} Windows SDK DirectX x86 Remote 10.1.19041.685               
 {3144994E-EEA7-40A7-8D3A-FAD9A42C449A} ScanSnap 5.1.30.19                   
@@ -2495,6 +2521,7 @@
 {3C83FDBB-34EF-401F-AC13-F234BD57FA1A} Microsoft .NET Core 1.0.4 - Runtime (x64) 1.0.4             
 {3CAA7C8A-EF8D-3F7B-9710-197F5C606255} Visual C++ IDE Core Professional Plus Resource Package 14.0.25123            
 {3CB4E2E8-04EB-371A-9433-4CA0D934B260} Microsoft Visual C++ 2015 x86 Debug Runtime - 14.0.23026 14.0.23026           
+{3CC763AD-93B3-41EF-ABF8-CFE63A1DC3A6} Microsoft .NET Runtime - 6.0.19 (x64) 48.79.63142
 {3CCDBBE3-AAB1-3BC9-A4A7-B1F95F6719DD} Microsoft Edge 89.0.774.77                  
 {3CD8C56A-7D87-4641-B060-461C470FC322} Microsoft .NET Targeting Pack - 6.0.9 (x64) 48.39.47157             
 {3CE222BA-66A6-4D18-BEE9-5D21C5798C3E} Windows Live Family Safety 15.4.3538.0513                
@@ -2504,6 +2531,7 @@
 {3CF6AB50-085A-4BC6-BB96-0F6E68E07958} Intel(R) PRO/Wireless Driver 19.01.0000.4694                 
 {3CF6EEAF-072E-47EB-8065-B628379449D3} sptools_Microsoft.VisualStudio.Vsto.Msi.Resources 16.0.28030                   
 {3D00715C-E6E6-3F40-B075-594D6F9CCE23} Microsoft ASP.NET Core 5.0.11 Shared Framework (x64) 5.0.11.21476             
+{3D052AE4-54AE-41FC-8D8A-AB453A39E0BD} Microsoft Windows Desktop Runtime - 7.0.9 (x86) 56.39.63195
 {3D0C22FA-96D7-4789-BC5B-991A5A99BFFA} Windows Live Messenger 15.4.3502.0922                 
 {3D29EF77-9AC6-47D8-9A8B-3021D6912D28} SQL Server 2016 Client Tools 13.0.15700.28               
 {3D2C0656-6534-343C-B608-3C895E5CB36E} Visual C++ Library ATL Headers Package 14.0.23026              
@@ -2592,6 +2620,7 @@
 {4006E354-3D24-49BA-A36F-7EB75D50D575} hppLaserJetService 002.015.00599                   
 {400C31E4-796F-4E86-8FDC-C3C4FACC6847} Junk Mail filter update 16.4.3505.0912                
 {40118CD9-A805-400C-864E-041A5B5C01B0} Microsoft Visual C++ 2019 X64 Minimum Runtime - 14.29.30135 14.29.30135           
+{40136131-BA87-42C3-8C97-E6CCE495E4DB} Microsoft .NET AppHost Pack - 7.0.10 (x64_x86) 56.43.64668
 {401704EA-057A-3811-B0E2-3AB4D79A2DAE} Visual C++ Library CRT X86 Store Package 14.0.23918             
 {401BE14A-56A5-3B20-AF42-BEB80154C60F} Visual C++ Compiler/Tools X86 X64 Cross Resource Package 14.0.24225            
 {401C50F6-B443-43EE-8F27-A80DB19B03FD} Windows Live Family Safety 15.4.3502.0922                
@@ -2762,6 +2791,7 @@
 {44B62A02-2BA8-4882-BC0F-B0050A052283} Microsoft .NET Host FX Resolver - 5.0.3 (x64) 40.12.29722            
 {44B72151-611E-429D-9765-9BA093D7E48A} Intelâ”¬Â½ Trusted Connect Service Client 1.27.798.1               
 {44B8DFA4-495D-9972-F663-557B1BC0CB71} Windows Desktop Extension SDK Contracts 10.1.16299.15               
+{44B8E53D-68C7-4FCD-A0D7-753CA2C2EF94} Microsoft Visual C++ 2022 X64 Debug Runtime - 14.36.32532 14.36.32532
 {44CE34C3-7B6A-44CA-BD7F-73E053BBAEC8} HP ENVY 5540 series Basic Device Software 36.0.72.54013             
 {44D628C6-14F5-48F2-89F9-6C0A5FF2B9F0} Microsoft .NET Core Runtime - 3.1.22 (x64) 24.88.30721             
 {44D9A2CB-0692-3180-B5E2-26F4E807D067} Microsoft Visual C++ Compilers 2008 Standard Edition - enu - x86 9.0.21228         
@@ -2773,6 +2803,7 @@
 {452ABC9E-731E-71B2-8824-C5B2595370AF} Windows SDK Desktop Headers arm64 10.1.18362.1               
 {4542573C-6216-4584-BA90-72BAF7954404} Python 3.6.2 Core Interpreter (32-bit) 3.6.2150.0               
 {454B446B-6DC1-3524-53D5-4439D56358EF} Windows SDK Modern Non-Versioned Developer Tools 10.1.16299.15              
+{454BEFFD-28B3-47C0-A7AF-E965B685D2FF} Microsoft .NET Host - 7.0.10 (x64) 56.43.64668
 {455DF12C-7D43-4EFF-AE2F-43C8AF2817A3} Microsoft Visual C++ 2019 X64 Minimum Runtime - 14.28.29914 14.28.29914           
 {4569AD91-47F4-4D9E-8FC9-717EC32D7AE1} Microsoft_VC80_CRT_x86_x64 8.0.50727.4053                   
 {456A8117-2915-414D-8435-AC57447C4E2D} Panda Global Protection 8.31.10                 
@@ -2845,6 +2876,7 @@
 {479E8CC7-CD68-4EB4-BB04-34A5C2C74102} Update for Windows 10 for x64-based Systems (KB4023057) 2.46.0.0            
 {47A1B926-2D6E-4988-8223-8CA5ECBD5E78} HP Hotkey Support 6.2.37.1                 
 {47AEE104-BF96-E407-D3FE-80BBD42732F4} Windows PE x86 x64 wims 10.1.14393.0               
+{47B3704C-3287-4DFC-B019-CCBF305492B3} Microsoft Visual Studio Setup WMI Provider 3.6.2085.9058
 {47B8AA7B-0EF7-FDFE-430F-5E97146DAD38} Windows SDK for Windows Store Apps DirectX x64 Remote 10.1.14393.33           
 {47BE41E6-2F0F-4D17-9C2D-3850FFD9D405} Microsoft SQL Server VSS Writer 10.52.4000.0               
 {47C07F95-5BC7-43FB-830A-FF17A2CBB364} Microsoft .NET Core SDK 2.1.701 (x64) 8.191.26078              
@@ -2869,6 +2901,7 @@
 {4850B023-A9C0-4D15-8DE6-326028CAB499} Visual C++ 8 x86 Runtime Setup Package 1.0.0.0             
 {4860C1E5-CE58-4D32-89DE-37951333B4C9} Paket zur Festlegung von Zielversionen f?r Microsoft .NET Framework 4.6.1 (Deutsch) 4.6.01055         
 {48612579-A014-33FB-BB2F-C040910BF448} Visual F# 4 VS 14.0.23413                
+{486A2339-BB19-41D7-94F9-AF5A112ABCA7} Microsoft Visual Studio Setup Configuration 3.7.2174.19405
 {48781AC2-0939-4D66-98F2-235328E46790} Windows Live Messenger 16.4.3528.0331                 
 {487F2BA0-2DE3-4F33-8721-5ECC4E9F7EF7} HP Hotkey Support 6.2.40.1                 
 {488048BA-66A9-462E-9C36-00B3F364FAF2} UE4 Prerequisites (x64) 1.0.8.0                 
@@ -2928,6 +2961,7 @@
 {4A5A427F-BA39-4BF0-7777-9A47FBE60C9F} Visual C++ 9 Runtime for Dragon NaturallySpeaking 64bit (x64) 11.0.200           
 {4A5EA909-5488-4FD4-A04F-184EEA039C46} Microsoft Azure Shared Components for Visual Studio 2015 - v1.7 1.7.40302.4          
 {4A6F34E2-09E5-4616-B227-4A26A488A6F9} Microsoft SQL Server 2008 Common Files 10.3.5500.0              
+{4A7B2666-1A77-32D8-BB54-CCC1A1B3FE85} Microsoft ASP.NET Core 7.0.10 Targeting Pack (x64) 7.0.10.23364
 {4A8894B4-AF29-4E12-9EC8-13980DCBA066} Windows Mobile Extension SDK 10.0.14393.0 - ARM 10.1.14393.795             
 {4A9A419F-0B18-4299-8293-C2966448A52E} NI DataPlugin Python 19.6 for Windows 64-bit 19.60.49153             
 {4A9BF472-6001-4DB8-8CD9-AD6185299E7C} Microsoft Windows Desktop Runtime - 3.1.2 (x86) 24.72.28517             
@@ -3038,6 +3072,7 @@
 {4DA9DC19-4E1D-4B10-A726-A5F2A1BC7265} Intel(R) Wireless Bluetooth(R) 18.1.1546.2762                 
 {4DBCD037-C533-4A0B-8ADE-727DDE7C4289} Microsoft .NET Core Runtime - 3.1.20 (x64) 24.80.30521             
 {4DC59BF3-0D72-3CE8-BFEF-1E8FAF689EB0} Microsoft Visual Studio 2010 Tools for Office Runtime (x86) 10.0.50908           
+{4DEED9D0-E542-46A5-8750-F49F2E41073C} Microsoft.NET.Workload.Mono.Toolchain.net7.Manifest (x64) 56.3.64668
 {4DFCD818-036A-4229-A67D-CF17DC461D92} Windows 10 Update and Privacy Settings 1.0.14.0              
 {4DFD6FF3-9A29-4F31-AEE1-D44E016C5AD4} Kumulatives Microsoft .NET Framework Intellisense Pack fur Visual Studio (Deutsch) 4.7.02558          
 {4E004F00-9000-4EBC-8660-2C10404143ED} Microsoft VC++ redistributables repacked. 12.0.0.0                
@@ -3207,6 +3242,7 @@
 {52EBC484-44A1-4DC5-824A-0A503735ABD8} Microsoft SQL Server 2014 Express LocalDB 12.1.4100.1              
 {52EC4366-FF56-4B08-817F-7797C72397A0} Veeam Backup & Replication 8.0.0.817                
 {52FB0C8F-DF05-4C61-AEB6-18C55F8C385F} AppLogLibSetup 1.0.3.0                   
+{52FFE478-A4A7-4902-8659-9E6FE8299C5C} Microsoft .NET Targeting Pack - 6.0.21 (x64) 48.87.64667
 {530923FF-A970-4952-9D2F-5FF3C874B50A} Microsoft Lync Web App Plug-in 15.8.8308.920               
 {530DBE8F-D415-4661-9841-0C02A6A4CC50} Microsoft Windows Desktop Runtime - 3.1.4 (x64) 24.80.28821             
 {5318020E-E32C-4A33-BC8D-EEF5CC2F6CA1} SQL Server 2008 R2 SP2 Database Engine Services 10.52.4000.0            
@@ -3218,6 +3254,7 @@
 {5340A3B5-3853-4745-BED2-DD9FF5371331} Microsoft SQL Server 2008 Common Files 10.0.1600.22              
 {5344751D-65BA-1995-1643-880B753C4F96} WinRT Intellisense Desktop - en-us 10.1.10586.212               
 {53501F8C-FA5F-3746-84BC-D071A12076F5} Visual C++ Library CRT X64 Redist Package 14.0.23918             
+{53531ED1-E480-4012-9912-BF1C67547BF3} Microsoft Windows Desktop Runtime - 6.0.20 (x64) 48.83.63194
 {5359C5C6-F83D-4E74-9170-F9A68BE1C57F} Microsoft Visual Studio 2015 Tools for Unity 2.3.0.0             
 {537203CB-708E-43A3-BA16-3D5C14A587BB} Microsoft SQL Server 2014 Transact-SQL Compiler Service 12.0.2269.0             
 {538227C6-C74B-4A74-99E1-2C0B4F9DA5E1} Apple Mobile Device Support 8.2.1.3                
@@ -3302,6 +3339,7 @@
 {56018684-241C-4D81-A4F6-CED1B5292C49} Fotogalerie 16.4.3522.0110                   
 {560D1BE8-7A52-3F63-91B3-E785E5A2175D} Microsoft Team Foundation Server 2013 Update 3 Object Model (x64) 12.0.30723          
 {561034C5-7F61-33BF-BC91-0EB3D7239315} Microsoft Edge 92.0.902.73                  
+{561137EF-2ECE-48F0-A6D6-6260AC7112A5} Microsoft .NET Host FX Resolver - 6.0.20 (x86) 48.83.63169
 {56205076-5F5F-408B-A2CC-EF72BFFBC6DD} Microsoft .NET Host FX Resolver - 6.0.8 (x86) 48.35.45462            
 {563583E9-877F-4362-B6F4-4BC144FAE099} Amazon Corretto (x64) 11.0.13.8                 
 {56364334-9530-11D2-BFFC-00C04FA329AA} Microsoft Works 2000 1.0.0.0000                 
@@ -3438,6 +3476,7 @@
 {59D87F40-6C4B-4F80-A42B-FAA0E6EAFAB6} Microsoft ASP.NET MVC 4 - Visual Studio 2012 Tools 4.0.20710.0           
 {59DE4D1C-690E-4397-8A44-B684934E863C} Microsoft SQL Server 2014 Transact-SQL Compiler Service 12.0.2000.8             
 {59E4543A-D49D-4489-B445-473D763C79AF} Microsoft Games for Windows - LIVE Redistributable 2.0.672.0             
+{59F4AEDD-1897-4E4C-BB25-61DC440429B9} Microsoft .NET Framework 4.8 SDK (espa?ol) 4.8.03761
 {59F7377C-012A-4D30-A658-3C3B97EBEBE5} Microsoft .NET Core Runtime - 2.0.7 (x64) 16.28.26407             
 {5A03C202-08B4-3F1D-9A60-A4F53EF1B636} Microsoft Visual Studio Tools for Applications Design-Time 3 10.0.40220            
 {5A0EE0F0-E909-4F3B-B437-AAD9252427CB} Windows Live Installer 16.4.3508.0205                 
@@ -3483,6 +3522,7 @@
 {5BABDA39-61CF-41EE-992D-4054B6649A9B} Movie Maker 16.4.3505.0912                  
 {5BADA2C0-99B6-3692-BAC0-AAD28392A91C} Visual C++ Compiler/Tools Premium X86 ARM Cross Resource Package 14.0.24210           
 {5BC7E9EB-13E8-45DB-8A60-F2481FEB4595} Microsoft System CLR Types for SQL Server 2019 15.0.2000.5            
+{5BDFAB82-060E-438B-AB4F-A2331B2294C0} Microsoft ASP.NET MVC 2 - VWD Express 2010 Tools 2.0.50217.0
 {5BE4F68F-BD13-974C-9F9E-2E055B01E3F2} Windows SDK Redistributables 10.1.19041.1                 
 {5BE5CFFD-78AD-4612-A271-BEF48B722F49} Microsoft .NET AppHost Pack - 5.0.9 (x64_arm) 40.36.30309             
 {5BEE5F3E-4D78-4DE8-A8F3-36D3E9D8868C} Microsoft Windows Desktop Runtime - 3.1.32 (x64) 24.192.31915
@@ -3552,8 +3592,11 @@
 {5DB87A63-9420-48CC-9F9A-B8801D38D6B5} Broadcom Management Programs 12.35.01                 
 {5DC48DDB-531E-452E-86F4-C15E273F3445} Microsoft .NET Core Host - 3.1.17 (x86) 24.68.30215             
 {5DC91240-5726-4392-A02B-9B18461B1B94} Acronis Backup 11.5 Agent Core 11.5.43994               
+{5DD0FE97-EC10-3757-9722-4A321BC78D68} Microsoft ASP.NET Core 6.0.21 Targeting Pack (x64) 6.0.21.23364
 {5DD76286-9BE7-4894-A990-E905E91AC818} Windows Live Mail 14.0.8089.0726                 
 {5DDC2234-4B37-45BC-AD33-41F1469B4D83} Microsoft SQL Server 2012 Setup (English) 11.0.2100.60              
+{5DEFBDBE-FF1A-4EB2-8DFB-17A26A7E6442} Microsoft .NET Runtime - 6.0.19 (x86) 48.79.63142
+{5DF83B80-A086-401D-9A80-3D8288DDBAF4} Microsoft .NET AppHost Pack - 7.0.10 (x64_arm) 56.43.64668
 {5DFEB60C-501E-375A-9967-99BBCB6150C5} Microsoft Visual C++ 2015 x64 Debug Runtime - 14.0.23918 14.0.23918           
 {5E05D42B-B363-4435-B428-D615047EDA54} Microsoft Visual C++ 2019 X64 Additional Runtime - 14.29.30129 14.29.30129           
 {5E094C92-6288-4F43-AA9A-D452D0218F3F} Windows Live Essentials 16.4.3508.0205                 
@@ -3571,6 +3614,7 @@
 {5E7825E6-E202-4370-9026-2AC4729F24CB} Fotograf Galerisi 16.4.3522.0110                  
 {5E827F47-DDF1-E9DD-9EC7-AF976EE2ACD4} AMD Settings 2017.0704.1721.31196                  
 {5E85081F-CE37-4FD7-AC0C-05C028BAECE3} Microsoft .NET Core Host - 3.1.15 (x64) 24.124.30014             
+{5E8B524C-99ED-4F58-AC9F-3B05036833A4} Microsoft Visual Studio Setup Configuration 3.6.2085.9058
 {5E8F186D-4353-47D6-972F-174230D269D6} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {5E9128B1-0AB8-40F5-9F71-69089C490855} OpenOffice 4.1.4 4.14.9788                  
 {5E91F362-9980-4BED-A949-D10860F56340} Microsoft Visual Studio 2015 Windows Diagnostic Tools 14.0.25425             
@@ -3676,6 +3720,7 @@
 {61A6E3A7-F406-418A-B2A6-0606DB55B325} Microsoft .NET Host - 5.0.14 (x64) 40.56.30907              
 {61B42D05-EBFA-3896-A267-B71CD3025BC5} Microsoft Visual C++ 2010 x64 Designtime - 10.0.30319 10.0.30319            
 {61B7616F-3C59-41E2-8376-11440B06E7EA} Microsoft UniversalWindowsPlatform SDK 15.9.12                 
+{61BEA823-ECAF-49F1-8378-A59B3B8AD247} Microsoft Default Manager 2.1.54.0
 {61BFEC08-5739-3AE4-8AA4-B768B2AB46ED} Visual C++ Library CRT X64 Redist Package 14.0.24210             
 {61C35890-79E1-4DC4-84CD-422649085B0F} Windows Phone 8.1 Tools for Visual Studio 2013 12.0.30723            
 {61D1D65D-76AF-37E3-A2AC-006AACB51587} Google Chrome 50.0.2661.94                  
@@ -3852,6 +3897,7 @@
 {66C00D72-5E34-495E-A4A1-1A31D7BE2FA7} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {66C5838F-B854-4A55-89E6-A6138747A4DF} Epic Games Launcher Prerequisites (x64) 1.0.0.0               
 {66C79A2F-572B-463B-BB5C-F41408D0EABD} Update for Microsoft en-us Dictionary 16.1.810.1               
+{66CBA69D-480E-4879-8498-3279A1C548BB} Microsoft .NET Host - 6.0.19 (x64) 48.79.63142
 {66CEB5CD-2D62-66EA-8969-BDC63E71D7B6} Windows Desktop Extension SDK 10.1.17134.12                
 {66D57636-BD4B-402F-9E7D-5E89C28C8136} Microsoft Server Speech Recognition Language - TELE (en-US) 10.0.7135.0            
 {66DA8EAA-D4CD-30DC-B993-0EDF728ED1F6} Visual C++ IDE Core Professional Plus Resource Package 14.0.25420            
@@ -3870,6 +3916,7 @@
 {6759BD1C-502B-4FEF-AAA0-EF361BCCAB08} Microsoft Windows Desktop Runtime - 5.0.13 (x86) 40.52.30717             
 {675CE043-3AD7-40CB-BDF6-D1531767DB51} Windows Live Family Safety 16.4.3522.0110                
 {675DF5EE-907F-6518-E0FC-A2E6291BCDC2} Windows SDK Desktop Libs x86 10.1.15063.137               
+{67635FB6-2F63-4FFB-830B-D4C01597EBA4} Microsoft Office Suite Activation Assistant 1.2.1
 {6773F5EF-5D3E-4EEE-995F-1A64006FFBE4} HP PC Hardware Diagnostics Windows 1.2.0.0               
 {677AAD91-1790-4FC5-B285-0E6A9D65F7DC} Windows Live Mail 15.4.3502.0922                 
 {677B9EE9-CA22-48DB-9116-7CE36C0C1C7C} Microsoft .NET AppHost Pack - 5.0.0 (x64_x86) 40.0.29419             
@@ -3969,6 +4016,7 @@
 {6AFCA4E1-9B78-3640-8F72-A7BF33448200} Microsoft Visual C++ 2008 Redistributable - x86 9.0.30729 9.0.30729            
 {6B18E6F7-DEB9-4862-A49F-509A42B37AE6} Microsoft Visual Studio Setup Configuration 2.6.32.15131               
 {6B1CB38D-E2E4-4a30-933D-EFDEBA76AD9C} Microsoft Works 08.05.0822                  
+{6B248D21-3183-48D7-B9DC-82E913D5BAF4} Microsoft Windows Desktop Runtime - 7.0.8 (x86) 56.35.63153
 {6B3BAE39-4ED1-4EEB-9769-A3AA0AA58CB4} Windows Live Movie Maker 15.4.3502.0922                
 {6B3F93BC-7716-4D97-8B80-1334DA37DDE1} Microsoft Azure Storage Connected Service 14.0.25123               
 {6B3FD46B-7D69-3F95-BDD6-F3154C994ACC} Microsoft ASP.NET Core 3.1.9 Shared Framework (x86) 3.1.9.0             
@@ -4030,6 +4078,7 @@
 {6CD9E9ED-906D-4196-8DC3-F987D2F6615F} Microsoft Visual C++ 2019 X64 Minimum Runtime - 14.29.30133 14.29.30133           
 {6CDEAD7E-F8D8-37F7-AB6F-1E22716E30F3} Microsoft Visual Studio Macro Tools 9.0.30729               
 {6CE744AE-7E0F-00AF-F1BD-077D9AFCBEC6} WinRT Intellisense PPI - en-us 10.1.15063.137               
+{6CE8AD8C-E6D5-4BF7-91C3-7F8106A5CD93} Microsoft .NET Runtime - 6.0.20 (x64) 48.83.63169
 {6CE9A8AA-C478-4706-BD28-95993D52B5A1} SQL Server 2017 Common Files 14.0.1000.169               
 {6CEA775F-E70A-4D72-A3B4-1EB3A5AD4B5C} Windows Live Essentials 16.4.3505.0912                 
 {6CEF506B-3E0C-3B28-84B0-9444DEC01DD0} Microsoft ASP.NET Core 3.1.17 Shared Framework (x86) 3.1.17.21318             
@@ -4073,6 +4122,7 @@
 {6E3610B2-430D-4EB0-81E3-2B57E8B9DE8D} Bonjour 3.0.0.10                   
 {6E3878AC-6758-4440-9A97-33E8E29B14E0} Microsoft Visual Studio Setup WMI Provider 2.6.32.15131              
 {6E4322CC-4E1F-435D-834A-67DC070E1DF4} Cisco ASDM-IDM Launcher                  
+{6E4984A9-4321-4D96-861F-D03578E68C8B} Microsoft .NET Runtime - 6.0.20 (x86) 48.83.63169
 {6E73A61B-85DA-3DEB-29B9-6691A818DE3F} Windows PE x86 x64 wims 10.1.16299.15               
 {6E740973-8E71-42F9-A910-C18452E60450} Microsoft SQL Server Native Client 9.00.3042.00               
 {6E7F4CA3-B2DE-413C-A7A1-43AA5BE19EA1} WIDCOMM Bluetooth Software 6.5.0.2000                 
@@ -4143,6 +4193,7 @@
 {715CAACC-579B-4831-A5F4-A83A8DE3EFE2} PaperPort Image Printer 64-bit 14.00.0000                
 {715E251E-9134-3D1D-BE19-1C6EE18F8D24} Google Chrome 61.0.3163.100                  
 {71684DFF-CDED-450C-AF0C-4A1A6438A1A5} Windows Live Essentials 15.4.3502.0922                 
+{7168550B-F2E6-4BFA-94B1-0B2B7E97E613} Microsoft Windows Desktop Targeting Pack - 7.0.10 (x64) 56.43.64722
 {716E0306-8318-4364-8B8F-0CC4E9376BAC} MSXML 4 SP2 Parser and SDK 4.20.9818.0              
 {7171E82A-E90A-4155-9040-6006CEE64DDC} Windows Live Writer Resources 16.4.3528.0331                
 {71723E72-62CD-32D9-9AE2-4935AA9B5BBD} Microsoft ASP.NET Web Tools Packages 15 - ENU 1.0.20816.0            
@@ -4179,6 +4230,7 @@
 {729A3000-BC8A-3B74-BA5D-5068FE12D70C} Microsoft Visual F# 2 Runtime 10.0.30319               
 {729F2480-96E3-4260-B4F1-A3054A98645D} NI LabWindows/CVI 2013 SP2 TDMS Library (64-bit) 13.0.2278             
 {729FD64C-2AE0-3E25-83A8-A93520DCDE7A} Visual C++ CRT Headers Package 14.0.24210               
+{72A2E084-E9B7-4E0A-BDF2-6E5A429E40F3} Microsoft .NET Host FX Resolver - 6.0.19 (x64) 48.79.63142
 {72AB7E6F-BC24-481E-8C45-1AB5B3DD795D} SQL Server 2008 R2 SP2 Management Studio 10.52.4000.0             
 {72AFAF21-33FB-45A5-9468-A9EC07427F82} Microsoft ODBC Driver 17 for SQL Server 17.4.1.1 
 {72BA31CD-9667-422B-A8A4-65C248E06222} sptools_Microsoft.VisualStudio.OfficeDeveloperTools.Msi 15.0.26501                   
@@ -4236,6 +4288,7 @@
 {7465FCB9-1918-4438-9337-47BAF1902684} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {7468ACCE-6FA8-4794-90B9-C28BD9CC79DD} Citrix Receiver Updater 3.4.0.29577                 
 {746DF466-E621-440F-9BBF-DDBD496C22EC} Microsoft .NET Core Host FX Resolver - 3.1.1 (x64) 24.68.28408           
+{74715D24-77DC-3CB2-BA03-03EB1037D8C7} Microsoft Edge 114.0.1823.86
 {747C5547-7483-4605-8B2F-A9696610A7FA} OpenOffice 4.1.3 4.13.9783                  
 {74883C13-66E7-4F61-B250-834304500449} Microsoft TestPlatform SDK Local Feed 15.7.0.1550004               
 {748B1880-9025-439D-B5D1-E078F2329993} HP LaserJet P3005 1.2 .90.002                
@@ -4319,6 +4372,7 @@
 {76E3C8D3-7AE3-471F-856E-556A1D57BD18} G Suite Migration For Microsoft Outlookr 4.0.117.0 4.0.117.0             
 {76EE8FE7-1957-4C51-9074-4930A8CFB1AF} Windows Live Installer 16.4.3503.0728                 
 {76F83458-3A84-42A9-8105-F63DEEE61BA9} Microsoft System CLR Types pour SQL Server 2017 CTP2.1 14.0.600.250           
+{76FA02FF-603F-48BB-9E3F-17ED5DB861E8} Microsoft .NET Host FX Resolver - 6.0.20 (x64) 48.83.63169
 {76FD5CC3-3B06-4C18-9103-FBDB3C4C7F15} HP Wolf Security Application Support for Windows 4.3.1.220             
 {770657D0-A123-3C07-8E44-1C83EC895118} Microsoft Visual C++ 2005 ATL Update kb973923 - x86 8.0.50727.40 53 8.0.50727.4053         
 {7709926E-A1EA-43F1-ADD8-C066BDB97B54} SQL Server 2008 R2 SP2 Integration Services 10.52.4000.0             
@@ -4484,6 +4538,7 @@
 {7C21AE57-6B80-322D-AC49-6B0EB8CB339D} Windows Espc Package 14.0.24225                 
 {7C299358-53ED-49CB-BE96-7AD23AA1FF64} Microsoft .NET Host - 6.0.1 (x86) 48.7.32725              
 {7C2A3479-A5A0-412B-B0E6-6D64CBB9B251} Windows Live Photo Common 15.4.3502.0922                
+{7C3044E5-5DE7-44DF-B699-C52B76C1CE5E} Microsoft .NET AppHost Pack - 7.0.10 (x64) 56.43.64668
 {7C366265-3A78-45FE-AEC0-3FB1C1086393} Microsoft .NET Core Toolset 3.1.120 (x64) 12.21.15384              
 {7C4FE969-3457-4F8A-9748-5882C52226A5} Microsoft Visual Studio 2015 XAML Visual Diagnostics - ENU 14.0.25123           
 {7C6A2125-4D2D-4244-916F-0EA498B7C952} Intel(R) PRO/Wireless Driver 19.60.0000.6203                 
@@ -4492,6 +4547,7 @@
 {7C79BC0B-B7C4-E86E-8253-7A9292B50781} AMD Catalyst Control Center 2013.1206.1603.28764                
 {7C8EAD2B-A954-4F73-AAFC-C3EC60D49ADA} Microsoft SQL Server 2008 R2 RsFx Driver 10.50.1600.1             
 {7C931D41-F302-3494-868C-320A4F4DD9F9} Microsoft Visual Studio Tools for Applications 2019 x86 Hosting Support 16.0.28801          
+{7C974361-6A16-3BA6-B0F9-25297016DFE0} Microsoft ASP.NET Core 7.0.10 Shared Framework (x86) 7.0.10.23364
 {7C9DF905-F1AF-4E1B-ABC4-E32E49B52921} Microsoft .NET Core Host FX Resolver - 2.2.5 (x64) 16.148.27618           
 {7CA5C4DF-8327-4035-AE2B-CA76336A04FD} Snagit 11 11.0.0                  
 {7CAFCF66-62A5-4290-B903-8D9BA7EAE461} VMware Horizon Client 3.5.2.30397                 
@@ -4553,6 +4609,7 @@
 {7EE9DE0D-9228-4C33-B80E-FDD1773600DF} Microsoft Works Suite Add-in for Microsoft Word 2.0.0.0000             
 {7EF4488F-FCAD-481A-A757-314CED3E7092} Microsoft .NET Core SDK 2.1.700 (x64) 8.191.9667              
 {7EF6EBBB-38EC-4AFA-B3EB-B3DC50199FC0} 1E NomadBranch x64 6.3.100                 
+{7EFE9DDB-0757-4A39-B06C-6DFC8652BB5B} Microsoft .NET AppHost Pack - 6.0.21 (x64_arm64) 48.87.64667
 {7F017105-282F-4091-B16A-F8B8A69B0325} Microsoft Build Tools 14 (amd64) 14.0.25123               
 {7F09DF2D-9B17-4E4D-B247-9AE0E918C32B} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {7F190E62-C200-4BA9-9B26-FA7EFA21EAAF} FuturaGISPrerequisites 3.2.2 3.2.2                  
@@ -4654,6 +4711,7 @@
 {82C39067-34CD-37B0-AFCC-F85CAAB44EE5} Visual C++ MFC Items Resource Package 14.0.25123              
 {82C678D3-BF22-4337-9F41-F9C18B144E24} Microsoft .NET Core Host - 2.1.21 (x64) 16.84.29130             
 {82C7B308-0BDD-49D8-8EA5-9CD3A3F9DF41} Windows Live Call 14.0.8064.0206                 
+{82F89EDB-1DF1-402B-BED6-01C736967B6F} Microsoft .NET Host - 6.0.20 (x86) 48.83.63169
 {82FD70CC-4B6F-2D82-A0CE-8ED02C7D9BE1} Windows PE ARM ARM64 10.1.19041.1                
 {83061AFE-C311-4DF8-977E-1A94A985D920} Microsoft .NET Targeting Pack - 6.0.4 (x64) 48.19.39076             
 {83073C45-3003-4671-9A86-243AAADD915A} Microsoft Calculator Plus 1.0.0                 
@@ -4763,6 +4821,7 @@
 {861B1145-7762-4794-B40C-3FF0A389DFE6} Windows Live Photo Gallery 15.4.3502.0922                
 {86233098-0A76-41D5-ADD8-920EA50B0F99} Veeam Backup Catalog 8.0.0.817                 
 {862C72C1-E306-424D-A030-B8DB22A1AC8A} Acronis TRUE Image 24.4.21400                 
+{86377F8B-E35E-4774-B156-35EA6776B231} Microsoft Windows Desktop Runtime - 7.0.10 (x64) 56.43.64722
 {86415CDC-314F-4D4A-9F3B-843D5076D31E} Nero Device Updates 22.0.1002                 
 {86493ADD-824D-4B8E-BD72-8C5DCDC52A71} MSXML 4 SP2 (KB954430) 4.20.9870.0                
 {864FB7AB-B419-4372-AC26-348B519974F8} Windows Mobile Connectivity Tools 10.0.15063.0 - Desktop x86 10.1.15063.674            
@@ -4796,6 +4855,7 @@
 {876B8F2C-1F92-3885-83BF-49EB4A52EF32} Microsoft Visual Studio Team Foundation Server 2017 Update 9 Office Integration Language Pack (x64) - ENU 15.129.31804    
 {876E7C98-9A2F-4644-BD03-7E6253D54EFE} Microsoft .NET Core Runtime - 3.1.16 (x86) 24.64.30112             
 {8777990C-4F53-4782-9A38-E60343B5053D} ArcGIS 10.2.1 for Desktop 10.2.3497                
+{87779C92-0888-4D11-9931-E90E793B3B75} Microsoft.NET.Workload.Mono.Toolchain.net6.Manifest (x64) 56.3.64668
 {877B76B2-F83F-4F5A-B28D-3F398641ADB6} Microsoft SQL Server System CLR Types 10.50.1750.9              
 {87852A04-67AE-4495-9DAB-C60A9A1DB28F} Microsoft .NET AppHost Pack - 6.0.7 (x64) 48.31.44002             
 {878A575E-7D6A-4105-BB28-D36AC32941DA} Microsoft .NET Core 1.0.1 - Host FX Resolver (x64) 4.0.20897           
@@ -4849,6 +4909,7 @@
 {8972AC25-452E-4FFE-945A-EB9E28C20322} Microsoft Visual C++ 2022 X86 Additional Runtime - 14.32.31332 14.32.31332           
 {8979282D-1F43-4810-B819-AA1B06F2C085} Oracle VM VirtualBox 6.1.16 6.1.16                
 {897A0908-C537-581D-5757-27A79ECAB26B} Windows SDK Facade Windows WinMD Versioned 10.1.15063.137              
+{898266E3-A0E5-4BA3-AF3F-E3C5D626EABA} Microsoft .NET Host FX Resolver - 7.0.10 (x64) 56.43.64668
 {89870E0D-9602-41F8-9E83-14F6849346A4} Windows Live Mail 16.4.3508.0205                 
 {8989DBC1-E87B-448F-9147-57EEEC5A24A5} Overwolf.Setup.VC100CRTx86.Dist 1.0.0                   
 {898EF221-8A33-33BD-93CC-8185E8D59F3F} Microsoft ASP.NET Core 6.0.9 Shared Framework (x86) 6.0.9.22419             
@@ -4884,6 +4945,7 @@
 {8AC11901-01E1-4478-BB2D-59AAED9E90FD} NI MAX Support for 64 Bit Windows 20.00.49152             
 {8AC82589-7217-48FE-9051-AE6D3B211B14} Microsoft SQL Server 2012 Setup (English) 11.1.3156.0              
 {8AE1DE20-3F25-442D-8938-81DDD5A02887} Microsoft .NET AppHost Pack - 5.0.17 (x86_arm) 40.68.31213
+{8AE22909-0EDC-41D3-A522-602CA7DC3621} Microsoft .NET Runtime - 7.0.10 (x64) 56.43.64668
 {8AE48E61-DA96-813C-18CA-727881362878} AMD Catalyst Install Manager 8.0.915.0                
 {8AEA7253-0009-49E7-BFC1-366404BDFEB6} Update for Windows 10 (KB4023057) 2.8.0.0               
 {8AF6AD1C-A2DE-412D-9FEE-ECF60AD534BB} AVR32 Toolchain 7 7.0.536                 
@@ -4923,6 +4985,7 @@
 {8BFDE775-C5B8-46DB-84EF-43FFC8A2E8AD} Microsoft SQL Server 2016 T-SQL Language Service 13.0.14500.10             
 {8C06D6DB-A391-4686-B050-99CC522A7843} Microsoft System CLR Types for SQL Server 2014 12.0.2000.8            
 {8C095070-91CD-41FF-9021-5535C498480A} Microsoft .NET Core AppHost Pack - 3.1.1 (x64_arm64) 24.68.28408            
+{8C1E3640-3ECC-4389-BD50-7D6A2BCB2C6C} Microsoft Windows Desktop Runtime - 7.0.10 (x86) 56.43.64722
 {8C22A294-DBBA-445F-B55C-E26817CCFE69} Movie Maker 16.4.3522.0110                  
 {8C2550C6-9973-452E-9BEE-EA23D971A54F} Microsoft TestPlatform SDK Local Feed 16.0.0.3069091               
 {8C26982F-B345-3C87-8D17-5E88ADDAFFF6} Visual Studio Graphics Analyzer 14.0.25420                
@@ -4974,6 +5037,7 @@
 {8D0A0EC6-9A3C-354F-9BFC-A61E96BE1846} Microsoft Visual Studio 2010 Tools for Office Runtime (x64) Language Pack - FRA 10.0.50903       
 {8D27B411-C430-4CA0-8D49-DE3637140931} Microsoft .NET Core Runtime - 2.2.5 (x64) 16.148.27618             
 {8D2C772C-FAB4-42C9-8C89-931D64AAD889} Intel(R) PRO/Wireless Driver 21.20.0000.1800
+{8D2EC92E-5903-4B25-9406-182B8EFA834F} Microsoft .NET Runtime - 6.0.21 (x64) 48.87.64667
 {8D38F2F7-5217-4773-95F8-19FECDC6B0C3} Windows Migration Assistant 1.0.5.7                 
 {8D4F7A6D-6B81-3DC8-9C21-6008E4866727} Microsoft Visual C++ 2017 x64 Minimum Runtime - 14.10.25017 14.10.25017           
 {8D50D8C6-1E3D-3BAB-B2B7-A5399EA1EBD1} Microsoft Visual C++ 2017 x64 Minimum Runtime - 14.10.25008 14.10.25008           
@@ -5035,6 +5099,7 @@
 {8EEE3845-EED8-4BB6-BAF5-3454A0F3E3D2} Microsoft .NET Core SDK - 2.1.201 (x64) 8.50.24001             
 {8EFAA424-E462-73FD-57B9-FEBA346EE8EC} Windows SDK for Windows Store Apps 10.1.15063.137              
 {8F0837C2-EE09-4903-88F3-1976FE7FFF4E} Autodesk Material Library 2012 2.5.0.8                
+{8F119CBB-1BAC-40CC-BA74-4B65814CBBA8} Microsoft .NET Host - 7.0.9 (x64) 56.39.63170
 {8F15E32A-FAD1-49E3-9378-C8EE0530E192} Microsoft Azure Storage Connected Service 14.0.25420               
 {8F21291E-0444-4B1D-B9F9-4370A73E346D} WinFlash 2.31.0                   
 {8F21D4CD-9CB4-2648-EECC-60147DE7B32D} Windows SDK for Windows Store Apps DirectX x86 Remote 10.1.18362.1           
@@ -6004,11 +6069,13 @@
 {9107CF1A-A09C-4035-B29E-E79B4098AB8C} Python 3.6.5 Executables (32-bit) 3.6.5150.0                
 {910A147A-75D7-4ECD-A00D-727AAC0FD0E7} Microsoft SQL Server 2008 Client Tools 10.0.1600.22              
 {910B55C5-C154-4894-B07B-6DB5CDE6EC77} ArcGIS 10.2.1 for Server 10.2.3497                
+{910B7354-CF47-4482-A2A9-D455C3B45039} Microsoft .NET Targeting Pack - 7.0.10 (x86) 56.43.64668
 {91110409-6000-11D3-8CFE-0150048383C9} Microsoft Office Professional Edition 2003 11.0.8173.0               
 {91120000-0011-0000-0000-0000000FF1CE} Microsoft Office Professional Plus 2007 12.0.6612.1000               
 {91120000-0012-0000-0000-0000000FF1CE} Microsoft Office Standard 2007 12.0.6612.1000                
 {91120000-0013-0000-0000-0000000FF1CE} Microsoft Office Basic 2007 12.0.6612.1000                
 {91120000-0014-0000-0000-0000000FF1CE} Microsoft Office Professional 2007 12.0.6612.1000                
+{91120000-002E-0000-0000-0000000FF1CE} Microsoft Office Ultimate 2007 12.0.6612.1000
 {91120000-002F-0000-0000-0000000FF1CE} Microsoft Office Home and Student 2007 12.0.6612.1000              
 {91120000-0030-0000-0000-0000000FF1CE} Microsoft Office Enterprise 2007 12.0.6612.1000                
 {91120000-0031-0000-0000-0000000FF1CE} Microsoft Office Professional Hybrid 2007 12.0. 6612.1              
@@ -6073,6 +6140,7 @@
 {925D058B-564A-443A-B4B2-7E90C6432E55} Microsoft_VC80_ATL_x86_x64 8.0.50727.4053                   
 {9267D7E7-5872-4CB1-B4E3-377F4CA272D0} Microsoft Server Speech Recognition Language - TELE (it-IT) 11.0.7400.345            
 {9271214E-CA3A-CB4C-CBE8-0837D42E045F} Catalyst Control Center Next Localization DA 2017.0704.1721.31196              
+{92776B8E-7A17-39A7-8870-A1D4C35151EB} Microsoft ASP.NET Core 6.0.21 Shared Framework (x86) 6.0.21.23364
 {927AE35D-72BC-437D-BAC7-EE47D03DEE54} LibreOffice                    
 {927FF4FD-8E47-4022-8545-22FD78FBC2AB} Paquete de compatibilidad redirigido de documentaci?n de Microsoft .NET Framework 4.7.1 (espa?ol) 4.7.02558        
 {92821271-028E-7C71-E50F-C4BBAE27949A} Windows SDK Desktop Headers x64 10.1.15063.468               
@@ -6216,6 +6284,7 @@
 {963ECCDD-F09F-4C24-9367-8B5D748AA7C8} Python Launcher 3.5.2121.0                  
 {963F09EA-0B0A-4CFC-B04F-AD9B6614794C} HP Hotkey Support 6.2.39.1                 
 {9645CDEF-085C-45F7-A3CD-B4B7046EF78C} LibreOffice 6.0.5.2 6.0.5.2                  
+{964EAF6D-F753-4117-9D51-4054CE8E01D7} Microsoft .NET Host - 6.0.19 (x86) 48.79.63142
 {96563105-F726-4865-8C32-416753ECA5F1} Microsoft Visual C++ x64-x86 Cross Compilers - ENU Resources 12.0.21005           
 {965B81C8-C45E-39B6-997A-CD43D6EA787D} Microsoft Visual Studio Team Foundation Server 2015 Update 2 Storyboarding Language Pack (x64) - ENU 14.95.25118     
 {965DF723-5688-359E-84D2-417CAFE644B5} Microsoft Visual C++ Compilers 2008 Standard Edition - enu - x64 9.0.21228         
@@ -6427,6 +6496,7 @@
 {9D6F8754-28E9-4940-B319-3FC8588CF18F} Microsoft OLE DB Driver for SQL Server 18.5.0.0             
 {9D72B01C-ED58-4F18-8965-24310A346752} NI-DIM 20.0.0 for 64-bit Windows 20.00.49152               
 {9D78F5D4-79D2-4FC6-AC56-F364A0ABC54F} Microsoft System CLR Types for SQL Server 2017 14.0.1000.169            
+{9D8F7E27-E7D5-4B64-A064-E0DA698CDD3B} Microsoft .NET Targeting Pack - 7.0.10 (x64) 56.43.64668
 {9D93D367-A2CC-4378-BD63-79EF3FE76C78} Microsoft SQL Server 2012 Native Client 11.4.7462.6              
 {9DA28CE5-0AA5-429E-86D8-686ED898C665} Python 2.7.12 2.7.12150                  
 {9DA29C3D-9E36-AC22-59C8-FFCF413DC068} Windows IoT Extension SDK 10.1.18362.1                
@@ -6451,6 +6521,7 @@
 {9E5972B0-0367-40F9-BE20-A55B17B721DF} Microsoft .NET Framework 4.8 SDK (Polski) 4.8.03761              
 {9E5F34BE-9A77-4DB4-A6B3-8111B2099A9C} Microsoft .NET Core Host - 3.1.4 (x64) 24.80.28821             
 {9E64B58A-1248-47E4-940E-E65BB920D6BF} Microsoft Visual C++ 2019 X64 Additional Runtime - 14.29.30030 14.29.30030           
+{9E7711DA-539B-42F2-9557-CCEB93644B60} Microsoft .NET Host FX Resolver - 7.0.10 (x86) 56.43.64668
 {9E771D5B-C429-4CBC-8730-3EBD9EC99E4C} Windows Live Movie Maker 15.4.3502.0922                
 {9E7DE17D-A9E2-4762-8C10-1E80F5976F4A} Microsoft Visual Studio 2013 Preparation 12.0.21005               
 {9E99A4F8-6F77-C781-A63E-4B4A1A027805} Windows SDK Desktop Tools x86 10.1.15063.674               
@@ -6604,6 +6675,7 @@
 {A3E08931-BD0F-44E0-918B-2F1AEC1D9D3F} Microsoft Visual C++ 2019 X64 Debug Runtime - 14.29.30135 14.29.30135           
 {A3E5E1F9-E197-3FC1-8281-E5D7E5F67E5D} Microsoft ASP.NET Diagnostic Pack for Visual Studio 15.9.40035.56132             
 {A3EB1DE3-9D3F-34C2-BDE6-5A8A4B98CC37} Microsoft Visual Studio Tools for Applications 2012 x86 Hosting Support - Paquete de idioma ESN 11.0.51108     
+{A3FC67E9-CDFB-431B-933D-5BD4D58ED7C7} Microsoft.NET.Sdk.Android.Manifest-7.0.100 (x64) 33.0.68
 {A4023BDF-82D5-412D-9D58-8C2819EBFE2E} Foxit PhantomPDF 7.0.410.326                  
 {A40278C4-1199-406F-80D3-790AFEBFDE07} Microsoft .NET Targeting Pack - 6.0.16 (x64) 48.67.58427 
 {A40888FC-B545-46F3-8628-6AE98C1C75C6} Soluto 1.3.1193.1                   
@@ -6724,6 +6796,7 @@
 {A7FE99B6-E077-4F52-BC6A-E24C338F3C23} Crystal Reports XI Release 2 .NET 2005 Server 11.5.0.0            
 {A805FB2A-A844-4cba-8088-CA64087D59E1} Sophos Client Firewall 2.9.5                 
 {A80684E0-21BA-3B57-B590-C57EF248B9AB} Visual C++ CRT Headers Package 14.0.23918               
+{A81AF49B-2964-43D4-9670-C20571598D92} Microsoft .NET AppHost Pack - 6.0.21 (x64_arm) 48.87.64667
 {A8229A09-E570-412B-8D18-E78985673E34} Microsoft Visual C++ ARM Libraries 12.0.21005               
 {A832CFC9-1DE7-342A-9189-4B1387B7A784} Microsoft ASP.NET Core 6.0.4 Shared Framework (x64) 6.0.4.22172             
 {A84122B3-46D9-4E16-BBAC-DB42901505DA} SQL Server Integration Services 2012 11.3.6523.0               
@@ -6954,6 +7027,7 @@
 {AE11E248-B67A-4E3E-BDAF-AA53E00BD289} SQL Server 2008 R2 Reporting Services 10.50.1600.1              
 {AE1A8139-1CBF-314B-9BDA-7EFCB200A371} Visual C++ Library CRT Redist Resource Package 14.0.24210             
 {AE1D4582-D449-495C-9DC6-B92E16C7DB63} LEGO MINDSTORMS NXT Driver for x64 1.19.768              
+{AE2A0728-C664-301B-9F11-C9E2D57CD719} Microsoft Portable Library Multi-Targeting Pack Language Pack - esn 17.0.33905.399
 {AE2D80C7-F19D-463F-B48F-3F343806721C} Microsoft .NET Runtime - 7.0.2 (x64) 56.11.53349
 {AE333C57-1303-489D-91EF-77CB47767424} Microsoft Windows Desktop Targeting Pack - 6.0.11 (x86) 48.47.50419
 {AE364ACC-B9DF-466B-B4EA-AEECD0CD581E} Windows Live Messenger 16.4.3505.0912                 
@@ -6987,6 +7061,7 @@
 {AF312B06-5C5C-468E-89B3-BE6DE2645722} Cisco LEAP Module                  
 {AF42CC8A-A9F5-33B0-8AE2-10E77CEEB4CD} Microsoft Visual Studio Express 2013 for Web - ENU 12.0.21005           
 {AF5249CB-C961-3D91-BDE7-2F56D15941A8} Visual C++ Compiler/Tools Premium X64 ARM Cross Package 14.0.24210            
+{AF6BF7DD-2B12-40C5-919C-2EC99054BBE1} Microsoft Windows Desktop Runtime - 6.0.21 (x64) 48.87.64723
 {AF844339-2F8A-4593-81B3-9F4C54038C4E} Windows Live MIME IFilter 15.4.3502.0922                
 {AF952075-BF97-65CB-2A8E-FC8F72C65EEC} Windows Deployment Tools 10.1.17763.1                 
 {AFA1153A-F547-409B-B837-3A0D6C5A3FEC} Apple Application Support (32-bit) 3.1.3                
@@ -7016,6 +7091,7 @@
 {B01EE326-AFD3-30C9-804A-CBC36CBD4922} Microsoft Portable Library Multi-Targeting Pack Language Pack - enu 14.0.25420.01           
 {B02539D8-7AAB-4661-AF72-46AF0657CA67} Microsoft SQL Server 2008 R2 Native Client 10.50.1600.1             
 {B034AEF2-D488-3F0D-AD28-709EEE727F99} Microsoft ASP.NET Core 2.1.2 Shared Framework (x64) 2.1.13029.0             
+{B03AACCF-D1BD-43CF-A928-1CAAE6C979AB} Microsoft .NET AppHost Pack - 7.0.10 (x64_arm64) 56.43.64668
 {B047C746-63E8-41C7-A5C0-7ABD390CF3E6} WinRT Intellisense UAP - en-us 10.1.17763.132
 {B0562DFA-4F58-4D45-92D2-97D64E9991DE} MongoVUE 1.6.9 1.6.9                  
 {B0613946-1920-45F8-9BE3-2E3FFF7A1A1E} Microsoft .NET AppHost Pack - 7.0.5 (x64_arm) 56.23.58437 
@@ -7072,6 +7148,7 @@
 {B2213E4E-F502-4D36-BE95-9293C866EF3F} Microsoft SQL Server 2008 R2 Setup (English) 10.52.4042.0             
 {B221F0E1-F6F1-41EC-8197-847829949A54} Microsoft .NET Host FX Resolver - 6.0.2 (x64) 48.11.35878            
 {B22C8566-D522-4B40-A7AF-525F5A70D832} Windows Live Family Safety 15.4.3502.0922                
+{B2305758-F8FA-4868-9340-BDC90E0B90B9} Microsoft .NET SDK 7.0.400 (x64) from Visual Studio 7.4.23.36916
 {B2321364-E928-325D-A954-933D35239BE5} Visual C++ IDE Core Professional Plus Resource Package 14.0.25420            
 {B23726CF-68BF-41A6-A4EB-72F12F87FE05} TurboTax 2008 WinPerTaxSupport 008.000.1007                 
 {B23EE11C-66FA-4395-AB02-5F7103DC485C} Windows Live Messenger 16.4.3528.0331                 
@@ -7120,6 +7197,7 @@
 {B3C98C29-A2BE-455F-9285-13B745282271} Microsoft Visual C++ x64-arm Cross Compilers - ENU Resources 12.0.21005           
 {B3CA5EDB-F084-325C-AA50-247A3A476496} Microsoft ASP.NET Web Tools Packages 15 - ENU 1.0.30615.0            
 {B3CDEF60-7D28-332C-8845-682E6DAAEA80} Microsoft ASP.NET Core 5.0.9 Shared Framework (x64) 5.0.9.21365             
+{B3D1CFF9-C5DA-3590-894B-40821DDB67C5} Microsoft Visual Studio 2010 Tools for Office Runtime (x86) 10.0.31010
 {B3D3B24E-01D1-49E2-AD87-DF6A150FF192} Microsoft Azure Tools for Microsoft Visual Studio 2015 - v2.9 2.9.40323.3          
 {B3D6A0CC-159D-3EB6-B331-5CB17F1A0513} Visual C++ Compiler/Tools Premium ARM Base Resource Package 14.0.23918            
 {B3DAF54F-DB25-4586-9EF1-96D24BB14088} Windows Movie Maker 2.6 2.6.4037.0                
@@ -7141,6 +7219,7 @@
 {B448A6C3-36CC-42AE-ADD7-966B2076854E} Microsoft .NET Core Host - 3.1.6 (x64) 24.88.29016             
 {B455E95A-B804-439F-B533-336B1635AE97} NVIDIA PhysX 9.14.0702                  
 {B45A0D14-2208-32C6-9DB6-4F413FC67B9D} Microsoft .NET Framework 4.5.1 (SVE) 4.5.50938               
+{B45C77BA-0B4E-4FBB-99B9-9774ECBE20AA} Microsoft .NET Runtime - 7.0.8 (x64) 56.35.63143
 {B470574C-9F10-41EA-9CFA-9D82496755EB} Microsoft .NET Core Host - 2.1.15 (x64) 16.124.28327             
 {B4712CB7-27D7-4F61-8805-BCF9BE1CFC4A} Windows Live Writer Resources 15.4.3502.0922                
 {B48A745E-B79A-417F-8775-421EF44C92D1} TurboTax 2015 WinPerFuegoContent 015.000.0429                 
@@ -7254,6 +7333,7 @@
 {B819E2C2-30FE-4899-9084-EFD7563D719E} Python 3.5.2 Test Suite (64-bit symbols) 3.5.2150.0              
 {B83FC356-B7C0-441F-8A4D-D71E088E7974} NVIDIA PhysX 9.09.0428                  
 {B8478798-D570-398D-B398-39247E73C46F} Windows Phone SDK 8 Assemblies for Visual Studio 2019 16.0.28622           
+{B84BA895-74BB-43B1-8351-238D35257E0E} Microsoft .NET Host - 7.0.8 (x86) 56.35.63143
 {B8506A27-F595-4996-A87E-678064F41370} Microsoft .NET Core 3.1 Templates 5.0.301 (x64) 12.23.30505             
 {B8535309-B334-4C3A-9614-2816663992C0} Microsoft Update Health Tools 2.81.0.0                
 {B8537ACA-B210-4DF5-B928-E41CEB76723D} Microsoft .NET Host FX Resolver - 6.0.16 (x64) 48.67.58427 
@@ -7269,7 +7349,9 @@
 {B8C7B8CC-E387-49C6-8043-7F95AB2E76AF} Microsoft .NET Core 2.1 Templates 5.0.301 (x64) 8.23.30505             
 {B8D51E1E-9188-448A-B99C-65EC4ED7670F} Microsoft .NET Core AppHost Pack - 3.1.20 (x64) 24.80.30521            
 {B8E14C55-53F6-3693-A74A-77A3C6B96041} Microsoft Visual C++ 2015 x64 Debug Runtime - 14.0.23026 14.0.23026           
+{B8E2B857-228D-4770-83BD-BACCFF4F7738} Microsoft Visual C++ 2022 X86 Debug Runtime - 14.36.32532 14.36.32532
 {B8E9F8A1-9F4D-43D5-ABD6-1DF067FAA469} Microsoft SQL Server 2008 Database Engine Services 10.0.1600.22             
+{B8ED272B-5F2D-4FF5-A7CA-C73552D7FB0F} Microsoft .NET Runtime - 6.0.21 (x86) 48.87.64667
 {B8FD8F53-7E58-3DE5-A8FC-CB2B5CCF38CE} Microsoft Visual Studio Tools for Applications 2012 x86 Hosting Support - Language Pack ITA 11.0.51108      
 {B90526D7-0AE6-4855-8CB4-BD8C9A345D76} Microsoft .NET Core SDK 3.1.100 (x64) from Visual Studio 3.1.100.014727           
 {B90E5EBE-DF18-44D5-9D18-689ADEE9DA6C} Intel(R) PROSet/Wireless WiFi Software                 
@@ -7354,6 +7436,7 @@
 {BB052C53-34CB-42DE-AF41-66FDFCEEC868} Microsoft Update Health Tools 3.72.0.0 
 {BB0D9EE5-F7B1-4986-AF62-DB3BED9A83BC} Microsoft Visual C++ x64 Native Compilers - ENU Resources 12.0.21005           
 {BB1CD1CB-29E8-4FE4-A2E6-72F87DF214E3} Photo Common 16.4.3522.0110                  
+{BB286B78-0824-41BE-9A02-569BFC6DD563} Microsoft Windows Desktop Targeting Pack - 7.0.10 (x86) 56.43.64722
 {BB310ECC-DEB2-4E91-96C6-F584FC6FE715} Microsoft.NET.Sdk.iOS.Manifest-7.0.100 (x64) 16.2.53 
 {BB370367-7163-4E01-9A2E-8BCE17F7706F} Microsoft SQL Server 2014 Transact-SQL Compiler Service 12.2.5000.0             
 {BB435434-EDC8-4E54-B32D-28452CACAEC6} Rhinoceros 5 (64-bit) 5.1.20927.2230                 
@@ -7410,6 +7493,7 @@
 {BD4F6F6A-88EB-4466-8F69-EA7897FA5EDD} Microsoft .NET AppHost Pack - 6.0.8 (x64_x86) 48.35.45462             
 {BD515BA9-A4E0-40EB-829A-8960477ADFA6} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {BD51E211-1D90-4B79-803C-8CADEF774F02} Microsoft.NET.Workload.Emscripten.Manifest 48.23.31171                   
+{BD598123-CBAE-3720-8A79-3F68EA7A3A16} Microsoft ASP.NET Core 6.0.21 Shared Framework (x64) 6.0.21.23364
 {BD5A23D6-1E9F-3378-89CF-E96908078D53} Visual C++ IDE Common Package 14.0.25420               
 {BD60B99B-A623-4E04-83F2-74EDDBFFD900} Microsoft VC++ redistributables repacked. 12.0.0.0 
 {BD64AF4A-8C80-4152-AD77-FCDDF05208AB} Microsoft Sync Framework Services Native v1.0 (x86) 1.0.1215.0             
@@ -7456,6 +7540,7 @@
 {BEFC10C1-7032-3C8E-80BC-621A77BFEABD} Microsoft Help Viewer 2.3 2.3.28107                
 {BF022D76-9F72-4203-B8FA-6522DC66DFDA} Windows Live Movie Maker 15.4.3502.0922                
 {BF08E976-B92E-4336-B56F-2171179476C4} Microsoft Visual C++ 2022 X86 Additional Runtime - 14.30.30704 14.30.30704           
+{BF10AD1E-153F-4EF6-B8D8-811AAA1E668B} Microsoft Windows Desktop Targeting Pack - 6.0.21 (x64) 48.87.64723
 {BF10F48C-845B-EEA5-9B1E-629D2F865F2D} Windows SDK for Windows Store Apps Legacy Tools 10.1.15063.137            
 {BF16A1DB-06A6-4A8E-B7A8-61F1F9C9FBA3} Microsoft-System-CLR-Typen f?r SQL Server 2019 CTP2.2 15.0.1200.24              
 {BF35168D-F6F9-4202-BA87-86B5E3C9BF7A} Windows Live Mesh 15.4.3502.0922                 
@@ -7550,6 +7635,7 @@
 {C201BDF9-1C27-46F8-A248-F4469C9FC27C} Photo Common 16.4.3522.0110                  
 {C203D5EB-C488-73F5-C1E7-9681D1523202} Windows SDK Desktop Tools x64 10.1.15063.137               
 {C20B9CD3-4127-4CB4-8370-96DE531A01BB} Microsoft .NET AppHost Pack - 7.0.4 (x64) 56.19.56696 
+{C20CC808-E3C5-48B9-B791-0B145CD1D7A7} Microsoft .NET Targeting Pack - 6.0.21 (x86) 48.87.64667
 {C20CF802-93E3-4BF8-B2F0-8D0B9C826C00} Microsoft.NET.Sdk.MacCatalyst.Manifest-7.0.100 (x64) 16.1.17 
 {C20DACBE-19F2-47FF-AD22-BBB493499346} Microsoft SQL Server 2012 Native Client 11.2.5643.3              
 {C20F1D07-10B7-4B92-8FA0-DF8E58D6467F} Microsoft .NET Host FX Resolver - 6.0.14 (x86) 48.59.55225 
@@ -7558,6 +7644,7 @@
 {C22759DB-BA8B-30E7-99EE-8B47DB43AE56} Microsoft .NET Framework 4.5.1 (FRA) 4.5.50938               
 {C23EE7CE-C1A3-4F94-A8F0-9E0AC9C6DE6E} Adblock Plus for IE (32-bit and 64-bit) 1.1             
 {C258244B-F999-4CEC-B86C-085AB582275A} Microsoft .NET Host - 5.0.5 (x64) 40.20.29916              
+{C2593731-0B45-4357-8595-06EAF40278A7} Microsoft.NET.Sdk.iOS.Manifest-7.0.100 (x64) 16.4.7098
 {C2651553-6CA3-4822-B2E6-BC4ACA6E0EA2} Apple Application Support (64-bit) 4.3.1                
 {C2662EFF-06E6-4FD1-9D6D-FDCA91025757} Microsoft Visual C++ 2022 X86 Additional Runtime - 14.34.31931 14.34.31931
 {C26829A1-4763-3A23-9522-5B9F16221712} Visual C++ IDE Debugger Resource Package 14.0.25123              
@@ -7689,6 +7776,7 @@
 {C6D92730-3EC0-47B1-8F6C-6F5635D1EFAC} SQL Server 2017 Shared Management Objects Extensions 14.0.1000.169             
 {C6E57DC0-5699-47D4-9263-CEE00A4BB1FC} Windows Live MIME IFilter 16.4.3522.0110                
 {C7044A34-8FC9-4691-9BBF-7627BC21E0D0} Visual C++ Library CRT Desktop Appx Package 14.16.27023             
+{C7045575-0C97-4F4A-A1B5-2D648C9F4251} Microsoft .NET Host FX Resolver - 6.0.19 (x86) 48.79.63142
 {C70EC402-4FAA-3B06-9BE6-77C52DBCD9B3} Visual Studio Graphics Analyzer 14.0.25123                
 {C71801C1-463A-4881-97BA-348410B49AC4} Python 3.7.2 Core Interpreter (32-bit symbols) 3.7.2150.0              
 {C71E93D2-B8B4-4858-B2A1-4C967DBC1C5F} Microsoft .NET Runtime - 6.0.16 (x64) 48.67.58427 
@@ -7697,6 +7785,7 @@
 {C73A16B7-AC35-4262-9BAF-DA9B2039A563} Intel Experience Center - Configuration 1.7.0.179
 {C7456DFA-08CF-48A2-938F-FE274C1D49EE} Microsoft .NET Core 5 Templates 5.0.301 (x64) 20.3.63273             
 {C74DCAC0-DDB3-4135-A70C-0553BF9490BC} Windows Live Family Safety 16.4.3528.0331                
+{C756420B-C91C-4410-8092-F49C24CEF594} Microsoft UniversalWindowsPlatform SDK 15.9.16
 {C75DCE4C-6797-4453-A250-905E92151ED9} Microsoft .NET Core Runtime - 3.1.2 (x86) 24.72.28517             
 {C75E0CB7-F988-3754-9422-3E64DA05721B} Microsoft ASP.NET Core 6.0.12 Shared Framework (x86) 6.0.12.22571 
 {C75EF0A9-F228-40E9-AA20-B832F8350A4C} Microsoft ASP.NET Web Pages - Visual Studio Express 2012 for Web 1.0.20710.0         
@@ -7983,6 +8072,7 @@
 {CFADE4AF-C0CF-4A04-A776-741318F1658F} Content Transfer 1.0.0.07110                  
 {CFB0239F-E3D1-4F56-A8F0-6532C84EA171} NI LabWindows/CVI 2013 SP2 Network Variable Library (64-bit) 13.0.2278            
 {CFBD7CC8-39F4-4076-9115-4F30F2B27E61} Microsoft .NET Core Host FX Resolver - 3.1.9 (x86) 24.100.29323           
+{CFC1D234-85D8-37E7-8A6C-556FB9307F6D} Microsoft ASP.NET Core 7.0.10 Shared Framework (x64) 7.0.10.23364
 {CFDE7147-5601-3ADC-B9F5-B90058F46352} Microsoft ASP.NET Core 7.0.4 Shared Framework (x86) 7.0.4.23119 
 {CFEF48A8-BFB8-3EAC-8BA5-DE4F8AA267CE} Microsoft .NET Framework 4 Multi-Targeting Pack 4.0.30319              
 {CFF3C688-2198-4BC3-A399-598226949C39} Windows Live Remote Client Resources 15.4.5722.2               
@@ -8157,6 +8247,7 @@
 {D51EE501-C89E-4A85-B8DA-F35B1A4662DC} Microsoft .NET Core 1.0.5 - Host FX Resolver (x64) 4.1.21265           
 {D523398E-D0EE-4F91-AE81-A27222A621DA} Microsoft .NET Runtime - 5.0.4 (x86) 40.16.29816              
 {D527C5EC-05FA-3F8F-86E4-A0FDC5460E2B} Visual C++ Library PGO X86 Package 14.0.23918              
+{D52B949A-E347-451D-8014-4464EEEEE935} Microsoft .NET Runtime - 7.0.9 (x86) 56.39.63170
 {D52DC282-CB5D-4F09-A637-A4DFD53DB0B0} Microsoft Windows Desktop Targeting Pack - 6.0.0 Preview 1 (x64) 48.0.29797          
 {D531FC91-6F4E-49A7-B912-15289D05B6F8} Photo Common 16.4.3503.0728                  
 {D539F055-FFE0-422D-8D57-0D9427E6ABA9} Dolby Atmos Windows APP 1.1.8.23                
@@ -8268,6 +8359,7 @@
 {D92BBB52-82FF-42ED-8A3C-4E062F944AB7} Microsoft_VC80_MFCLOC_x86 8.0.50727.4053                   
 {D930AF5C-5193-4616-887D-B974CEFC4970} Windows Live Remote Service Resources 15.4.5722.2               
 {D932D6AE-786B-4ECD-B6FE-B9C0EB059B3C} Microsoft S/MIME 14.3.123.2                  
+{D937EF87-F11D-4778-973C-B71E178F95D0} Microsoft .NET Host FX Resolver - 6.0.21 (x64) 48.87.64667
 {D9390C57-CF11-42AC-B684-F5F833D83D89} Microsoft .NET AppHost Pack - 6.0.9 (x64_arm64) 48.39.47157             
 {D93AC9C8-B6CF-391E-BD2F-48AF4727476C} Microsoft Visual C++ 2008 Redistributable - x64 9.0.30411 FALSE 9.0.30411           
 {D9473D19-26F1-4B91-BBAC-4089CB41BC48} Microsoft SQL Server 2008 Management Objects 10.0.1600.22              
@@ -8311,6 +8403,7 @@
 {DA5597C9-9216-44FF-9670-D1E48817B998} MSI HOUSE 10.07.1601                  
 {DA5E371C-6333-3D8A-93A4-6FD5B20BCC6E} Microsoft Visual C++ 2010 x64 Redistributable - 10.0.30319 10.0.30319            
 {DA64A828-F7A9-4A19-97BD-3A9A63CEB972} Python 3.6.3 pip Bootstrap (32-bit) 3.6.3150.0               
+{DA8180A0-47B7-4B45-B5B1-EB44D442A9B0} Microsoft .NET Runtime - 7.0.10 (x86) 56.43.64668
 {DA855582-B360-4532-B8C4-ECD1E5A7095B} Microsoft .NET Framework 4.8 SDK 4.8.04084               
 {DAA29C01-25EF-34A8-9ABC-2E69B6C97948} Microsoft Visual C++ Compilers 2010 SP1 Standard - x64 10.0.40219           
 {DAA471F4-54A9-4820-A1C5-266B5153C144} Microsoft .NET Host - 5.0.16 (x64) 40.64.31117              
@@ -8536,6 +8629,7 @@
 {E0B22B01-DEA5-44AF-9519-6918B1A6F376} hppM477LaserJetService 001.034.00688                   
 {E0B5C12F-387F-4017-A847-0A751E5DDA0D} Microsoft.NET.Workload.Emscripten.net6.Manifest (x64) 56.31.51889 
 {E0C5BC75-1543-4873-B5E8-9CFD3E904226} Windows Mobile Extension SDK 10.0.10586.0 - ARM 10.1.10586.15             
+{E0C694BD-B643-43FA-840F-DECA17E60895} Microsoft .NET Host FX Resolver - 7.0.9 (x64) 56.39.63170
 {E0C7523C-686B-3EE6-8FB1-CB4339E30EDD} Microsoft .NET Framework 4.7.1 4.7.02558                
 {E0CA9FE6-E4C6-3A2D-BEE0-F51481757E34} Microsoft ASP.NET Core 3.1.13 Shared Framework (x64) 3.1.13.21117             
 {E0CD8EB4-D3BD-4740-AFBE-5C48E0CB56CF} MongoDB 4.0.6 2008R2Plus SSL (64 bit) 4.0.6              
@@ -8660,6 +8754,7 @@
 {E5DD4723-FE0B-436E-A815-DC23CF902A0B} Windows Live UX Platform Language Pack 15.4.3508.1109              
 {E5DF3245-80CF-48E8-AE2F-22D4D2DDD805} VMware Player 12.5.7                  
 {E5E31B2F-1EB4-4BA4-82BD-34C2D0EFF1AD} Windows Live 16.4.3522.0110                  
+{E5E5D404-3779-4C08-96EB-FFE06DE80DEF} Microsoft.NET.Workload.Emscripten.net7.Manifest (x64) 56.35.64642
 {E5E83E00-1144-4821-B6B6-7A16C41EFC39} Windows Live Messenger 16.4.3522.0110                 
 {E5EE5C7B-B070-39DA-966B-C7BE812E7518} Microsoft ASP.NET Core 2.1.23 Shared Framework (x64) 2.1.23.0             
 {E5F235CB-B351-4AD1-8B64-C073F67733D9} Amazon Corretto 8 (x64) 1.8.0.312                
@@ -8683,6 +8778,7 @@
 {E6711469-DAFC-464A-B14F-C590AB100554} Windows Live Essentials 16.4.3522.0110                 
 {E694C379-D41D-471E-89C3-C13034AFB24C} Image Resizer for Windows 3.1.0.0                
 {E699E009-1C3C-4E50-9B57-2B39F0954C7F} Microsoft Visual C++ 2019 X64 Additional Runtime - 14.29.30133 14.29.30133           
+{E6AB9E03-8B8E-435A-88FF-5F9A28951B28} Microsoft .NET Toolset 7.0.400 (x64) 28.6.43700
 {E6AD67BB-1C33-4AB3-A387-E0D48137AB70} OpenOffice 4.1.2 4.12.9782                  
 {E6B9A810-4581-4561-BE3B-02AD592871B7} Microsoft .NET Core Host FX Resolver - 2.1.28 (x64) 16.112.30015           
 {E6BD8D0F-BA0D-4A4B-A5A8-C74DEB8365F9} Microsoft Update Health Tools 2.77.0.0                
@@ -8821,6 +8917,7 @@
 {EC3957F5-22CD-4096-93AB-A0E14F231D05} Jet Essentials 15.1.16119.0                  
 {EC3E674C-14B1-3B19-9C16-2FD337A2D827} Windows Espc Package 14.0.24245                 
 {EC46B892-CC94-48E3-BFB2-F27CE6BE8111} Windows Mobile Connectivity Tools 10.0.10240.0 - Desktop x86 10.0.12671            
+{EC4C874C-A9A0-4948-9BEE-0741EDC61E1C} Microsoft .NET 6.0 Templates 7.0.400 (x64) 24.7.43700
 {EC5A6438-850E-4AD1-9169-DD071C8EFFEF} Update for Windows 10 for x64-based Systems (KB4023057) 2.10.0.0            
 {EC5E0CAF-BC28-401C-B8BE-89C496D6D66F} Windows Live Essentials 16.4.3508.0205                 
 {EC73D6F4-63EB-4460-837C-F37FE4BDFD49} Microsoft Visual Studio 2015 XAML Visual Diagnostics for Windows Store 14.0.25219          
@@ -8999,6 +9096,7 @@
 {F2508213-9989-4E85-A078-72BE483917EF} Microsoft Games for Windows - LIVE Redistributable 3.5.88.0             
 {F2517A28-8CB8-4206-B86C-5EDD4EA26682} iTunes 12.7.1.14                   
 {F255D538-8ECB-4ED1-9670-E195D403BCCF} IDE Tools for Windows 10 14.0.25527               
+{F25834D2-0460-4995-8585-8E41BD074159} Microsoft Windows Desktop Runtime - 6.0.21 (x86) 48.87.64723
 {F25A38EC-3604-397F-802A-C6E000D92D76} Microsoft Visual Studio Team Foundation Server 2015 Update 1 Office Integration (x64) 14.0.24712        
 {F2713C58-9814-4D17-92FA-3CE68FD5964D} NI System API Windows 64-bit 20.0.0 20.00.49152              
 {F2871C89-C8A5-42EE-8D45-0F02506385A6} Apple Application Support (32-bit) 5.1                
@@ -9061,6 +9159,7 @@
 {F456DB40-F5DF-45FE-A582-83DBED5D6432} NI LabWindows/CVI 2019 .NET Reflector Library 19.00.49152              
 {F45D5725-7801-F180-E013-6FB939CA9E60} Windows App Certification Kit Native Components 10.1.10586.212              
 {F45E6106-4877-4298-92E7-0948015560C2} Windows Liven peruspaketti 16.4.3508.0205                 
+{F4687860-8C1B-4DB3-B99D-391E99371B71} Microsoft Windows Desktop Targeting Pack - 6.0.21 (x86) 48.87.64723
 {F48FB46C-3334-47AA-98ED-D5A47DED33F1} Microsoft .NET Host - 6.0.6 (x64) 48.27.42327              
 {F491640B-291E-8766-6B3B-9716E901ED9E} Windows Desktop Extension SDK Contracts 10.1.19041.1               
 {F4AD258A-97CA-4AEA-BA75-E9CD9344D656} Microsoft .NET Core Runtime - 2.0.3 (x64) 16.12.25816             
@@ -9079,11 +9178,14 @@
 {F51A03C4-2DD0-43B0-900F-EAD1C45DC542} Chrome Remote Desktop Host 71.0.3578.15                
 {F52C5BE7-3F57-464E-8A54-908402E43CE8} Windows Live Writer Resources 15.4.3502.0922                
 {F53864DE-B8A4-4049-9CF8-9764013AC419} Pack de ciblage redirig? de la documentation Microsoft .NET Framework 4.7.1 (Fran?ais) 4.7.02558        
+{F53CEBEC-B368-4E4E-8746-E819BFD89506} Microsoft .NET Host - 7.0.9 (x86) 56.39.63170
 {F53D678E-238F-4A71-9742-08BB6774E9DC} Windows Live Family Safety 15.4.3502.0922                
+{F53E1C66-5030-3259-90DD-4E9872087886} Microsoft ASP.NET Core 6.0.1 Shared Framework (x86) 6.0.1.21567
 {F54030F3-14B6-432D-9361-78DCB1473920} Photo Common 16.4.3505.0912                  
 {F54A07A9-9716-4094-9E79-F5E929679FFF} Windows Live Writer Resources 16.4.3505.0912                
 {F54CFC4B-C9C1-6EC9-4653-A38FEEF502FA} Windows SDK Desktop Headers arm 10.1.19041.1               
 {F55A72A1-C710-4D2B-9096-0774DD4CC796} TeraCopy 3.9.7
+{F55E0352-097A-4F20-A82E-CE25A3F72657} Microsoft Windows Desktop Runtime - 6.0.19 (x86) 48.79.63137
 {F56435AF-C284-4BAD-BEA5-1C5B7761A843} MMFonts 1.1.1.1                   
 {F5683BB6-E049-7A9C-6255-1AA1639D8C46} Windows SDK EULA 10.1.15063.137                 
 {F57D8118-1428-ECB8-0729-A577A9A1DEA8} Windows Team Extension SDK Contracts 10.1.17763.132               
@@ -9141,6 +9243,7 @@
 {F72C5114-A854-4BAC-8867-ABEE7ED6C2CF} Microsoft .NET Core AppHost Pack - 3.1.26 (x64_x86) 24.104.31323            
 {F72EB01C-8051-488C-AB30-848E38D3598B} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {F7304CCF-B4A0-49C7-88A8-CD3F28FFBF9A} Windows Live 16.4.3505.0912                  
+{F743B197-AB4A-4E7E-AB0D-8FE1E906141F} Microsoft.NET.Sdk.Maui.Manifest-7.0.100 (x64) 7.0.92
 {F74753A3-C93C-34F5-A199-993CAF602B7D} Build Tools - amd64 12.0.21005                
 {F7519C01-56A8-4844-A8CE-397065097F1E} Intel? PROSet/Wireless WiFi Software 17.12.0.0434                
 {F76495AC-2A86-BD70-3F0A-20D33E6A3300} Windows SDK Facade Windows WinMD Versioned 10.1.16299.15              
@@ -9278,6 +9381,7 @@
 {FBDA24D3-1A19-4D75-B3F1-F2A1FB6B61BF} Intel(R) Management Engine Components 1.0.0.0
 {FBE0EFD3-4A1F-4E28-A26B-6FAD2DD1AAE4} Intel(R) Rapid Storage Technology 15.0.0.1039
 {FBEB98F8-64E4-4FA3-A15E-4A9F42FF962E} iTunes 12.3.2.35                   
+{FBEFE4D3-DF95-46AC-82BC-6C78A0DEE925} Microsoft .NET AppHost Pack - 6.0.21 (x64_x86) 48.87.64667
 {FBF034E1-563E-1F9D-DC45-491BB88E9B9E} WinRT Intellisense Desktop - en-us 10.1.22000.832
 {FC037DA4-6F35-41C4-A86B-F7E3ACC6ED82} Microsoft VC++ redistributables repacked. 12.0.0.0                
 {FC071B45-4A5F-408F-92F8-4D9D693E866F} Windows Live UX Platform Language Pack 16.4.3528.0331              
@@ -9290,8 +9394,10 @@
 {FC40D86D-520A-40E0-BE46-22CF343A54F1} Microsoft .NET Core Host FX Resolver - 2.1.12 (x64) 16.112.27818           
 {FC5A59F8-6BEE-FBB4-C720-47C565A92798} Windows SDK Modern Versioned Developer Tools 10.1.19041.685              
 {FC627D43-E1D3-4A36-BEE1-0BB230F5C5ED} Windows Live UX Platform Language Pack 16.4.3522.0110              
+{FC641ACB-FE5E-4F88-B392-9421BDCA1143} Microsoft Windows Desktop Runtime - 6.0.20 (x86) 48.83.63194
 {FC64FAE8-4198-91BC-18BD-3A58F6E191C2} Microsoft App Update for Microsoft.BingMaps_2014.830.1811.3840_neutral_~_8wekyb3d8bbwe (x64) 1.0.0.0              
 {FC6C2C64-EE5B-4A16-AD46-83F67B35B9F2} hppFaxDrvM425 003.000.00002                   
+{FC74E30E-B060-4571-8FB9-FEA87879BAAD} Microsoft.NET.Sdk.MacCatalyst.Manifest-7.0.100 (x64) 16.4.7098
 {FC772454-BB19-0000-0330-44B459520227} Autodesk Desktop Connect Service 3.30.0                
 {FC835376-FF3B-4CAA-83E0-2148B3FB7C98} SQL Server 2008 R2 SP2 Common Files 10.52.4000.0             
 {FC840253-FDE5-4CB8-9429-577CEFF0F44C} Microsoft .NET AppHost Pack - 6.0.3 (x64_arm64) 48.15.37625             
@@ -9300,6 +9406,7 @@
 {FCA9CED6-CF0C-495E-8E0A-6B554069D758} Microsoft Windows Desktop Runtime - 3.1.12 (x64) 24.112.29719             
 {FCAA85EE-57DC-445D-A070-C8094F1D0DFD} Noah 4 Journal Module 2.2.11                
 {FCB866C3-1C7F-48F1-82AA-27CDF5EDBF07} Microsoft.NET.Sdk.Android.Manifest-6.0.200 124.50.2                   
+{FCBEAAD5-3ADE-4A2C-B176-2C2346ED007F} Microsoft Windows Desktop Runtime - 6.0.19 (x64) 48.79.63137
 {FCC6E820-B5DB-454E-96E3-B6182DDEEC8D} Microsoft Visual Studio 2015 Performance Collection Tools 14.0.23107             
 {FCC95978-2484-4DE0-90C1-0937E838DA70} Microsoft Visual C++ 2012 Compilers For Windows Phone 11.0.60610            
 {FCDABDEB-A60B-4422-9381-1DD99E377B75} Intel(R) PRO/Wireless Driver 18.30.0001.3622                 
