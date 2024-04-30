@@ -10,7 +10,8 @@
 ::                 - u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.9.1 * IMPROVEMENT: Add removal of Control Panel icons. Thanks to github:7JD-MW
+:: Version:       1.9.2 * IMPROVEMENT: Add removal of "%ProgramData%\Oracle\Java\" directory. Thanks to u/Thick-Specialist-720
+::                1.9.1 * IMPROVEMENT: Add removal of Control Panel icons. Thanks to github:7JD-MW
 ::                1.9.0 * ADDITION:    Add removal of "\Common Files\Oracle\Java" under Program Files. Thanks to github:stacked01
 ::                1.8.9 ! BUG FIX:     Fix "C:\Program Files (x86)\Java" not getting removed. Thanks to github:stacked01
 ::                1.8.8 * IMPROVEMENT: Add catchall command to JRE 8 section. Thanks to u/Tieta
@@ -74,8 +75,8 @@ set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.9.1
-set SCRIPT_UPDATED=2023-05-26
+set SCRIPT_VERSION=1.9.2
+set SCRIPT_UPDATED=2024-04-30
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -457,6 +458,7 @@ if %OS_VERSION%==XP (
 call :log "%CUR_DATE% %TIME%   Searching for and purging other Java Runtime-related directories..."
 del /F /Q %SystemDrive%\1033.mst >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /S /Q "%SystemDrive%\J2SE Runtime Environment*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+if exist "%ProgramData%\Oracle\Java\" rmdir /s /q "%ProgramData%\Oracle\Java\" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /S /Q "%SystemDrive%\Documents and Settings\All Users\Application Data\Oracle\Java\javapath\*.exe" 2>NUL
 if exist "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath" rmdir /s /q "%ProgramFiles(x86)%\Common Files\Oracle\Java\javapath"
 if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\" rmdir /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Java\"
