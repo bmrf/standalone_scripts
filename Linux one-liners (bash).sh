@@ -1,3 +1,7 @@
+# Search all files for a text string, starting at root, and only display the file name, not the contents
+grep -Ril "text-to-find-here" /
+grep -r "string to be searched" /
+
 # rdesktop to a system with compression (z), bitmap caching (P), in low-bandwidth mode (-x m), with remote sound played through remote speakers
 rdesktop hgate.us.to:1338 -g 1450x1250 -z -r sound:remote -x m -P -p <PASSWORD>
 
@@ -20,14 +24,15 @@ dhclient
 # Determine if system is 32 or 64 bits
 cat /proc/cpuinfo | grep -Gq "flags.* lm " && echo '64bit' || echo '32bit'
 
+# Get release version
+cat /etc/release # red hat and derivatives
+cat /etc/issue   # debian and derivatives
+
 # Monitor disk i/o
 iostat -x 1
 
 # Disk usage summary by directory
 du -chs /*
-
-# Find Operating System install date (CentOS/RHEL variants)
- tune2fs -l /dev/mapper/systemvg-root |grep  'Filesystem created'
 
 # Disk usage summary by directory, alternate (sometimes more effective)
 du -h / | grep '[0-9\.]\+G'
