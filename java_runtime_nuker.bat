@@ -10,7 +10,8 @@
 ::                 - u/MrYiff          : bug fix related to OS_VERSION variable
 ::                 - u/cannibalkitteh  : additional registry & file cleaning locations
 ::                 - forums.oracle.com/people/mattmn : a lot of stuff from his Java removal script
-:: Version:       1.9.2 * IMPROVEMENT: Add removal of "%ProgramData%\Oracle\Java\" directory. Thanks to u/Thick-Specialist-720
+:: Version:       1.9.3 + ADDITION:    Add GUID wildcard for new JRE 8 entries
+::                1.9.2 * IMPROVEMENT: Add removal of "%ProgramData%\Oracle\Java\" directory. Thanks to u/Thick-Specialist-720
 ::                1.9.1 * IMPROVEMENT: Add removal of Control Panel icons. Thanks to github:7JD-MW
 ::                1.9.0 * ADDITION:    Add removal of "\Common Files\Oracle\Java" under Program Files. Thanks to github:stacked01
 ::                1.8.9 ! BUG FIX:     Fix "C:\Program Files (x86)\Java" not getting removed. Thanks to github:stacked01
@@ -75,8 +76,8 @@ set FORCE_CLOSE_PROCESSES_EXIT_CODE=1618
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off && cls
-set SCRIPT_VERSION=1.9.2
-set SCRIPT_UPDATED=2024-04-30
+set SCRIPT_VERSION=1.9.3
+set SCRIPT_UPDATED=2024-09-25
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -232,6 +233,8 @@ call :log "%CUR_DATE% %TIME%   JRE 9..."
 :: JRE 8
 call :log "%CUR_DATE% %TIME%   JRE 8..."
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{71_24AE4-039E-4CA4-87B4-2F64180__1F0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{71_24AE4-039E-4CA4-87B4-2F32180__1F0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 :: This line catches any version above 99 since it's three characters instead of two. Oracle also dropped the "8" from
 :: the last part of the GUID, so instead of "2F8__" it's now "2F__", presumably to make room for the 3rd digit on the right
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
