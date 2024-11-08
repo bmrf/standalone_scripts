@@ -9,7 +9,7 @@ RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->na
 
 <b>{{ $alert->title }}</b></br></br>
 
-<b>Device</b>: {{ $alert->sysName }} ({{ $value['ipv4_address'] }})  </br>
+<b>Device</b>: @if ($alert->state == 1) <span style="color:red;">{{ $alert->sysName }}</span> ({{ $value['ipv4_address'] }}) </br> @else <span style="color:green;"> {{ $alert->sysName }}</span> ({{ $value['ipv4_address'] }}) </br> @endif
 <b>Location</b>: {{ $alert->location }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
 @if ($alert->state == 0)<b>Time elapsed</b>: {{ $alert->elapsed }} @endif </br>
