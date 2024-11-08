@@ -1,0 +1,29 @@
+<!--
+# Alert title
+ALERT: {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+
+# Recovery title
+RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+-->
+
+
+<b>{{ $alert->title }}</b></br></br>
+
+<b>Device</b>: {{ $alert->sysName }} ({{ $alert->   </br>
+<b>Location</b>: {{ $alert->location }} </br>
+<b>Severity</b>: {{ $alert->severity }} </br>
+@if ($alert->state == 0)<b>Time elapsed</b>: {{ $alert->elapsed }} @endif </br>
+<b>Timestamp</b>: {{ $alert->timestamp }} </br>
+<b>Unique-ID</b>: {{ $alert->uid }} </br>
+<b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br></br>
+@if ($alert->faults) <b>Faults</b>:</br>
+@foreach ($alert->faults as $key => $value)
+  #{{ $key }}: {{ $value['supply_descr'] }} </br>
+@endforeach
+@endif
+</br>
+</br>
+Alert sent to:
+@foreach ($alert->contacts as $key => $value)
+  {{ $value }} <{{ $key }}>
+@endforeach
