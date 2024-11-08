@@ -1,0 +1,26 @@
+<b>{{ $alert->title }}</b></br></br>
+
+<b>Device</b>: {{ $alert->sysName }} </br>
+@if ($alert->location)
+	<b>Location</b>: {{ $alert->location }} </br>
+@endif
+
+<b>OS</b>: {{ LibreNMS\Config::getOsSetting($alert->os, 'text') }} {{ $alert->version }} </br>
+
+@if ($alert->hardware)
+	<b>Hardware</b>: {{ $alert->hardware }} </br>
+@endif
+
+@if ($alert->state == 0)
+	<b>Time elapsed</b>: {{ $alert->elapsed }} </br>
+@endif
+
+<b>Timestamp</b>: {{ $alert->timestamp }} </br>
+<b>Unique-ID</b>: {{ $alert->uid }} </br>
+
+@foreach ($alert->faults as $key => $value)
+	<b>Drive</b>: {{ $value['storage_descr'] }} </br>
+	<b>Utilization</b>: {{ $value['storage_perc'] }}% </br>
+	<b>Size</b>: {{ number_format($value['storage_size']/1073741824,2) }} GB </br>
+	<b>Free</b>: {{ number_format($value['storage_free']/1073741824,2) }} GB </br>
+@endforeach
