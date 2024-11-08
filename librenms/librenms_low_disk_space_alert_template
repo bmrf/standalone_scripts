@@ -1,6 +1,6 @@
 <b>{{ $alert->title }}</b></br></br>
 
-<b>Device</b>: {{ $alert->sysName }} </br>
+<b>Device</b>: @if ($alert->state == 1) <span style="color:red;">{{ $alert->sysName }}</span> ({{ $value['ipv4_address'] }}) </br> @else <span style="color:green;"> {{ $alert->sysName }}</span> ({{ $value['ipv4_address'] }}) </br> @endif
 @if ($alert->location)
 	<b>Location</b>: {{ $alert->location }} </br>
 @endif
