@@ -10,21 +10,22 @@ RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->na
 
 <b>{{ $alert->title }}</b></br></br>
 
-<b>Device</b>: {{ $alert->sysName }} </br>
+<b>Device</b>: @if ($alert->state == 1) <span style="color:red;">{{ $alert->sysName }}</span> ({{ $value['ipv4_address'] }}) </br> @else <span style="color:green;"> {{ $alert->sysName }}</span> ({{ $value['ipv4_address'] }}) </br> @endif
 <b>Location</b>: {{ $alert->location }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
 @if ($alert->state == 0)<b>Time elapsed</b>: {{ $alert->elapsed }} @endif </br>
 <b>Timestamp</b>: {{ $alert->timestamp }} </br>
 <b>Unique-ID</b>: {{ $alert->uid }} </br>
-<b>Rule<b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br>
+<b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br>
+</br>
+
 @if ($alert->faults) <b>Faults</b>:</br>
-@foreach ($alert->faults as $key => $value)
- -- #{{ $key }}: {{ $value['string'] }} </br>
-@endforeach
-@endif
+@foreach ($alert->faults as $key => $value) -- #{{ $key }}: {{ $value['string'] }} </br>
+@endforeach @endif
+
 </br>
 </br>
 <b>Alert sent to</b>: </br>
-@foreach ($alert->contacts as $key => $value)
- -- {{ $value }} <{{ $key }}>
+@foreach
+($alert->contacts as $key => $value) -- {{ $value }} <{{ $key }}>
 @endforeach
