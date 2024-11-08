@@ -9,7 +9,7 @@ RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->na
 
 <b>{{ $alert->title }}</b></br></br>
 
-<b>Device</b>: {{ $alert->sysName }} ({{ $alert->   </br>
+<b>Device</b>: {{ $alert->sysName }} ({{ $value['ipv4_address'] }})  </br>
 <b>Location</b>: {{ $alert->location }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
 @if ($alert->state == 0)<b>Time elapsed</b>: {{ $alert->elapsed }} @endif </br>
@@ -23,7 +23,7 @@ RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->na
 @endif
 </br>
 </br>
-Alert sent to:
+<b>Alert sent to</b>: </br>
 @foreach ($alert->contacts as $key => $value)
   {{ $value }} <{{ $key }}>
 @endforeach
