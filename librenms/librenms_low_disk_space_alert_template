@@ -1,6 +1,6 @@
 <b>{{ $alert->title }}</b></br></br>
 
-<b>Device</b>: @if ($alert->state == 1) <span style="color:red;">{{ $alert->sysName }}</span> ({{ $alert->ip }}) </br> @else <span style="color:green;"> {{ $alert->sysName }}</span> ({{ $alert->ip }}) </br> @endif
+<b>Device</b>: @if ($alert->state == 1) <span style="color:red;">{{ $alert->sysName }}</span> <span style="color:red;"> ({{ $alert->ip }}) </span> </br> @else <span style="color:green;"> {{ $alert->sysName }}</span> <span style="color:red;"> ({{ $alert->ip }}) </span> </br> @endif
 @if ($alert->location)
 	<b>Location</b>: {{ $alert->location }} </br>
 @endif
