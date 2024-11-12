@@ -60,7 +60,9 @@ iptraf-ng	# new version
 ntop		# Self-contained webGUI traffic monitor, with graphs and detailed tables. Runs by default on port 3000
 
 # Add static route for a specific host
-route add -host 192.168.1.83 gw 172.16.1.1
+route add -host 192.168.1.83 gw 172.16.1.1    # old version
+ip route add 192.168.1.0/24 via 10.0.0.1      # new version
+ip route add 192.168.1.0/24 dev eth2          # specifying via interface vs. gateway IP
 
 # Add static route for a specific subnet
 route add -net 192.168.1.0/24 gw 172.16.1.1
