@@ -1,19 +1,18 @@
 <!--
-# Alert title
+# Alert title: 
 ALERT: {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 
-# Recovery title
+# Recovery title:
 RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 -->
 
 
-<b>{{ $alert->title }}</b></br></br>
-
-<b>Device</b>: @if ($alert->state == 1) <span style="color:red;">{{ $alert->sysName }}</span> <span style="color:red;"> ({{ $alert->ip }}) </span> </br> @else <span style="color:green;"> {{ $alert->sysName }}</span> <span style="color:red;"> ({{ $alert->ip }}) </span> </br> @endif
-@if ($alert->location)
-	<b>Location</b>: {{ $alert->location }} </br>
-@endif
-
+@if ($alert->state == 1)<span style="color:red;"><b>{{ $alert->title }}</b></span> @else <span style="color:green;"><b>{{ $alert->title }}</b></span> @endif
+</br>
+</br>
+<b>Device</b>: <a href="http://LIBRENMS-IP-ADDRESS-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
+<b>Uptime</b>: {{ $alert->uptime }} </br>
+<b>Location</b>: {{ $alert->location }} </br>
 <b>OS</b>: {{ LibreNMS\Config::getOsSetting($alert->os, 'text') }} {{ $alert->version }} </br>
 
 @if ($alert->hardware)
@@ -21,7 +20,7 @@ RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->na
 @endif
 
 @if ($alert->state == 0)
-	<b>Time elapsed</b>: {{ $alert->elapsed }} </br>
+    <b>Alert duration</b>: {{ $alert->elapsed }} </br>
 @endif
 
 <b>Timestamp</b>: {{ $alert->timestamp }} </br>
