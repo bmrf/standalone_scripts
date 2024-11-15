@@ -1,8 +1,9 @@
-# Alert title: 
+<!--
+# Alert title (set in LibreNMS GUI under Alert Templates page): 
 ALERT: {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 
-# Recovery title:
-RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+# Recovery title (set in LibreNMS GUI under Alert Templates page):
+RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 -->
 
 @if ($alert->state == 1)<span style="color:red;"><b>{{ $alert->title }}</b></span> @else <span style="color:green;"><b>{{ $alert->title }}</b></span> @endif
