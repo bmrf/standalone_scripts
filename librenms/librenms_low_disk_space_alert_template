@@ -11,7 +11,7 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 </br>
 </br>
 <b>Device</b>: <a href="http://LIBRENMS-IP-ADDRESS-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
-<b>Uptime</b>: {{ $alert->uptime }} </br>
+<b>Uptime</b>: {{ $alert->uptime_long }} </br>
 <b>Location</b>: {{ $alert->location }} </br>
 <b>OS</b>: {{ LibreNMS\Config::getOsSetting($alert->os, 'text') }} {{ $alert->version }} </br>
 
