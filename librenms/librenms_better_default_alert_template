@@ -1,9 +1,18 @@
-<b>{{ $alert->title }}</b></br></br>
+# Alert title: 
+ALERT: {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 
-<b>Device</b>: @if ($alert->state == 1) <span style="color:red;">{{ $alert->sysName }}</span> <span style="color:red;"> ({{ $alert->ip }}) </span> </br> @else <span style="color:green;"> {{ $alert->sysName }}</span> <span style="color:red;"> ({{ $alert->ip }}) </span> </br> @endif
+# Recovery title:
+RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+-->
+
+@if ($alert->state == 1)<span style="color:red;"><b>{{ $alert->title }}</b></span> @else <span style="color:green;"><b>{{ $alert->title }}</b></span> @endif
+</br>
+</br>
+<b>Device</b>: <a href="http://LIBRE-NMS-IP-ADDRESS-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</a></br>
+<b>Uptime</b>: {{ $alert->uptime }} </br>
 <b>Location</b>: {{ $alert->location }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
-@if ($alert->state == 0)<b>Time elapsed</b>: {{ $alert->elapsed }} @endif </br>
+@if ($alert->state == 0)<b>Alert duration</b>: {{ $alert->elapsed }} @endif </br>
 <b>Timestamp</b>: {{ $alert->timestamp }} </br>
 <b>Unique-ID</b>: {{ $alert->uid }} </br>
 <b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br>
@@ -13,9 +22,5 @@
 @foreach ($alert->faults as $key => $value) -- #{{ $key }}: {{ $value['string'] }} </br>
 @endforeach @endif
 
-</br>
-</br>
-<b>Alert sent to</b>: </br>
-@foreach
-($alert->contacts as $key => $value) -- {{ $value }} <{{ $key }}>
-@endforeach
+</br></br>
+<b>Network status page</b>: <a href="http://LIBRE-NMS-IP-ADDRESS-OR-HOSTNAME/">LibreNMS</a></br>
