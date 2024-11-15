@@ -9,8 +9,8 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 @if ($alert->state == 1)<span style="color:red;"><b>{{ $alert->title }}</b></span> @else <span style="color:green;"><b>{{ $alert->title }}</b></span> @endif
 </br>
 </br>
-<b>Device</b>: <a href="http://LIBRE-NMS-IP-ADDRESS-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</a></br>
-<b>Uptime</b>: {{ $alert->uptime }} </br>
+<b>Device</b>: <a href="http://LIBRE-NMS-IP-ADDRESS-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
+<b>Uptime</b>: {{ $alert->uptime_long }} </br>
 <b>Location</b>: {{ $alert->location }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
 @if ($alert->state == 0)<b>Alert duration</b>: {{ $alert->elapsed }} @endif </br>
