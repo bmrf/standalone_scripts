@@ -1,15 +1,17 @@
 <!--
-# Alert title
+# Alert title (set in LibreNMS GUI under Alert Templates page): 
 ALERT: {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 
-# Recovery title
-RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+# Recovery title (set in LibreNMS GUI under Alert Templates page):
+RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 -->
 
 
-<b>{{ $alert->title }}</b></br></br>
-
-<b>Device</b>: @if ($alert->state == 1) <span style="color:red;">{{ $alert->sysName }}</span> <span style="color:red;"> ({{ $alert->ip }}) </span> </br> @else <span style="color:green;"> {{ $alert->sysName }}</span> <span style="color:red;"> ({{ $alert->ip }}) </span> </br> @endif
+@if ($alert->state == 1)<span style="color:red;"><b>{{ $alert->title }}</b></span> @else <span style="color:green;"><b>{{ $alert->title }}</b></span> @endif
+</br>
+</br>
+<b>Device</b>: <a href="http://LIBRENMS-IP-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
+<b>Uptime</b>: {{ $alert->uptime }} </br>
 <b>Location</b>: {{ $alert->location }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
 @if ($alert->state == 0)<b>Time elapsed</b>: {{ $alert->elapsed }} @endif </br>
@@ -21,9 +23,3 @@ RECOVERED: {{ $alert->sysName }} recovered from @if ($alert->name) {{ $alert->na
   #{{ $key }}: {{ $value['supply_descr'] }} </br>
 @endforeach
 @endif
-</br>
-</br>
-<b>Alert sent to</b>: </br>
-@foreach ($alert->contacts as $key => $value)
-  {{ $value }} <{{ $key }}>
-@endforeach
