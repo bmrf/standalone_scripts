@@ -1,0 +1,39 @@
+<!--
+# Alert title (set in LibreNMS GUI under Alert Templates page): 
+ALERT: {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+
+# Recovery title (set in LibreNMS GUI under Alert Templates page):
+RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+-->
+
+
+@if ( $alert->state == 0 ) <span style="color:green;"><b>{{ $alert->title }}</b></span>
+@elseif ( $alert->state == 1 )
+	@if ( $alert->severity == "critical" ) <span style="color:red;"><b>{{ $alert->title }}</b></span>
+	@else ( $alert->severity == "warning" ) <span style="color:orange;"><b>{{ $alert->title }}</b></span>
+@endif 
+@endif
+</br>
+</br>
+<b>Hostname</b>: <a href="http://LIBRE-NMS-IP-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
+<b>Uptime</b>: {{ $alert->uptime_long }} </br>
+<b>Location</b>: {{ $alert->location }} </br>
+<b>OS</b>: {{ LibreNMS\Config::getOsSetting($alert->os, 'text') }} {{ $alert->version }} </br>
+
+@if ($alert->hardware)
+	<b>Hardware</b>: {{ $alert->hardware }} </br>
+@endif
+
+@if ($alert->state == 0)
+    <b>Fault duration</b>: {{ $alert->elapsed }} </br>
+@endif
+
+<b>Timestamp</b>: {{ $alert->timestamp }} </br>
+<b>Unique-ID</b>: {{ $alert->uid }} </br>
+
+@foreach ($alert->faults as $key => $value)
+<b>Drive</b>: {{ $value['storage_descr'] }} </br>
+ -- <b>Utilization</b>: {{ $value['storage_perc'] }}% </br>
+ -- <b>Size</b>: {{ number_format($value['storage_size']/1073741824,2) }} GB </br>
+ -- <b>Free</b>: {{ number_format($value['storage_free']/1073741824,2) }} GB </br>
+@endforeach
