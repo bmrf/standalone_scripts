@@ -1,6 +1,6 @@
 <!--
 # Alert title (set in LibreNMS GUI under Alert Templates page): 
-ALERT: {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+@if ($alert->severity == "warning") WARNING: @endif @if ($alert-> severity == "critical") ALERT: @endif {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 
 # Recovery title (set in LibreNMS GUI under Alert Templates page):
 RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
