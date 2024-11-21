@@ -1,11 +1,3 @@
-<!--
-# Alert title (set in LibreNMS GUI under Alert Templates page): 
-@if ($alert->severity == "warning") WARNING: @endif @if ($alert-> severity == "critical") ALERT: @endif {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
-
-# Recovery title (set in LibreNMS GUI under Alert Templates page):
-RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
--->
-
 @if ( $alert->state == 0 ) <span style="color:green;"><b>{{ $alert->title }}</b></span>
 @elseif ( $alert->state == 1 )
 	@if ( $alert->severity == "critical" ) <span style="color:red;"><b>{{ $alert->title }}</b></span>
@@ -15,7 +7,6 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 
 </br>
 </br>
-
 <b>Hostname</b>: <a href="http://10.51.1.213/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
 <b>Location</b>: {{ $alert->location }} </br>
 <b>Device type</b>: {{ $alert->type }} </br>
@@ -26,27 +17,15 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 @if ($alert->state == 0)<b>Fault duration</b>: {{ $alert->elapsed }} @endif </br>
 <b>Timestamp</b>: {{ $alert->timestamp }} </br>
 <b>Unique-ID</b>: {{ $alert->uid }} </br>
-<b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
-
-</br>
+<b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br>
 </br>
 
 @if ($alert->faults) <b>Faults</b>:</br>
 @foreach ($alert->faults as $key => $value) -- #{{ $key }}: {{ $value['string'] }} </br>
 @endforeach @endif
 
-</br>
-</br>
-
+</br></br>
 <b>GTS network dashboard links</b>: </br>
  -- <a href="http://10.51.1.213/">From Terre Colony office subnet</a></br>
  -- <a href="http://192.168.25.221/">From Terre Colony management subnet</a></br>
  -- <a href="http://192.168.25.221/">From Terre Colony server subnet</a></br>
-@endforeach @endif
-
-</br>
-</br>
-
-<b>Network status page</b>: <a href="http://LIBRE-NMS-IP-ADDRESS-OR-HOSTNAME/">LibreNMS</a>
-
-</br>
