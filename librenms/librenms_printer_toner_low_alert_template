@@ -1,18 +1,25 @@
 <!--
 # Alert title (set in LibreNMS GUI under Alert Templates page): 
-ALERT: {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+@if ($alert->severity == "warning") WARNING: @endif @if ($alert-> severity == "critical") ALERT: @endif {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 
 # Recovery title (set in LibreNMS GUI under Alert Templates page):
 RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
 -->
 
-
-@if ($alert->state == 1)<span style="color:red;"><b>{{ $alert->title }}</b></span> @else <span style="color:green;"><b>{{ $alert->title }}</b></span> @endif
+@if ( $alert->state == 0 ) <span style="color:green;"><b>{{ $alert->title }}</b></span>
+@elseif ( $alert->state == 1 )
+	@if ( $alert->severity == "critical" ) <span style="color:red;"><b>{{ $alert->title }}</b></span>
+	@else ( $alert->severity == "warning" ) <span style="color:orange;"><b>{{ $alert->title }}</b></span>
+@endif 
+@endif
 </br>
 </br>
-<b>Device</b>: <a href="http://LIBRENMS-IP-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
-<b>Uptime</b>: {{ $alert->uptime_long }} </br>
+<b>Hostname</b>: <a href="http://LIBRE-NMS-IP-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
 <b>Location</b>: {{ $alert->location }} </br>
+<b>Device type</b>: {{ $alert->type }} </br>
+<b>Description</b>: {{ $alert->sysDescr }} </br>
+<b>Hardware</b>: {{ $alert->hardware }} </br>
+<b>Uptime</b>: {{ $alert->uptime_long }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
 @if ($alert->state == 0)<b>Time elapsed</b>: {{ $alert->elapsed }} @endif </br>
 <b>Timestamp</b>: {{ $alert->timestamp }} </br>
@@ -20,6 +27,6 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 <b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br></br>
 @if ($alert->faults) <b>Faults</b>:</br>
 @foreach ($alert->faults as $key => $value)
-  #{{ $key }}: {{ $value['supply_descr'] }} </br>
+  -- #{{ $key }}: {{ $value['supply_descr'] }}</br>
 @endforeach
 @endif
