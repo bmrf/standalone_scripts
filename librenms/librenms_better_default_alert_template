@@ -15,21 +15,38 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 
 </br>
 </br>
-<b>Device status page</b>: <a href="http://LIBRE-NMS-IP-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
-<b>Description</b>: {{ $alert->sysDescr }} </br>
-<b>Device type</b>: {{ $alert->type }} </br>
-<b>Uptime</b>: {{ $alert->uptime_long }} </br>
+
+<b>Hostname</b>: <a href="http://10.51.1.213/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
 <b>Location</b>: {{ $alert->location }} </br>
+<b>Device type</b>: {{ $alert->type }} </br>
+<b>Description</b>: {{ $alert->sysDescr }} </br>
+<b>Hardware</b>: {{ $alert->hardware }} </br>
+<b>Uptime</b>: {{ $alert->uptime_long }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
 @if ($alert->state == 0)<b>Fault duration</b>: {{ $alert->elapsed }} @endif </br>
 <b>Timestamp</b>: {{ $alert->timestamp }} </br>
 <b>Unique-ID</b>: {{ $alert->uid }} </br>
-<b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br>
+<b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+
+</br>
 </br>
 
 @if ($alert->faults) <b>Faults</b>:</br>
 @foreach ($alert->faults as $key => $value) -- #{{ $key }}: {{ $value['string'] }} </br>
 @endforeach @endif
 
-</br></br>
-<b>Network status page</b>: <a href="http://LIBRE-NMS-IP-ADDRESS-OR-HOSTNAME/">LibreNMS</a></br>
+</br>
+</br>
+
+<b>GTS network dashboard links</b>: </br>
+ -- <a href="http://10.51.1.213/">From Terre Colony office subnet</a></br>
+ -- <a href="http://192.168.25.221/">From Terre Colony management subnet</a></br>
+ -- <a href="http://192.168.25.221/">From Terre Colony server subnet</a></br>
+@endforeach @endif
+
+</br>
+</br>
+
+<b>Network status page</b>: <a href="http://LIBRE-NMS-IP-ADDRESS-OR-HOSTNAME/">LibreNMS</a>
+
+</br>
