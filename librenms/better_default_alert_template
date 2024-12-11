@@ -17,15 +17,15 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 </br>
 <b>Hostname</b>: <a href="http://LIBRE-NMS-IP-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
 <b>Location</b>: {{ $alert->location }} </br>
+<b>Description</b>: {{ $alert->description }} </br>
 <b>Device type</b>: {{ $alert->type }} </br>
-<b>Description</b>: {{ $alert->sysDescr }} </br>
 <b>Hardware</b>: {{ $alert->hardware }} </br>
 <b>Uptime</b>: {{ $alert->uptime_long }} </br>
 <b>Severity</b>: {{ $alert->severity }} </br>
-@if ($alert->state == 0)<b>Fault duration</b>: {{ $alert->elapsed }} @endif </br>
 <b>Timestamp</b>: {{ $alert->timestamp }} </br>
 <b>Unique-ID</b>: {{ $alert->uid }} </br>
 <b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br>
+@if ($alert->state == 0)<b>Fault duration</b>: {{ $alert->elapsed }} @endif </br>
 </br>
 
 @if ($alert->faults) <b>Faults</b>:</br>
