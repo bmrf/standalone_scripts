@@ -28,8 +28,7 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 <b>Faults</b>: </br>
 @foreach ($alert->faults as $key => $value)
 @php($unit = __("sensors.${value["sensor_class"]}.unit"))
-&nbsp;<b>#{{ $key }}: {{ $value['sensor_descr'] ?? 'Sensor' }} </b></br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Current: {{ $value['sensor_current'].$unit }} </br>
+&nbsp;<b>#{{ $key }}:</b> {{ $value['sensor_descr'] ?? 'Sensor' }} ({{ $value['sensor_current'].$unit }})</br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Previous: {{ $value['sensor_prev'].$unit }} </br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Limit: {{ $value['sensor_limit'].$unit }} </br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Limit (high): {{ $value['sensor_limit_high'].$unit }} </br>
