@@ -1,0 +1,39 @@
+<!--
+# Alert title (set in LibreNMS GUI under Alert Templates page):
+@if ($alert->severity == "warning") WARNING: @endif @if ($alert-> severity == "critical") ALERT: @endif {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+
+# Recovery title (set in LibreNMS GUI under Alert Templates page):
+RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+-->
+
+
+
+@if ($alert->state == 1)<span style="color:red;"><b>{{ $alert->title }}</b></span> @else <span style="color:green;"><b>{{ $alert->title }}</b></span> @endif
+</br>
+</br>
+<b>Hostname</b>: <a href="http://LIBRENMS-IP-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
+<b>Location</b>: {{ $alert->location }} </br>
+<b>Description</b>: {{ $alert->description }} </br>
+<b>Device type</b>: {{ $alert->type }} </br>
+<b>Hardware</b>: {{ $alert->hardware }} </br>
+<b>Uptime</b>: {{ $alert->uptime_long }} </br>
+<b>Severity</b>: {{ $alert->severity }} </br>
+<b>Timestamp</b>: {{ $alert->timestamp }} </br>
+<b>Unique-ID</b>: {{ $alert->uid }} </br>
+<b>Rule</b>: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif </br>
+@if ($alert->state == 0)<b>Fault duration</b>: {{ $alert->elapsed }} @endif </br>
+</br>
+
+@if ($alert->faults)
+<b>Faults</b>: </br>
+@foreach ($alert->faults as $key => $value)
+@php($unit = __("sensors.${value["sensor_class"]}.unit"))
+&nbsp;<b>#{{ $key }}: {{ $value['sensor_descr'] ?? 'Sensor' }} </b></br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Current: {{ $value['sensor_current'].$unit }} </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Previous: {{ $value['sensor_prev'].$unit }} </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Limit: {{ $value['sensor_limit'].$unit }} </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Limit (high): {{ $value['sensor_limit_high'].$unit }} </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Limit (low): {{ $value['sensor_limit_low'].$unit }} </br>
+
+@endforeach
+@endif
