@@ -14,7 +14,7 @@ CapsLock:: {
 
 #HotIf auto
 LButton:: {
- SetKeyDelay 100, 100
+ SetKeyDelay 375, 375
  While GetKeyState(ThisHotkey, "P")
   SendEvent '{' ThisHotkey '}'
 }
