@@ -1,0 +1,55 @@
+# LibreNMS ssh default login
+librenms
+CDne3fwdfds
+
+# LibreNMS webGUI default login
+librenms
+D32fwefwef
+
+# LibreNMS MySQL/MariaDB default login
+librenms
+D42nf23rewD
+
+# populate dashboard widget list
+php artisan db:seed
+
+# mass add subnet
+for a in {1..254}; do /opt/librenms/addhost.php 10.6.90.$a; done
+for a in {82,45,25,229,212,209,172,152,138,116}; do lnms device:add 10.51.19.$a; done
+for a in {214,204,7}; do lnms poller:discovery 192.168.25.$a; done
+
+# mass remove devices
+for a in {1..254}; do /opt/librenms/lnms device:remove 192.168.25.$a; done
+for a in {1..254}; do /opt/librenms/lnms device:remove 192.168.26.$a; done
+for a in {1..254}; do /opt/librenms/lnms device:remove 10.6.90.$a; done
+for a in {1..254}; do /opt/librenms/lnms device:remove 10.49.2.$a; done
+for a in {1..254}; do /opt/librenms/lnms device:remove 10.51.19.$a; done
+
+# expand .ova
+Ubuntu: Extend your default LVM space
+Expand disk in VMWare/Hyper-V/VirtualBox first.
+Resize partition: cfdisk
+Extend PV physical volume: pvresize /dev/sda3
+Extend logical volume: lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+Resize: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+
+# configuration files
+vi /opt/librenms/config.php
+sudo vi /etc/php/8.3/fpm/php-fpm.conf
+sudo vi /etc/php/8.3/fpm/pool.d/librenms.conf
+
+# server name set here:
+sudo vi /etc/nginx/conf.d/librenms.conf
+sudo vi /etc/nginx/nginx.conf
+
+# Ubuntu 24.0.2 set hostname
+sudo hostnamectl set-hostname my-hostname		# set
+hostnamectl										# verify
+
+# fix.sh (run as librenms, place in LibreNMS home directory)
+sudo updatedb
+./daily.sh
+sudo cp /opt/librenms/dist/librenms-scheduler.service /opt/librenms/dist/librenms-scheduler.timer /etc/systemd/system/
+sudo systemctl enable librenms-scheduler.timer
+sudo systemctl start librenms-scheduler.timer
+./validate.php
