@@ -15,7 +15,7 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 
 </br>
 </br>
-<b>Hostname</b>: <a href="http://LIBRE-NMS-IP-OR-HOSTNAME/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
+<b>Hostname</b>: <a href="https://YOUR-LIBRE-IP/device/{{$alert->device_id}}/overview">{{$alert->sysName}}</a> <span style="color:gray;">({{ $alert->ip }})</span></br>
 <b>Location</b>: {{ $alert->location }} </br>
 <b>Description</b>: {{ $alert->description }} </br>
 <b>Device type</b>: {{ $alert->type }} </br>
@@ -31,3 +31,9 @@ RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->
 @if ($alert->faults) <b>Faults</b>:</br>
 @foreach ($alert->faults as $key => $value) -- #{{ $key }}: {{ $value['string'] }} </br>
 @endforeach @endif
+
+</br>
+</br>
+
+<b>Network dashboard</b>: </br>
+ -- <a href="https://your-libre-IP-address/">your-libre-instance</a></br>
