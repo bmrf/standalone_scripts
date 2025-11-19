@@ -1,3 +1,6 @@
+# Alert title: @if ($alert->severity == "warning") WARNING: @endif @if ($alert-> severity == "critical") ALERT: @endif {{ $alert->sysName }} - @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+# Recovery title: RECOVERED: {{ $alert->sysName }} - recovered from @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif
+
 {
     "@context": "https://schema.org/extensions",
     "@type": "MessageCard",
@@ -94,5 +97,6 @@
 @endforeach
 @endif
         }
+@endif
     ]
 }
