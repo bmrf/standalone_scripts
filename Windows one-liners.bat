@@ -23,7 +23,10 @@ for /f %%a in ('powershell -NoProfile -Command "$d = Get-Date; $d.ToString(\"yyy
 :: Thanks to UJSTech for this ( http://community.spiceworks.com/topic/post/2898378 )
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 
-:: Example Windows version of above command & returned string:
+:: BATCH: same as above, but uses PowerShell call instead due to WMIC deprecation
+for /f "tokens=*" %%a in ('powershell -NoProfile -Command "$cap = (Get-WmiObject Win32_OperatingSystem).Caption; $cap -replace \"^Microsoft \",\"\"" 2^>nul') DO set "CUR_DATE=%%a"
+
+:: Example Windows version of above commands & returned strings:
    Windows XP Professional SP3:     Microsoft Windows XP
    Windows Server 2003 Enterprise:  Microsoft Windows Server 2003
    Windows Vista Home Premium:      Windows Vista (TM) Home Premium
@@ -36,6 +39,7 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
    Windows Server 2008 R2 Standard: Windows Server 2008 R2 Standard
    Windows Server 2012 R2 Standard: Windows Server 2012 R2 Standard
    Windows 10 Professional:         Windows 10 Pro
+   Windows 11 Professional:         Windows 11 Pro
 
  
 :: BATCH: Check SMART status of all disks with title, index, caption and status
