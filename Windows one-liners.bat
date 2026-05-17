@@ -1,6 +1,6 @@
 :: One liner commands for windows / cheat sheet
-:: v1.1.7
-:: 2024-05-23
+:: v1.1.8
+:: 2026-07-17
 :: Batch commands first, Powershell commands below
 
 :: This line just in case someone accidentally double-clicks this file
@@ -15,6 +15,9 @@ goto :eof
 :: BATCH: Get the date into ISO 8601 standard date format (yyyy-mm-dd) and store it in the "CUR_DATE" variable
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+
+:: BATCH: same as above, but uses PowerShell call instead due to WMIC deprecation
+for /f %%a in ('powershell -NoProfile -Command "$d = Get-Date; $d.ToString(\"yyyyMMddHHmmss.fff\") + $d.ToString(\"zzz\").Replace(\":\",\"\")"') DO set DTS=%%a
 
 :: BATCH: Identify Windows operating system version and store it in the "WIN_VER" variable
 :: Thanks to UJSTech for this ( http://community.spiceworks.com/topic/post/2898378 )
@@ -151,6 +154,9 @@ sc \\machinename query
 
 :: BATCH: Disable startup service
 sc config example disabled
+
+:: BATCH: Delete Windows service
+sc delete ServiceName
 
 :: BATCH: List user accounts
 wmic useraccount list brief
