@@ -35,8 +35,10 @@ Resize: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
 
 # configuration files
 vi /opt/librenms/config.php
-sudo vi /etc/php/8.3/fpm/php-fpm.conf
-sudo vi /etc/php/8.3/fpm/pool.d/librenms.conf
+sudo vi /etc/php/8.4/fpm/php-fpm.conf
+sudo vi /etc/php/8.4/cli/php-fpm.conf
+sudo vi /etc/php/8.4/fpm/pool.d/librenms.conf
+sudo vi /etc/php/8.4/cli/pool.d/librenms.conf
 
 # server name set here:
 sudo vi /etc/nginx/conf.d/librenms.conf
