@@ -22,11 +22,13 @@ call :set_cur_date
 :: set SSH_USER=admin
 set HOST=
 set SSH_USER=
+
 :: Legacy algorithms to offer. Modern OpenSSH disables these by default; the leading + appends them to the client defaults rather than replacing them.
 set KEX_ALGORITHMS=+diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1
 set HOSTKEY_ALGORITHMS=+ssh-rsa
 set LOGPATH=%SystemDrive%\logs
-set LOGFILE=ssh-legacy.log
+set LOGFILE=ssh_using_deprecated_encryption.log
+
 :: make the log directory if it doesn't exist
 if not exist "%LOGPATH%" mkdir "%LOGPATH%" >nul
 
